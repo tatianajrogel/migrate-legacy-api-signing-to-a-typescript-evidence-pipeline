@@ -1,0 +1,140 @@
+[
+  {
+    "method": "post",
+    "target": "/v2/orders?b=2&a=1&a=10",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "Content-Type",
+        "application/json"
+      ],
+      [
+        "Host",
+        "gw.example.com"
+      ]
+    ],
+    "body": "{\"id\":7}"
+  },
+  {
+    "method": "GET",
+    "target": "/v2/health",
+    "headers": [
+      [
+        "x-gw-key-id",
+        "gw-prod-02"
+      ],
+      [
+        "host",
+        "gw.example.com"
+      ]
+    ]
+  },
+  {
+    "method": "PUT",
+    "target": "/v2/catalog/items/91?dry_run=true",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "Content-Type",
+        "  application/json   charset=utf-8  "
+      ],
+      [
+        "Host",
+        "gw.example.com"
+      ],
+      [
+        "X-GW-Trace",
+        "  a1  b2  "
+      ]
+    ],
+    "body": ""
+  },
+  {
+    "method": "POST",
+    "target": "/v2/refunds",
+    "headers": [
+      [
+        "x-gw-key-id",
+        "gw-legacy-99"
+      ],
+      [
+        "host",
+        "gw.example.com"
+      ]
+    ],
+    "body": "{}"
+  },
+  {
+    "method": "DELETE",
+    "target": "/v2/webhooks/12",
+    "headers": [
+      [
+        "host",
+        "gw.example.com"
+      ]
+    ],
+    "body": ""
+  },
+  {
+    "method": "POST",
+    "target": "/v2/settlement?cycle=7",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "Host",
+        "gw.example.com"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-01, signature=b3506e7c815e7e4ab7be6df599b4c79608868b205297e593bc7ef82f3189de56"
+      ]
+    ],
+    "body": "{\"batch\":3}"
+  },
+  {
+    "method": "POST",
+    "target": "/v2/settlement?cycle=8",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-02"
+      ],
+      [
+        "Host",
+        "gw.example.com"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-02, signature=0000000000000000000000000000000000000000000000000000000000000000"
+      ]
+    ],
+    "body": "{\"batch\":4}"
+  },
+  {
+    "method": "GET",
+    "target": "/v2/ledger",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "Host",
+        "gw.example.com"
+      ],
+      [
+        "Authorization",
+        "Bearer somethingelse"
+      ]
+    ]
+  }
+]
