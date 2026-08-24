@@ -1,0 +1,57 @@
+execve("/opt/gw/bin/legacy-signer", ["legacy-signer", "--batch", "/var/spool/gw/in.json"], 0x7ffd2c1a0e40 /* 24 vars */) = 0
+brk(NULL)                               = 0x55f3a2c11000
+access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=31241, ...}) = 0
+mmap(NULL, 31241, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f9c1d4a2000
+close(3)                                = 0
+openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libcrypto.so.3", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\260\36\2\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0644, st_size=4451840, ...}) = 0
+mmap(NULL, 4460288, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f9c1d000000
+close(3)                                = 0
+openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0P\237\2\0\0\0\0\0"..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=1922136, ...}) = 0
+mmap(NULL, 1970000, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f9c1ce00000
+close(3)                                = 0
+brk(NULL)                               = 0x55f3a2c11000
+brk(0x55f3a2c32000)                     = 0x55f3a2c32000
+
+# --- configuration load -----------------------------------------------------
+openat(AT_FDCWD, "/etc/gw/signer.conf", O_RDONLY)  = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=418, ...}) = 0
+read(3, "# legacy signer configuration\nke"..., 4096) = 418
+read(3, "", 4096)                       = 0
+close(3)                                = 0
+
+# --- key material -----------------------------------------------------------
+# The signer enumerates the key directory but opens only the keys on the active
+# roster. gw-legacy-99.key is present in the getdents64 listing and is never
+# opened.
+openat(AT_FDCWD, "/etc/gw/keys", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3
+getdents64(3, 0x55f3a2c33a10 /* 5 entries */, 32768) = 144
+getdents64(3, 0x55f3a2c33a10 /* 0 entries */, 32768) = 0
+close(3)                                = 0
+openat(AT_FDCWD, "/etc/gw/keys/gw-prod-01.key", O_RDONLY) = 3
+fstat(3, {st_mode=S_IFREG|0400, st_size=33, ...}) = 0
+read(3, "k1secretmaterial0123456789abcdef\n", 4096) = 33
+close(3)                                = 0
+openat(AT_FDCWD, "/etc/gw/keys/gw-prod-02.key", O_RDONLY) = 3
+fstat(3, {st_mode=S_IFREG|0400, st_size=33, ...}) = 0
+read(3, "anotherkeyvalue_9876543210zyxwvu\n", 4096) = 33
+close(3)                                = 0
+
+# --- batch input ------------------------------------------------------------
+openat(AT_FDCWD, "/var/spool/gw/in.json", O_RDONLY) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=2871, ...}) = 0
+read(3, "[{\"method\":\"POST\",\"target\":\"/v2/o"..., 8192) = 2871
+read(3, "", 8192)                       = 0
+close(3)                                = 0
+
+# --- signing is pure computation; no socket syscalls appear anywhere ---------
+write(1, "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"m"..., 214) = 214
+write(1, "{\"seq\":2,\"key_id\":\"gw-prod-02\",\"m"..., 205) = 205
+write(1, "{\"seq\":3,\"key_id\":\"gw-prod-01\",\"m"..., 231) = 231
+exit_group(0)                           = ?
++++ exited with 0 +++

@@ -1,0 +1,19 @@
+# lsof -p $(pgrep -f legacy-signer) captured mid-batch on gw-edge-03.
+# Recorded 2025-12-01 during the pre-migration evidence sweep.
+#
+# Note for the migration: the only regular files held open under /etc/gw/keys
+# are the 2 active roster keys. No IPv4/IPv6/unix socket FDs are present, and
+# none appeared across the full 90-second sweep.
+
+COMMAND     PID  USER   FD   TYPE DEVICE SIZE/OFF     NODE NAME
+legacy-si 14872 gwsvc  cwd    DIR  259,1     4096  1441793 /var/spool/gw
+legacy-si 14872 gwsvc  rtd    DIR  259,1     4096        2 /
+legacy-si 14872 gwsvc  txt    REG  259,1   198344  1180229 /opt/gw/bin/legacy-signer
+legacy-si 14872 gwsvc  mem    REG  259,1  4451840  1049101 /usr/lib/x86_64-linux-gnu/libcrypto.so.3
+legacy-si 14872 gwsvc  mem    REG  259,1  1922136  1049088 /usr/lib/x86_64-linux-gnu/libc.so.6
+legacy-si 14872 gwsvc    0r   CHR    1,3      0t0        5 /dev/null
+legacy-si 14872 gwsvc    1w   REG  259,1    18422  1441801 /var/log/gw/signer.out
+legacy-si 14872 gwsvc    2w   REG  259,1      904  1441802 /var/log/gw/signer.err
+legacy-si 14872 gwsvc    3r   REG  259,1       33  1310801 /etc/gw/keys/gw-prod-01.key
+legacy-si 14872 gwsvc    4r   REG  259,1       33  1310802 /etc/gw/keys/gw-prod-02.key
+legacy-si 14872 gwsvc    5r   REG  259,1     2871  1441810 /var/spool/gw/in.json
