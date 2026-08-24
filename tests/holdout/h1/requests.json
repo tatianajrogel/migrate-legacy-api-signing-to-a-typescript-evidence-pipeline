@@ -1,0 +1,69 @@
+[
+  {
+    "method": "patch",
+    "target": "/v3/disputes/55?z=1&a=9&a=2&a=10",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-02"
+      ],
+      [
+        "Content-Type",
+        "application/json"
+      ],
+      [
+        "Host",
+        "edge.example.net"
+      ],
+      [
+        "X-GW-Trace",
+        "  q   r  "
+      ]
+    ],
+    "body": "{\"state\":\"open\"}"
+  },
+  {
+    "method": "GET",
+    "target": "/v3/ping",
+    "headers": [
+      [
+        "x-gw-key-id",
+        "gw-prod-01"
+      ],
+      [
+        "HOST",
+        "edge.example.net"
+      ]
+    ]
+  },
+  {
+    "method": "POST",
+    "target": "/v3/payouts",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-legacy-99"
+      ],
+      [
+        "Host",
+        "edge.example.net"
+      ]
+    ],
+    "body": "{}"
+  },
+  {
+    "method": "PUT",
+    "target": "/v3/onboarding?flag",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "Host",
+        "edge.example.net"
+      ]
+    ],
+    "body": ""
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "method": "POST",
+    "target": "/v4/reconciliation?b=&a=1",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "Host",
+        "gw2.example.org"
+      ],
+      [
+        "Content-Type",
+        "text/plain"
+      ]
+    ],
+    "body": "line one\nline two"
+  },
+  {
+    "method": "DELETE",
+    "target": "/v4/catalog/9",
+    "headers": [
+      [
+        "Host",
+        "gw2.example.org"
+      ]
+    ],
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "target": "/v4/ledger?x=b&x=a",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-02"
+      ],
+      [
+        "Host",
+        "gw2.example.org"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-02, signature=deadbeef"
+      ]
+    ]
+  }
+]
