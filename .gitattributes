@@ -1,0 +1,3 @@
+# Everything in this task runs in Linux containers. Keep LF on every checkout,
+# including Windows ones, or test.sh breaks and the key files grow a CR.
+* text=auto eol=lf
