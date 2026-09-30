@@ -51,8 +51,9 @@ const keyCache = new Map<string, Buffer | null>();
  * Loads a key by id from the approved directory.
  *
  * The stored key is raw bytes with a single trailing newline that is NOT part of
- * the key material. Supersedes GW-036 ("the file is used verbatim"), corrected in
- * the 2025-12-02 review after the legacy signer's strace showed a 32-byte read.
+ * the key material. No dossier entry says so. The strace shows each 33-byte file
+ * read whole, ending in "\n", and only the 32-byte key without that newline
+ * reproduces the Authorization header on the sample's verified record.
  */
 function loadKey(keyId: string): Buffer | null {
   if (keyCache.has(keyId)) return keyCache.get(keyId) ?? null;

@@ -19,7 +19,8 @@
 # 2 further defects, found by reconciling the captures rather than the dossier:
 #
 #   * The key file carries a trailing newline that is NOT key material. The
-#     strace shows a 33-byte file yielding 32 bytes of key. Reading the file
+#     strace shows each 33-byte file read whole, ending in a newline, and only the
+#     32-byte key without it verifies the sample's signed record. Reading the file
 #     verbatim produces a wrong HMAC for every record.
 #   * gw-legacy-99.key sits in the key directory but never appears in an
 #     openat() in the strace nor as an FD in the lsof. It is off the roster, so
