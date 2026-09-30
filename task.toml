@@ -53,9 +53,10 @@ things at once, widens the signed header set to everything except \
 authorization, kills the UNSIGNED sentinel so empty bodies hash normally, and \
 drops the trailing newline that was a transcription error in the first place. \
 Apply all 5 and the 6 field canonical request comes out right. The last 2 \
-rules come from the captures. In the strace the key file is 33 bytes and the \
-read returns 33 bytes, but the signer only uses 32 of them, so the newline gets \
-stripped. The same trace lists the key directory with getdents64 and then calls \
+rules come from the captures. In the strace each key file is 33 bytes and the \
+read hands back all 33, ending in a newline. Only the 32 bytes before that \
+newline reproduce the Authorization header on the sample's already signed \
+record, so the newline gets stripped. The same trace lists the key directory with getdents64 and then calls \
 openat on gw-prod-01 and gw-prod-02 only, and the lsof shows the same 2 files \
 held open, which puts gw-legacy-99 off the roster even though it is sitting \
 right there on disk. A request naming it gets rejected instead of signed. After \
