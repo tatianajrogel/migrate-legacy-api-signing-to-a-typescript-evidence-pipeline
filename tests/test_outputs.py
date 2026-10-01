@@ -228,10 +228,11 @@ def test_no_network_access_is_attempted(built_entry):
 
 def test_sources_contain_no_network_calls():
     """No network client appears anywhere in the agent's TypeScript sources."""
+    # Call and import forms only: the bare word "fetch" in a comment is not a
+    # network client, and a plain `from "http"` import is one.
     forbidden = re.compile(
-        r"\b(fetch|XMLHttpRequest|WebSocket)\b|"
-        r"node:(http|https|net|dgram|tls)\b|"
-        r"require\(\s*['\"](http|https|net|dgram|tls)['\"]\s*\)",
+        r"\bfetch\s*\(|\bnew\s+(XMLHttpRequest|WebSocket)\b|"
+        r"['\"](node:)?(http|https|http2|net|dgram|tls)['\"]",
     )
     for path in sorted(SRC.rglob("*.ts")):
         hit = forbidden.search(path.read_text())
