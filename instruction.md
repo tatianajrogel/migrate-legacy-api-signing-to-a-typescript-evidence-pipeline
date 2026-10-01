@@ -28,12 +28,19 @@ Every evidence object has exactly these keys:
 - `method`, the HTTP method uppercased
 - `path`, the request target up to but not including the first `?`
 - `outcome`, one of `signed`, `verified`, or `rejected`
-- `signature`, the lowercase hex HMAC, or `""` when nothing was computed
+- `signature`, the lowercase hex HMAC of the record's canonical request. It is
+  filled whenever the record names a key on the active roster, even if the record
+  is then rejected, and is `""` only for `missing-key-id` and `unknown-key-id`
 - `canonical_sha256`, lowercase hex SHA-256 of the canonical request string
 - `reason`, present only when `outcome` is `rejected`
 
 The 4 rejection reasons are `missing-key-id`, `unknown-key-id`,
-`signature-mismatch`, and `malformed-authorization`.
+`malformed-authorization`, and `signature-mismatch`, checked in that order. An
+`Authorization` header is well formed when it starts with exactly
+`GW-HMAC-SHA256 keyId=<the record's key id>, signature=`, and anything else is
+`malformed-authorization`. Whatever follows `signature=` is the presented
+signature, compared as is apart from surrounding whitespace, so a well formed
+header carrying a wrong, short or non-hex signature is a `signature-mismatch`.
 
 ## Keys
 
