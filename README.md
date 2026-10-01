@@ -122,6 +122,41 @@ sorting by name alone reproduces the sample byte for byte. Only the hidden sets,
 where values arrive out of order, catch it. Without them that rule would not be
 graded at all.
 
+## What happened when an agent tried it
+
+I ran Claude Code with Claude Opus 5.5 under Harbor 0.22.0, 3 attempts per
+version, and read every trajectory.
+
+| Version | Solved | Time per attempt | Turns |
+|---|---|---|---|
+| First version | 0 of 3 | 1.7 to 2.4 min | 11 to 14 |
+| After the spec fix | 3 of 3 | 1.5 to 1.8 min | 13 to 15 |
+
+**The first 0 of 3 was my fault, not the model's.** All 3 attempts got all 7
+signing rules right: their canonical request hashes matched the reference on
+every record in the sample and in both hidden sets. All 3 failed on the same 2
+records, and both came down to rules my spec never stated. One was what
+`signature` holds when a verification is rejected. The other was whether
+`signature=deadbeef` is a malformed header or just a wrong signature. The agent
+made sensible calls on both and the reference made different ones, so the bytes
+could not match. I wrote both rules into `instruction.md`, checked the new
+wording against the reference on all 15 graded records, and ran it again.
+
+**How it beat the trap.** The 6 completed attempts all worked the same way:
+
+- all 6 read the whole dossier with `cat` in their first few commands. About 75k
+  tokens is easy for a model with a 1M token context
+- 4 of 6 grepped it for reversal words like `revers` and `supersed`, which my
+  meeting notes use as headings (`### GW-041 - SUPERSEDED`)
+- all 6 dumped the key files byte by byte and spotted the trailing newline
+- 4 of 6 computed the signature of the sample's already signed request by hand
+  before writing any code, which checks most of the rule set in one go
+
+**What that says about difficulty.** Once the spec is complete, this task is
+easy for a current frontier agent. A harder version would need reversals that
+don't announce themselves, filler that a regex can't strip, and a signed sample
+that only exercises some of the rules so it can't work as an answer key.
+
 ## Run it yourself
 
 You need Docker.
