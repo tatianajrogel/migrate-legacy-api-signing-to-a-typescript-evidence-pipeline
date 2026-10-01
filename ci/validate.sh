@@ -10,15 +10,17 @@
 #   starter       the shipped starter built and run as-is   reward must be 0
 #   mutant:<x>    oracle with exactly one rule wrong        reward must be 0
 #
-# Usage: ci/validate.sh [base|hard]
+# Usage: ci/validate.sh [base|hard|frontier]
 #
 # With no argument it grades the base task at the repository root. With "hard"
-# it grades the variant under hard/.
+# or "frontier" it grades the variant under that directory.
 #
-# Both get the 7 rule mutants and the 7 contract mutants, which get every rule
+# All get the 7 rule mutants and the 7 contract mutants, which get every rule
 # right and depart from the output contract in instruction.md instead. The hard
-# variant adds 9 more that each adopt a rule the dossier trialled, changed again
-# or declined.
+# and frontier variants add 9 more that each adopt a rule their dossier
+# trialled, changed again or declined, and the frontier variant 2 more: one
+# that stops at an intermediate form only its dossier has, and one that applies
+# a lowercasing whose condition was not met.
 #
 # Exits non-zero if any case gets the wrong reward.
 set -euo pipefail
@@ -31,7 +33,8 @@ VARIANT="${1:-base}"
 case "$VARIANT" in
   base) TASK="$ROOT" ;;
   hard) TASK="$ROOT/hard" ;;
-  *) echo "unknown variant $VARIANT; known: base, hard" >&2; exit 2 ;;
+  frontier) TASK="$ROOT/frontier" ;;
+  *) echo "unknown variant $VARIANT; known: base, hard, frontier" >&2; exit 2 ;;
 esac
 
 ENV_IMAGE="signing-task-env-$VARIANT"
@@ -46,7 +49,7 @@ MUTANTS=(
   key-file-verbatim
   roster-from-directory
 )
-if [ "$VARIANT" = hard ]; then
+if [ "$VARIANT" != base ]; then
   MUTANTS+=(
     query-sort-decoded-value
     sign-x-gw-plus-content-type
@@ -58,6 +61,9 @@ if [ "$VARIANT" = hard ]; then
     forwarding-headers-unsigned
     signed-names-comma-joined
   )
+fi
+if [ "$VARIANT" = frontier ]; then
+  MUTANTS+=(header-values-trimmed-only header-values-lowercased)
 fi
 MUTANTS+=(
   auth-key-id-unbound

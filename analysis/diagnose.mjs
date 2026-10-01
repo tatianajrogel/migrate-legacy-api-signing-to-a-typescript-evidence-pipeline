@@ -56,13 +56,14 @@ function readLines(path) {
 const INSTRUCTIONS = {
   base: { shipped: "pointed", other: ["neutral", "base.neutral.md"] },
   hard: { shipped: "neutral", other: ["pointed", "hard.pointed.md"] },
+  frontier: { shipped: "neutral", other: null },
 };
 
 function instructionLabel(variant, sent) {
   const same = (file) => existsSync(file) && readFileSync(file, "utf8").trim() === sent.trim();
   const { shipped, other } = INSTRUCTIONS[variant];
   if (same(join(VARIANTS[variant].task, "instruction.md"))) return shipped;
-  if (same(join(VARIANTS.base.task, "analysis", "instructions", other[1]))) return other[0];
+  if (other && same(join(VARIANTS.base.task, "analysis", "instructions", other[1]))) return other[0];
   return "first";
 }
 
@@ -96,7 +97,13 @@ function diagnose(dir, variant, probes, index, keyFiles, graded, loaded) {
   const result = readJson(join(dir, "trial-result.json")) ?? {};
   const job = readJson(join(dir, "job-config.json")) ?? {};
   const trajectory = readJson(join(dir, "trajectory.json"));
-  const exposed = trajectory === null ? null : exposure(trajectory, loaded);
+  // The frontier variant was rebuilt once. An attempt against the first build
+  // read a different dossier, so what it saw cannot be judged against this one.
+  // Its tool calls are still counted; they do not depend on the text.
+  const sentText = trajectory?.steps?.find((step) => step.source === "user")?.message;
+  const otherBuild = variant === "frontier" && typeof sentText === "string" && instructionLabel(variant, sentText) === "first";
+  const counted = trajectory === null ? null : exposure(trajectory, loaded);
+  const exposed = otherBuild ? null : counted;
   const seconds = (span) =>
     span?.started_at && span?.finished_at
       ? Math.round((Date.parse(span.finished_at) - Date.parse(span.started_at)) / 1000)
@@ -122,10 +129,11 @@ function diagnose(dir, variant, probes, index, keyFiles, graded, loaded) {
     agent_seconds: seconds(result.agent_execution),
     cost_usd: trajectory?.final_metrics?.total_cost_usd ?? null,
     steps: trajectory?.final_metrics?.total_steps ?? null,
-    tool_calls: exposed?.toolCalls ?? null,
-    searches: exposed?.searches ?? null,
+    tool_calls: counted?.toolCalls ?? null,
+    searches: counted?.searches ?? null,
     coverage: exposed?.coverage ?? null,
     notes_opened: exposed?.notesOpened ?? null,
+    notes_total: loaded.notes,
     seen: exposed === null ? null : [...exposed.seen],
     rules: {},
     wrong: [],
@@ -318,7 +326,7 @@ function markdown(rows) {
   const body = rows.map((r) => {
     const read = r.coverage === null
       ? "?"
-      : `${r.coverage.notes}% of notes (${r.notes_opened.length} of 7 opened), ${r.coverage.appendices}% of appendices`;
+      : `${r.coverage.notes}% of notes (${r.notes_opened.length} of ${r.notes_total} opened), ${r.coverage.appendices}% of appendices`;
     const reward = r.reward_regraded === null || r.reward_regraded === r.reward
       ? `${r.reward}`
       : `${r.reward} then ${r.reward_regraded}`;

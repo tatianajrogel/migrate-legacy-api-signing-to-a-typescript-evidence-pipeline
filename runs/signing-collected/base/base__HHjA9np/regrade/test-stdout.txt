@@ -257,7 +257,7 @@ E
 E             - rejected
 E             + signed
 
-/tests/test_outputs.py:265: AssertionError
+/tests/test_outputs.py:266: AssertionError
 _______________________ test_retired_key_is_never_signed _______________________
 
     def test_retired_key_is_never_signed():
@@ -280,7 +280,7 @@ E
 E                 - rejected
 E                 + signed
 
-/tests/test_outputs.py:283: AssertionError
+/tests/test_outputs.py:284: AssertionError
 ==================================== PASSES ====================================
 =========================== short test summary info ============================
 PASSED ../tests/test_outputs.py::test_evidence_file_exists
@@ -295,4 +295,4 @@ FAILED ../tests/test_outputs.py::test_only_approved_key_files_are_opened - As...
 FAILED ../tests/test_outputs.py::test_no_network_access_is_attempted - Assert...
 FAILED ../tests/test_outputs.py::test_verification_outcomes_are_correct - Ass...
 FAILED ../tests/test_outputs.py::test_retired_key_is_never_signed - Assertion...
-========================= 8 failed, 4 passed in 0.73s ==========================
+========================= 8 failed, 4 passed in 0.67s ==========================

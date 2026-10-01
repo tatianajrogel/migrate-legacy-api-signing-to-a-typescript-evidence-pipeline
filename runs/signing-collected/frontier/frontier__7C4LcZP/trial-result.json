@@ -1,0 +1,117 @@
+{
+    "id": "064628bd-5ff9-4130-952c-3f95d4edd080",
+    "task_name": "frontier",
+    "trial_name": "frontier__7C4LcZP",
+    "trial_uri": "file:///Users/administrator/jet/signing-frontier-agent-jobs/2026-10-01__02-21-53/frontier__7C4LcZP",
+    "task_id": {
+        "path": "/var/folders/83/jrm1szbs6pq0zzw01nj54v1w0000gn/T/tmp.l57jmrdA7H/frontier"
+    },
+    "source": null,
+    "task_checksum": "f10eec5e67a81374c47251d25aba20ec0e0c3d7ff8bea2cd453d289f56536e48",
+    "config": {
+        "task": {
+            "path": "/var/folders/83/jrm1szbs6pq0zzw01nj54v1w0000gn/T/tmp.l57jmrdA7H/frontier",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": null
+        },
+        "trial_name": "frontier__7C4LcZP",
+        "trials_dir": "/Users/administrator/jet/signing-frontier-agent-jobs/2026-10-01__02-21-53",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": "claude-code",
+            "import_path": null,
+            "model_name": "anthropic/claude-opus-5-5",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {},
+            "mcp_servers": []
+        },
+        "user_agent": null,
+        "environment": {
+            "type": "docker",
+            "import_path": null,
+            "force_build": false,
+            "delete": true,
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": null,
+            "extra_docker_compose": [],
+            "kwargs": {},
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [],
+        "extra_instructions": [],
+        "job_id": "65796322-d6bc-4bfd-9aca-ec96eb1b2524",
+        "source_trial": null
+    },
+    "agent_info": {
+        "name": "claude-code",
+        "version": "2.1.286",
+        "model_info": {
+            "name": "claude-opus-5-5",
+            "provider": "anthropic"
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 1294092,
+        "n_cache_tokens": 1212778,
+        "n_output_tokens": 16324,
+        "cost_usd": 1.2193555999999999,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "reward": 1.0
+        }
+    },
+    "verifier_environment_mode": "separate",
+    "exception_info": null,
+    "started_at": "2026-10-01T07:25:48.056637Z",
+    "finished_at": "2026-10-01T07:30:38.591249Z",
+    "environment_setup": {
+        "started_at": "2026-10-01T07:25:48.058730Z",
+        "finished_at": "2026-10-01T07:25:49.535067Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-10-01T07:25:49.535109Z",
+        "finished_at": "2026-10-01T07:26:28.803564Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-10-01T07:26:28.803726Z",
+        "finished_at": "2026-10-01T07:30:12.533097Z"
+    },
+    "verifier": {
+        "started_at": "2026-10-01T07:30:24.211124Z",
+        "finished_at": "2026-10-01T07:30:38.591175Z"
+    },
+    "step_results": null
+}

@@ -1,0 +1,17 @@
+{
+    "jobs_dir": "/Users/administrator/jet/signing-frontier-agent-jobs",
+    "n_attempts": 3,
+    "n_concurrent_trials": 2,
+    "quiet": true,
+    "agents": [
+        {
+            "name": "claude-code",
+            "model_name": "anthropic/claude-opus-5-5"
+        }
+    ],
+    "tasks": [
+        {
+            "path": "/var/folders/83/jrm1szbs6pq0zzw01nj54v1w0000gn/T/tmp.l57jmrdA7H/frontier"
+        }
+    ]
+}

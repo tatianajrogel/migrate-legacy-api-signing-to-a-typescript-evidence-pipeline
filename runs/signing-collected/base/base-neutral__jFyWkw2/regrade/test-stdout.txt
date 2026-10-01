@@ -257,7 +257,7 @@ E
 E             - verified
 E             + rejected
 
-/tests/test_outputs.py:265: AssertionError
+/tests/test_outputs.py:266: AssertionError
 ==================================== PASSES ====================================
 =========================== short test summary info ============================
 PASSED ../tests/test_outputs.py::test_evidence_file_exists
@@ -272,4 +272,4 @@ FAILED ../tests/test_outputs.py::test_holdout_reproduces_approved_bytes[h3]
 FAILED ../tests/test_outputs.py::test_only_approved_key_files_are_opened - As...
 FAILED ../tests/test_outputs.py::test_no_network_access_is_attempted - Assert...
 FAILED ../tests/test_outputs.py::test_verification_outcomes_are_correct - Ass...
-========================= 7 failed, 5 passed in 0.72s ==========================
+========================= 7 failed, 5 passed in 0.66s ==========================

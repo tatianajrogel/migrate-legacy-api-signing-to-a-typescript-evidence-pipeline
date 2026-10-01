@@ -1,0 +1,165 @@
+# TB3.0 task manifest.
+
+name = "migrate-legacy-api-signing-to-a-typescript-evidence-pipeline-frontier"
+
+# The verifier rebuilds and re-runs the agent's own TypeScript sources against
+# held-out request sets, so the whole project directory is declared, not just the
+# evidence file the agent writes to /app/out/evidence.ndjson.
+artifacts = ["/app/"]
+
+[metadata]
+author_name = "Tatiana Rogel"
+author_email = "tatianarogel349@gmail.com"
+
+category = "security"
+subcategories = ["Long Context"]
+tags = ["hmac", "request-signing", "canonicalization", "typescript", "audit-evidence"]
+languages = ["TypeScript", "JavaScript", "Bash"]
+codebase_size = "small"
+number_of_milestones = 0
+
+difficulty = "advanced"
+expert_time_estimate_hours = 8
+
+difficulty_explanation = """\
+This is the frontier variant of the signing migration task. The scheme and the \
+reference solution are the base task's, byte for byte. The hard variant hid \
+the announcements, and frontier agents solved it anyway by telling the \
+hand-written decisions from the generated text around them. Here nothing \
+separates them. The dossier follows 5 signers through 11 sessions, and every \
+decision about any of them comes out of the same grammar, with the same \
+lead-ins, under the same headings. Only one signer is being migrated; the \
+other 4 are decided on in the same words and often decide the opposite, and \
+their minutes get corrected at the same rate. Finding the passages that name \
+the right signer is the easy part, and it is not enough: read alone, they give \
+7 of the 10 rules and fail every graded set. No session decides the query \
+ordering for the migrated scheme in its own words. It is brought in line with \
+the export signer's as it stood that day, and the export signer's rule that \
+day had itself been brought in line with the mesh signer's a fortnight \
+earlier; both of those signers then moved on to decoded values, which an \
+alignment does not follow. The only place the result is written out is a \
+support ticket dated 2 days later, in an appendix where 4 of the 5 tickets \
+about this scheme give advice that had changed by rollout. The item that folds \
+header values was minuted under the webhook signer and reassigned by a \
+correction a week later, so its text never appears under the migrated scheme's \
+name. The minutes do record, under the migrated scheme, that the signed names \
+are joined with a comma, and a correction at the freeze says that item was the \
+mesh signer's. The signed header set is widened on condition that all 5 \
+partners sign off by a deadline, and the sign-off register gives 5 dates. \
+Removing the empty-body token is agreed effective with a release that the \
+calendar puts before rollout; collapsing dot segments is agreed effective with \
+one it puts after. Uppercasing percent escapes is agreed on condition of what \
+the proxy captures show, and they show the opposite. So ignoring every \
+conditional item is wrong and so is applying every one. 3 of the conditions \
+look met and are not. The release that dot segment collapsing waits for had \
+its release candidate before rollout and its general availability after, and \
+the kickoff note says which date counts. Matching key ids in any case was \
+agreed subject to sign-off by all 5 partners by a deadline; all 5 signed \
+before rollout and one of them signed 2 days late. Lowercasing header values \
+was agreed subject to a load test under 2 ms at p99; it measured 1.4 ms at p95 \
+and 2.6 ms at p99. The captures now cover 3 signers, and the export signer's \
+holds the third key open. Last, the sample carries 2 records that arrive \
+already signed. One was signed the day before rollout, carries a single header \
+so that it says nothing about the name list, and verifies. The other is \
+genuine too: it was signed on 2025-11-20 under the rules in force that day, \
+and the rollout note says there is no grace period, so it must be rejected. \
+Making it verify means rebuilding the November scheme, which is 4 rules away.\
+"""
+
+solution_explanation = """\
+Read the kickoff note first. It names the 5 signers and every alias, and says \
+how the minutes work: a correction is what counts, an alignment copies the \
+other signer's rule as it stood that day, and an item effective with a release \
+takes effect on the release's date. Then follow inbound request signing \
+through the sessions in date order, and follow every reference out of it. \
+Header values: stripped at the ends from 2025-10-14, and the item that \
+collapses the inside is in the 2025-11-04 note under the webhook signer, \
+reassigned by the correction of 2025-11-11. Query ordering: aligned on \
+2025-11-11 with the export signer, whose rule that day came from its own \
+alignment with the mesh signer on 2025-10-28, when the mesh signer ordered by \
+name then value on the text as it arrives. Signed header set: content-type \
+added on 2025-11-18, everything except authorization agreed at the freeze \
+subject to sign-off by 2025-12-05, and the register dates all 5 by 2025-12-04. \
+Body hash: narrowed on 2025-10-21, the token removed effective with SDK 3.2.1, \
+which shipped 2025-12-01. No trailing newline, from the freeze. The register \
+entries that stand: escapes keep their case because the proxy captures did not \
+meet the condition, a valueless parameter keeps its trailing = because the \
+trial was backed out, the path is signed as received because SDK 3.3 became \
+generally available on 2026-01-13 (its release candidate date does not count), \
+key ids match exactly because one of the 5 sign-offs came after the deadline, \
+header values are not lowercased because the load test failed at p99, \
+forwarding headers are signed, and the names are joined with a semicolon \
+because the comma was the mesh signer's. The 2 key rules come from the legacy \
+request signer's 3 captures, not the export signer's: the strace and lsof show \
+which 2 key files it opens, and the ltrace shows it hands 32 of each file's 33 \
+bytes to HMAC. Sample record 7 stays a signature-mismatch. The reference \
+solution is the hard variant's code.\
+"""
+
+verification_explanation = """\
+The verifier is the hard variant's with a new sample. The evidence at \
+/app/out/evidence.ndjson has to match the approved bytes for the shipped \
+requests, including the stale record coming out as a signature-mismatch. Then \
+the verifier recompiles the agent's own TypeScript in a separate container and \
+runs it against the same 3 held-out request sets as the hard variant, byte \
+exact: 2 for the signing rules and 1 that grades the output contract sentence \
+by sentence. Running twice has to give the same bytes. gw-prod-03.key loses \
+its permissions before one run and that run must be unaffected. One run \
+happens with every proxy variable aimed at a dead port, and the sources are \
+scanned for network clients. ci/validate.sh grades the oracle, a no-op agent, \
+the starter and 25 mutants against this verifier: the hard variant's 23, one \
+that stops at the 2025-10-14 form of header values, and one that lowercases \
+them. The dossier, the captures, the sample and the evidence manifest are \
+generated by frontier/authoring/build.mjs from one table of events. The script \
+replays that table and refuses to write anything unless the migrated scheme's \
+state on rollout day is the reference solution's, every correction points at \
+exactly one item, and every alignment the scheme leans on has one answer; it \
+signs the stale record with the state the same replay gives for 2025-11-20. \
+Before any graded attempt, model agents reviewed the variant, all Opus 5.5: 2 \
+blind solvers that saw only what a benchmark agent sees, 2 fairness auditors \
+with the answer key, and one shortcut hunter. The shortcuts they found were \
+closed and re-measured with the hunter's own scripts. After the first model \
+runs, the rule about key bytes got a capture of its own, because the documents \
+had left it to be inferred from the sample, and 3 conditions were made to look \
+met when they are not. Neither was part of that review. A second review by \
+model agents checked both before the variant was published; what it found is \
+in runs/frontier-review/.\
+"""
+
+relevant_experience = """\
+I have spent about 7 years on document intelligence and model evaluation. \
+Right now I am a Clinical AI Specialist at iFlipd. Before that I spent 3 and a \
+half years as a Document Intelligence Analyst at Arck Interactive, and I \
+started out doing NLP and machine learning work at Smarsh. I hold a BS in \
+Artificial Intelligence from the University of Portland. Most of my day goes \
+into pulling facts out of long, messy source material, clinical notes, scanned \
+records, OCR output that came back half wrong, and then proving the extraction \
+was actually right instead of just believable. Reviewing model output, hunting \
+failure cases, and validating extracted fields against ground truth is the \
+job. I built this task around a failure I have watched happen repeatedly. A \
+system reads the first authoritative looking statement it finds, never checks \
+whether something later overrode it, and produces output that looks completely \
+fine. Nobody catches it until someone diffs it against a known good answer. \
+That is why the register here is append only and says so, why the reversals \
+sit in meeting notes instead, and why 2 of the 7 rules are settled by the \
+captures. I graded it on byte exact output across held out inputs for the same \
+reason I do that at work. Plausible output and correct output are not the same \
+thing, and only one of them survives being checked.\
+"""
+
+[verifier]
+timeout_sec = 600
+# "separate" is required: the verifier runs in its own container built from
+# tests/Dockerfile, after the agent's container is torn down. Tests and oracle
+# data are therefore never visible to the agent.
+environment_mode = "separate"
+
+[agent]
+timeout_sec = 3600
+
+[environment]
+network_mode = "public"
+build_timeout_sec = 900
+cpus = 2
+memory_mb = 8192
+storage_mb = 10240

@@ -7,7 +7,7 @@
 # TypeScript sources and run the same way the verifier runs it: unprivileged,
 # with the request set on stdin. The container has no network.
 #
-# Usage: analysis/collect.sh <base|hard> <out dir> <harbor jobs dir>...
+# Usage: analysis/collect.sh <base|hard|frontier> <out dir> <harbor jobs dir>...
 #
 # Writes <out dir>/<variant>/<trial>/ with the build status, one .ndjson per
 # request set, the sources the attempt shipped, its trajectory, the trial's
@@ -24,7 +24,8 @@ shift 2
 case "$VARIANT" in
   base) TASK="$ROOT" ;;
   hard) TASK="$ROOT/hard" ;;
-  *) echo "unknown variant $VARIANT; known: base, hard" >&2; exit 2 ;;
+  frontier) TASK="$ROOT/frontier" ;;
+  *) echo "unknown variant $VARIANT; known: base, hard, frontier" >&2; exit 2 ;;
 esac
 
 IMAGE="signing-task-verifier-$VARIANT"

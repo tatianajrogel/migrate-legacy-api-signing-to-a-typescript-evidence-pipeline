@@ -57,6 +57,23 @@ const EVIDENCE = {
   ],
 };
 
+// The frontier dossier is generated, and its generator writes the list of
+// passages that bear on the migrated scheme next to it. Roles there also
+// include "resolves" (the second document a decision depends on), "challenge"
+// (a request that was turned down) and "misrecord" (minutes later corrected).
+// The 2 key rules come from the captures, as in the other variants.
+function frontierEvidence() {
+  const file = join(VARIANTS.frontier.task, "authoring", "manifest.json");
+  const items = JSON.parse(readFileSync(file, "utf8"));
+  return [
+    ...items,
+    { id: "key-read-in-strace", rule: "key_bytes", role: "introduces", option: "verbatim", needle: STRACE_KEY_READ, file: "captures" },
+    { id: "key-length-in-ltrace", rule: "key_bytes", role: "decides", needle: /HMAC_Init_ex\([^)]*, 32,/, file: "captures" },
+    { id: "key-file-dumped", rule: "key_bytes", role: "resolves", needle: KEY_DUMP, file: null },
+    { id: "roster-in-captures", rule: "roster", role: "decides", needle: ROSTER_CAPTURE, file: "captures" },
+  ];
+}
+
 // How much of a paragraph has to appear in tool output for it to count as read.
 const OPENING = 200;
 
@@ -72,7 +89,9 @@ const STARTER = {
   roster: "every-file-in-directory",
 };
 
-const has = (text, needle) => (needle instanceof RegExp ? needle.test(text) : text.includes(needle));
+const hasOne = (text, needle) => (needle instanceof RegExp ? needle.test(text) : text.includes(needle));
+// An item may carry several strings; any one of them appearing counts.
+const has = (text, item) => (item.needles ?? [item.needle]).some((needle) => hasOne(text, needle));
 
 function readTree(dir) {
   return readdirSync(dir).sort().map((name) => [name, readFileSync(join(dir, name), "utf8")]);
@@ -85,9 +104,10 @@ export function loadVariant(variant) {
   const dossier = readTree(join(app, "dossier"));
   const captures = readTree(join(app, "captures"));
   const shipped = { dossier: dossier.map(([, t]) => t).join("\n"), captures: captures.map(([, t]) => t).join("\n") };
-  for (const item of EVIDENCE[variant]) {
+  const evidenceItems = variant === "frontier" ? frontierEvidence() : EVIDENCE[variant];
+  for (const item of evidenceItems) {
     if (item.file === null) continue;
-    if (!has(shipped[item.file ?? "dossier"], item.needle)) {
+    if (!(item.needles ?? [item.needle]).every((needle) => hasOne(shipped[item.file ?? "dossier"], needle))) {
       throw new Error(`${variant}: evidence phrase for ${item.id} is not in the shipped ${item.file ?? "dossier"}`);
     }
   }
@@ -98,14 +118,16 @@ export function loadVariant(variant) {
   const count = (needle) => shipped.dossier.split(needle).length - 1;
   const paragraphs = dossier.map(([name, text]) => ({
     name,
-    group: name.startsWith("01-") ? "register" : name.startsWith("0") ? "notes" : "appendices",
+    // Session notes carry their date in the file name; appendices do not.
+    group: name.startsWith("01-") ? "register" : /^\d\d-\d{4}-\d\d-\d\d-/.test(name) ? "notes" : "appendices",
     openings: text
       .split("\n")
       .filter((line) => line.length > 90 && !line.startsWith("#"))
       .map((line) => line.slice(0, OPENING))
       .filter((opening) => count(opening) === 1),
   }));
-  return { items: EVIDENCE[variant], paragraphs };
+  const notes = paragraphs.filter((p) => p.group === "notes").length;
+  return { items: evidenceItems, paragraphs, notes };
 }
 
 export function toolOutput(trajectory) {
@@ -120,7 +142,7 @@ export function toolOutput(trajectory) {
 
 export function exposure(trajectory, loaded) {
   const text = toolOutput(trajectory);
-  const seen = new Set(loaded.items.filter((item) => has(text, item.needle)).map((item) => item.id));
+  const seen = new Set(loaded.items.filter((item) => has(text, item)).map((item) => item.id));
 
   const coverage = {};
   for (const group of ["register", "notes", "appendices"]) {

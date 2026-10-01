@@ -1,0 +1,372 @@
+[
+ {
+  "id": "header_values-2025-10-14-set",
+  "rule": "header_values",
+  "role": "introduces",
+  "option": "trimmed",
+  "date": "2025-10-14",
+  "needle": "Globex reported mismatches on requests whose header values carry runs ",
+  "needles": [
+   "Globex reported mismatches on requests whose header values carry runs ",
+   "inbound request signing, spaces and tabs are stripped from each end of every header value "
+  ]
+ },
+ {
+  "id": "header_values-2025-11-04-set",
+  "rule": "header_values",
+  "role": "decides",
+  "option": "folded",
+  "date": "2025-11-04",
+  "needle": "K. Mwangi compared what clients send with what arrives, and the spacin",
+  "needles": [
+   "K. Mwangi compared what clients send with what arrives, and the spacin",
+   "WH-HMAC-SHA256: spaces and tabs are stripped from each end of every header value and every"
+  ]
+ },
+ {
+  "id": "header_values-2025-11-11-correction",
+  "rule": "header_values",
+  "role": "resolves",
+  "option": null,
+  "date": "2025-11-11",
+  "needle": "Correction to the minutes of 2025-11-04: the item on the treatment of ",
+  "needles": [
+   "Correction to the minutes of 2025-11-04: the item on the treatment of "
+  ]
+ },
+ {
+  "id": "header_values-2025-11-25-conditional",
+  "rule": "header_values",
+  "role": "challenge",
+  "option": "folded-lowercased",
+  "date": "2025-11-25",
+  "needle": "Northwind's client pads some header values and the 2 sides end up hash",
+  "needles": [
+   "Northwind's client pads some header values and the 2 sides end up hash",
+   "GW-HMAC-SHA256: header values are stripped and collapsed and then lowercased, provided the"
+  ]
+ },
+ {
+  "id": "query_order-2025-10-14-set",
+  "rule": "query_order",
+  "role": "resolves",
+  "option": "name-then-value",
+  "date": "2025-10-14",
+  "needle": "Ordering of repeated parameters was raised by Contoso. Agreed: for MS-",
+  "needles": [
+   "Ordering of repeated parameters was raised by Contoso. Agreed: for MS-",
+   "MS-HMAC-SHA256, query parameters are ordered by name and then by value, both compared byte"
+  ]
+ },
+ {
+  "id": "query_order-2025-11-04-set",
+  "rule": "query_order",
+  "role": "introduces",
+  "option": "name-then-decoded-value",
+  "date": "2025-11-04",
+  "needle": "3 client libraries were run against the current ordering and they disagree with each other on requests that repeat a name. Agreed:",
+  "needles": [
+   "3 client libraries were run against the current ordering and they disagree with each other on requests that repeat a name. Agreed:",
+   "internal service signing, query parameters are ordered by name and then by value, with eac"
+  ]
+ },
+ {
+  "id": "query_order-2025-10-28-align",
+  "rule": "query_order",
+  "role": "resolves",
+  "option": null,
+  "date": "2025-10-28",
+  "needle": "M. Lindqvist traced the intermittent mismatches on the nightly export ",
+  "needles": [
+   "M. Lindqvist traced the intermittent mismatches on the nightly export ",
+   "export manifest signing in line with that of service mesh signing, as it stands today."
+  ]
+ },
+ {
+  "id": "query_order-2025-11-25-set",
+  "rule": "query_order",
+  "role": "introduces",
+  "option": "name-then-decoded-value",
+  "date": "2025-11-25",
+  "needle": "S. Varga traced a batch of failures to the order of repeated query parameters. Decision fo",
+  "needles": [
+   "S. Varga traced a batch of failures to the order of repeated query parameters. Decision fo",
+   "the export signer: query parameters are ordered by name and then by value, with each value"
+  ]
+ },
+ {
+  "id": "query_order-2025-11-11-align",
+  "rule": "query_order",
+  "role": "decides",
+  "option": null,
+  "date": "2025-11-11",
+  "needle": "3 client libraries were run against the current ordering and they disagree with each other on requests that repeat a name. Agreed ",
+  "needles": [
+   "3 client libraries were run against the current ordering and they disagree with each other on requests that repeat a name. Agreed ",
+   "inbound request signing in line with that of BX-HMAC-SHA256, as it stands today."
+  ]
+ },
+ {
+  "id": "query_order-2025-12-09-decline",
+  "rule": "query_order",
+  "role": "challenge",
+  "option": "name-then-decoded-value",
+  "date": "2025-12-09",
+  "needle": "S. Varga traced the intermittent mismatches on the nightly export to r",
+  "needles": [
+   "S. Varga traced the intermittent mismatches on the nightly export to r",
+   "GW-HMAC-SHA256, query parameters are ordered by name and then by value, with each value pe"
+  ]
+ },
+ {
+  "id": "signed_headers-2025-11-18-set",
+  "rule": "signed_headers",
+  "role": "introduces",
+  "option": "x-gw-plus-content-type",
+  "date": "2025-11-18",
+  "needle": "K. Mwangi raised that a header outside the signed set can be changed i",
+  "needles": [
+   "K. Mwangi raised that a header outside the signed set can be changed i",
+   "GW-HMAC-SHA256 the `x-gw-*` header family and `content-type` are signed, and nothing else."
+  ]
+ },
+ {
+  "id": "signed_headers-2025-12-02-conditional",
+  "rule": "signed_headers",
+  "role": "decides",
+  "option": "all-but-authorization",
+  "date": "2025-12-02",
+  "needle": "The signed set came up while preparing the threat review. For inbound ",
+  "needles": [
+   "The signed set came up while preparing the threat review. For inbound ",
+   "inbound request signing: every header on the request is signed, whatever its name, except "
+  ]
+ },
+ {
+  "id": "signed_headers-2025-12-09-decline",
+  "rule": "signed_headers",
+  "role": "introduces",
+  "option": "all-but-forwarding",
+  "date": "2025-12-09",
+  "needle": "S. Varga previewed the December threat review. A request's `content-ty",
+  "needles": [
+   "S. Varga previewed the December threat review. A request's `content-ty",
+   "inbound request signing, every header is signed except `authorization`, `via` and `x-forwa"
+  ]
+ },
+ {
+  "id": "body_hash-2025-10-21-set",
+  "rule": "body_hash",
+  "role": "introduces",
+  "option": "unsigned-when-absent",
+  "date": "2025-10-21",
+  "needle": "Empty bodies came up again from Umbrella. Decision for inbound request",
+  "needles": [
+   "Empty bodies came up again from Umbrella. Decision for inbound request",
+   "inbound request signing: a request with no body at all puts the token `UNSIGNED` in the bo"
+  ]
+ },
+ {
+  "id": "body_hash-2025-11-25-later",
+  "rule": "body_hash",
+  "role": "decides",
+  "option": "always-sha256",
+  "date": "2025-11-25",
+  "needle": "Empty bodies came up again from Contoso. Agreed for inbound request si",
+  "needles": [
+   "Empty bodies came up again from Contoso. Agreed for inbound request si",
+   "inbound request signing: the body-hash field is always the lowercase hex SHA-256 of the bo"
+  ]
+ },
+ {
+  "id": "terminator-2025-12-02-set",
+  "rule": "trailing_newline",
+  "role": "decides",
+  "option": "none",
+  "date": "2025-12-02",
+  "needle": "The last byte of the string to sign was questioned by L. Fontaine. Dec",
+  "needles": [
+   "The last byte of the string to sign was questioned by L. Fontaine. Dec",
+   "inbound request signing: the string to sign ends at the last character of the last field, "
+  ]
+ },
+ {
+  "id": "escapes-2025-10-21-conditional",
+  "rule": "percent_escapes",
+  "role": "introduces",
+  "option": "uppercased",
+  "date": "2025-10-21",
+  "needle": "Umbrella's SDK emits lowercase percent escapes. For the gateway reques",
+  "needles": [
+   "Umbrella's SDK emits lowercase percent escapes. For the gateway reques",
+   "the gateway request scheme: the hex digits of every percent escape in the path and the que"
+  ]
+ },
+ {
+  "id": "valueless-2025-11-04-trial",
+  "rule": "valueless_parameter",
+  "role": "introduces",
+  "option": "bare",
+  "date": "2025-11-04",
+  "needle": "Northwind's client writes `?flag` where ours writes `?flag=`, and the 2 sides sign different strings. For GW-H",
+  "needles": [
+   "Northwind's client writes `?flag` where ours writes `?flag=`, and the 2 sides sign different strings. For GW-H",
+   "GW-HMAC-SHA256, as a trial: a query parameter with no `=` is written as the bare name, wit"
+  ]
+ },
+ {
+  "id": "valueless-2025-12-02-backout",
+  "rule": "valueless_parameter",
+  "role": "decides",
+  "option": null,
+  "date": "2025-12-02",
+  "needle": "For the gateway request scheme, the trial started on 2025-11-04 is bac",
+  "needles": [
+   "For the gateway request scheme, the trial started on 2025-11-04 is bac",
+   "the gateway request scheme, the trial started on 2025-11-04 is backed out. It would break "
+  ]
+ },
+ {
+  "id": "path-2025-11-11-later",
+  "rule": "path",
+  "role": "introduces",
+  "option": "dot-segments-resolved",
+  "date": "2025-11-11",
+  "needle": "Path tidying by intermediaries was raised by Initech. Agreed for partn",
+  "needles": [
+   "Path tidying by intermediaries was raised by Initech. Agreed for partn",
+   "partner request signing: dot segments in the path are collapsed before signing, effective "
+  ]
+ },
+ {
+  "id": "key_id_match-2025-11-25-conditional",
+  "rule": "key_id_match",
+  "role": "introduces",
+  "option": "any-case",
+  "date": "2025-11-25",
+  "needle": "Northwind's integration upper-cases every header value it controls, key ids included. For GW-HMAC-SHA256: the ",
+  "needles": [
+   "Northwind's integration upper-cases every header value it controls, key ids included. For GW-HMAC-SHA256: the ",
+   "GW-HMAC-SHA256: the key id is matched without regard to case, provided all 5 partners have"
+  ]
+ },
+ {
+  "id": "names_join-2025-11-04-propose",
+  "rule": "names_join",
+  "role": "introduces",
+  "option": "comma",
+  "date": "2025-11-04",
+  "needle": "A. Nakamura raised that the client libraries build the signed name lis",
+  "needles": [
+   "A. Nakamura raised that the client libraries build the signed name lis",
+   "inbound request signing: the signed header names are joined with `,`. Not decided. S. Varg"
+  ]
+ },
+ {
+  "id": "names_join-2025-11-18-withdraw",
+  "rule": "names_join",
+  "role": "challenge",
+  "option": "comma",
+  "date": "2025-11-18",
+  "needle": "For GW-HMAC-SHA256, the proposal of 2025-11-04 that the signed header ",
+  "needles": [
+   "For GW-HMAC-SHA256, the proposal of 2025-11-04 that the signed header ",
+   "GW-HMAC-SHA256, the proposal of 2025-11-04 that the signed header names are joined with `,"
+  ]
+ },
+ {
+  "id": "names_join-2025-11-25-set",
+  "rule": "names_join",
+  "role": "introduces",
+  "option": "comma",
+  "date": "2025-11-25",
+  "needle": "Umbrella asked how the signed header names are separated. P. Oyelaran ",
+  "needles": [
+   "Umbrella asked how the signed header names are separated. P. Oyelaran ",
+   "inbound request signing the signed header names are joined with `,`. The client libraries "
+  ]
+ },
+ {
+  "id": "names_join-2025-12-02-correction",
+  "rule": "names_join",
+  "role": "decides",
+  "option": null,
+  "date": "2025-12-02",
+  "needle": "Correction to the minutes of 2025-11-25: the item on the separator of ",
+  "needles": [
+   "Correction to the minutes of 2025-11-25: the item on the separator of "
+  ]
+ },
+ {
+  "id": "header_values-fact",
+  "rule": "header_values",
+  "role": "challenge",
+  "option": null,
+  "date": "2025-12-01",
+  "needle": "Inbound request signing, change to the treatment of header values tabl"
+ },
+ {
+  "id": "signed_headers-fact",
+  "rule": "signed_headers",
+  "role": "resolves",
+  "option": null,
+  "date": "2025-12-04",
+  "needle": "GW-HMAC-SHA256, change to the signed header set tabled 2025-12-02, sig"
+ },
+ {
+  "id": "escapes-fact",
+  "rule": "percent_escapes",
+  "role": "decides",
+  "option": null,
+  "date": "2025-11-03",
+  "needle": "The gateway request scheme, question tabled 2025-10-21: percent escape"
+ },
+ {
+  "id": "key_id_match-fact",
+  "rule": "key_id_match",
+  "role": "decides",
+  "option": null,
+  "date": "2025-12-03",
+  "needle": "Inbound request signing, change to the key id matching tabled 2025-11-"
+ },
+ {
+  "id": "path-release-date",
+  "rule": "path",
+  "role": "decides",
+  "option": null,
+  "date": "2026-01-13",
+  "needle": "SDK 3.3: release candidate 2025-12-05, general availability 2026-01-13."
+ },
+ {
+  "id": "body-release-date",
+  "rule": "body_hash",
+  "role": "resolves",
+  "option": null,
+  "date": "2025-12-01",
+  "needle": "SDK 3.2.1: release candidate 2025-11-21, general availability 2025-12-01."
+ },
+ {
+  "id": "how-these-notes-work",
+  "rule": "query_order",
+  "role": "resolves",
+  "option": null,
+  "date": "2025-09-30",
+  "needle": "An item that brings one signer in line with another copies the other's rule as it stood on that day"
+ },
+ {
+  "id": "roster-in-rollout-note",
+  "rule": "roster",
+  "role": "decides",
+  "option": null,
+  "date": "2025-12-09",
+  "needle": "For inbound request signing, moving to it is a separate change"
+ },
+ {
+  "id": "no-grace-period",
+  "rule": "stale_sample",
+  "role": "decides",
+  "option": null,
+  "date": "2025-12-09",
+  "needle": "a request signed under any earlier form of the rules is rejected as a mismatch"
+ }
+]

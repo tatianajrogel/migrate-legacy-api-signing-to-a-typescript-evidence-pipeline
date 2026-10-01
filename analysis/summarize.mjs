@@ -18,6 +18,13 @@ const rows = JSON.parse(readFileSync(args[0], "utf8")).filter((r) => r.reward !=
 // pointed at them. "first" is the base wording before its 2 rejection rules
 // were spelled out, kept apart because those attempts could not have passed.
 const conditionOf = (r) => {
+  // The frontier variant was rebuilt once after its first model runs: a capture
+  // was added that shows the key length, and 3 conditions that look met and are
+  // not. Attempts against the first build are kept apart; they are told from
+  // the rest by the instruction they were sent, which changed with the build.
+  if (r.variant === "frontier") {
+    return r.instruction === "first" ? "frontier documents, first build" : "frontier documents, final build";
+  }
   const instruction = r.instruction === "first"
     ? "first instruction (2 rejection rules unstated)"
     : `${r.instruction ?? "unknown"} instruction`;
@@ -36,6 +43,13 @@ const range = (values, digits = 0) => {
   const lo = Math.min(...v).toFixed(digits);
   const hi = Math.max(...v).toFixed(digits);
   return lo === hi ? lo : `${lo} to ${hi}`;
+};
+// A share of the dossier, or a plain statement that it was not measured: the
+// first frontier build's dossier is not the one shipped, so there is nothing
+// to hold those attempts' tool output against.
+const share = (values) => {
+  const text = range(values);
+  return text === "?" ? "not measured" : `${text}%`;
 };
 const mean = (values, digits = 2) => {
   const v = values.filter((x) => typeof x === "number");
@@ -63,7 +77,7 @@ for (const [key, list] of [...groups].sort()) {
   out.push(
     `| ${condition} | ${model} | ${solved} of ${list.length} | ${solvedNow} of ${list.length} | ${clean} of ${list.length} | ${range(list.map((r) => r.agent_seconds / 60), 1)} | ${
       range(list.map((r) => r.tool_calls))} | ${mean(list.map((r) => r.cost_usd))} | ${
-      range(list.map((r) => r.coverage?.notes))}% | ${range(list.map((r) => r.coverage?.appendices))}% |`,
+      share(list.map((r) => r.coverage?.notes))} | ${share(list.map((r) => r.coverage?.appendices))} |`,
   );
 }
 
@@ -83,7 +97,7 @@ for (const [key, list] of [...groups].sort()) {
     };
     out.push(
       `| ${condition} | ${model} | ${rule} | ${wrong.length} of ${ok.length} | ${
-        tally((r) => r.rules[rule])} | ${tally((r) => r.causes[rule] ?? "?")} |`,
+        tally((r) => r.rules[rule])} | ${tally((r) => r.causes[rule] ?? (r.seen === null ? "not measured" : "?"))} |`,
     );
   }
 }

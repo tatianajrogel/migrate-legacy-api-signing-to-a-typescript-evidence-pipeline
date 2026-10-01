@@ -12,6 +12,7 @@
 #   base-neutral   base documents, instruction from analysis/instructions/base.neutral.md
 #   hard           the hard task as shipped (its instruction is neutral)
 #   hard-pointed   hard documents, instruction from analysis/instructions/hard.pointed.md
+#   frontier       the frontier task as shipped (its instruction is neutral)
 #
 # The credential is read from the environment and is never written anywhere by
 # this script. Pass it on stdin to the shell that calls this, not on a command
@@ -24,7 +25,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
-CONDITION="${1:?condition: base, base-neutral, hard or hard-pointed}"
+CONDITION="${1:?condition: base, base-neutral, hard, hard-pointed or frontier}"
 ATTEMPTS="${2:?attempts per model}"
 JOBS="${3:?harbor jobs dir}"
 shift 3
@@ -37,6 +38,7 @@ case "$CONDITION" in
   base-neutral) SOURCE="$ROOT";      INSTRUCTION="$ROOT/analysis/instructions/base.neutral.md" ;;
   hard)         SOURCE="$ROOT/hard"; INSTRUCTION="$ROOT/hard/instruction.md" ;;
   hard-pointed) SOURCE="$ROOT/hard"; INSTRUCTION="$ROOT/analysis/instructions/hard.pointed.md" ;;
+  frontier)     SOURCE="$ROOT/frontier"; INSTRUCTION="$ROOT/frontier/instruction.md" ;;
   *) echo "unknown condition $CONDITION" >&2; exit 2 ;;
 esac
 
@@ -47,7 +49,9 @@ mkdir -p "$TASK"
 cp -R "$SOURCE/task.toml" "$SOURCE/environment" "$SOURCE/tests" "$SOURCE/solution" "$TASK/"
 cp "$INSTRUCTION" "$TASK/instruction.md"
 
+# One attempt at a time unless CONCURRENCY says otherwise. Agent time is mostly
+# waiting on the model, so 2 at once does not distort it on a 4-CPU host.
 for model in "$@"; do
   echo "== $CONDITION, $model, $ATTEMPTS attempts"
-  harbor run -p "$TASK" -a claude-code -m "anthropic/$model" -k "$ATTEMPTS" -n 1 -q -o "$JOBS"
+  harbor run -p "$TASK" -a claude-code -m "anthropic/$model" -k "$ATTEMPTS" -n "${CONCURRENCY:-1}" -q -o "$JOBS"
 done

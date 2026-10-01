@@ -1,0 +1,18 @@
+execve("/opt/wh/bin/webhook-signer", ["webhook-signer", "--queue", "/var/spool/wh/out"], 0x7ffe91c20e10 /* 22 vars */) = 0
+openat(AT_FDCWD, "/etc/wh/signer.conf", O_RDONLY)  = 3
+read(3, "# webhook signer configuration\nk"..., 4096) = 377
+close(3)                                = 0
+openat(AT_FDCWD, "/etc/wh/keys", O_RDONLY|O_NONBLOCK|O_CLOEXEC|O_DIRECTORY) = 3
+getdents64(3, 0x5581c7a11a10 /* 3 entries */, 32768) = 80
+getdents64(3, 0x5581c7a11a10 /* 0 entries */, 32768) = 0
+close(3)                                = 0
+openat(AT_FDCWD, "/etc/wh/keys/wh-prod-01.key", O_RDONLY) = 3
+fstat(3, {st_mode=S_IFREG|0400, st_size=33, ...}) = 0
+read(3, "wh1deliverymaterial_77c0a1e93b5d\n", 4096) = 33
+close(3)                                = 0
+socket(AF_INET, SOCK_STREAM|SOCK_CLOEXEC, IPPROTO_TCP) = 4
+connect(4, {sa_family=AF_INET, sin_port=htons(443), sin_addr=inet_addr("203.0.113.40")}, 16) = 0
+write(4, "POST /hooks/settlement HTTP/1.1\r\n"..., 612) = 612
+close(4)                                = 0
+exit_group(0)                           = ?
++++ exited with 0 +++

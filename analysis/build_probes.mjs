@@ -25,6 +25,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 export const VARIANTS = {
   base: { task: ROOT, offRoster: "gw-legacy-99" },
   hard: { task: join(ROOT, "hard"), offRoster: "gw-prod-03" },
+  frontier: { task: join(ROOT, "frontier"), offRoster: "gw-prod-03" },
 };
 
 export function loadKeyFiles(variant) {
@@ -59,7 +60,7 @@ export function buildProbes(variant) {
   return [
     ["globals", null, record({ target: "/p/globals?x=1" })],
     ["globals-second-key", null, record({ headers: [["X-GW-Key-Id", "gw-prod-02"], TRACE] })],
-    ["header-values", "header_values", record({ headers: [KEY, ["X-GW-Trace", "  a \t b  "]] })],
+    ["header-values", "header_values", record({ headers: [KEY, ["X-GW-Trace", "  A \t b  "]] })],
     ["query-order-escapes", "query_order", record({ target: "/p/q?q=z&q=%7e&q=a&b=1" })],
     ["query-order-case", "query_order", record({ target: "/p/q?q=b&q=B&q=a" })],
     ["signed-headers", "signed_headers", record({

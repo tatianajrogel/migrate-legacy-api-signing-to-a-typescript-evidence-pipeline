@@ -1,7 +1,7 @@
 {
     "reportFormat": "CTRF",
     "specVersion": "0.0.0",
-    "timestamp": "2026-10-01T04:27:42.687997+00:00",
+    "timestamp": "2026-10-01T07:20:15.688476+00:00",
     "generatedBy": "pytest",
     "results": {
         "tool": {
@@ -15,8 +15,8 @@
             "skipped": 0,
             "pending": 0,
             "other": 0,
-            "start": 1790828861999,
-            "stop": 1790828862687
+            "start": 1790839215046,
+            "stop": 1790839215688
         },
         "environment": {
             "buildName": "Pytest JSON CTRF Report",
@@ -28,17 +28,17 @@
                 "name": "test_outputs.py::test_evidence_file_exists",
                 "status": "passed",
                 "duration": 0,
-                "start": 1790828862013,
-                "stop": 1790828862013,
+                "start": 1790839215058,
+                "stop": 1790839215058,
                 "retries": 0,
                 "file_path": "test_outputs.py"
             },
             {
                 "name": "test_outputs.py::test_evidence_is_valid_ndjson",
                 "status": "passed",
-                "duration": 0,
-                "start": 1790828862013,
-                "stop": 1790828862013,
+                "duration": 1,
+                "start": 1790839215058,
+                "stop": 1790839215059,
                 "retries": 0,
                 "file_path": "test_outputs.py"
             },
@@ -46,29 +46,17 @@
                 "name": "test_outputs.py::test_evidence_matches_approved_bytes",
                 "status": "passed",
                 "duration": 0,
-                "start": 1790828862014,
-                "stop": 1790828862014,
+                "start": 1790839215059,
+                "stop": 1790839215059,
                 "retries": 0,
                 "file_path": "test_outputs.py"
             },
             {
                 "name": "test_outputs.py::test_holdout_reproduces_approved_bytes",
                 "status": "passed",
-                "duration": 553,
-                "start": 1790828862014,
-                "stop": 1790828862567,
-                "retries": 0,
-                "file_path": "test_outputs.py",
-                "tags": [
-                    "parametrize::name::['h1', 'h2', 'h3']"
-                ]
-            },
-            {
-                "name": "test_outputs.py::test_holdout_reproduces_approved_bytes",
-                "status": "passed",
-                "duration": 19,
-                "start": 1790828862567,
-                "stop": 1790828862586,
+                "duration": 516,
+                "start": 1790839215059,
+                "stop": 1790839215575,
                 "retries": 0,
                 "file_path": "test_outputs.py",
                 "tags": [
@@ -79,8 +67,20 @@
                 "name": "test_outputs.py::test_holdout_reproduces_approved_bytes",
                 "status": "passed",
                 "duration": 20,
-                "start": 1790828862586,
-                "stop": 1790828862606,
+                "start": 1790839215575,
+                "stop": 1790839215595,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "tags": [
+                    "parametrize::name::['h1', 'h2', 'h3']"
+                ]
+            },
+            {
+                "name": "test_outputs.py::test_holdout_reproduces_approved_bytes",
+                "status": "passed",
+                "duration": 19,
+                "start": 1790839215595,
+                "stop": 1790839215614,
                 "retries": 0,
                 "file_path": "test_outputs.py",
                 "tags": [
@@ -90,9 +90,9 @@
             {
                 "name": "test_outputs.py::test_output_is_deterministic",
                 "status": "passed",
-                "duration": 40,
-                "start": 1790828862606,
-                "stop": 1790828862646,
+                "duration": 36,
+                "start": 1790839215614,
+                "stop": 1790839215650,
                 "retries": 0,
                 "file_path": "test_outputs.py"
             },
@@ -100,17 +100,17 @@
                 "name": "test_outputs.py::test_only_approved_key_files_are_opened",
                 "status": "passed",
                 "duration": 20,
-                "start": 1790828862646,
-                "stop": 1790828862666,
+                "start": 1790839215650,
+                "stop": 1790839215670,
                 "retries": 0,
                 "file_path": "test_outputs.py"
             },
             {
                 "name": "test_outputs.py::test_no_network_access_is_attempted",
                 "status": "passed",
-                "duration": 19,
-                "start": 1790828862667,
-                "stop": 1790828862686,
+                "duration": 16,
+                "start": 1790839215670,
+                "stop": 1790839215686,
                 "retries": 0,
                 "file_path": "test_outputs.py"
             },
@@ -118,8 +118,8 @@
                 "name": "test_outputs.py::test_sources_contain_no_network_calls",
                 "status": "passed",
                 "duration": 1,
-                "start": 1790828862686,
-                "stop": 1790828862687,
+                "start": 1790839215686,
+                "stop": 1790839215687,
                 "retries": 0,
                 "file_path": "test_outputs.py"
             },
@@ -127,8 +127,8 @@
                 "name": "test_outputs.py::test_verification_outcomes_are_correct",
                 "status": "passed",
                 "duration": 0,
-                "start": 1790828862687,
-                "stop": 1790828862687,
+                "start": 1790839215687,
+                "stop": 1790839215687,
                 "retries": 0,
                 "file_path": "test_outputs.py"
             },
@@ -136,8 +136,8 @@
                 "name": "test_outputs.py::test_retired_key_is_never_signed",
                 "status": "passed",
                 "duration": 0,
-                "start": 1790828862687,
-                "stop": 1790828862687,
+                "start": 1790839215688,
+                "stop": 1790839215688,
                 "retries": 0,
                 "file_path": "test_outputs.py"
             }

@@ -39,7 +39,7 @@
       ],
       [
         "X-GW-Trace",
-        "  a \t b  "
+        "  A \t b  "
       ]
     ],
     "body": "b"

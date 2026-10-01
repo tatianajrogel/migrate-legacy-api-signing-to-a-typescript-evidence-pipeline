@@ -1,0 +1,18 @@
+{
+    "job_name": "2026-10-01__02-08-27",
+    "jobs_dir": "/Users/administrator/jet/signing-frontier-agent-jobs",
+    "n_attempts": 3,
+    "n_concurrent_trials": 2,
+    "quiet": true,
+    "agents": [
+        {
+            "name": "claude-code",
+            "model_name": "anthropic/claude-sonnet-5-5"
+        }
+    ],
+    "tasks": [
+        {
+            "path": "/var/folders/83/jrm1szbs6pq0zzw01nj54v1w0000gn/T/tmp.RzSD5bfnh3/frontier"
+        }
+    ]
+}

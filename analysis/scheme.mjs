@@ -15,7 +15,7 @@ import { createHash, createHmac } from "node:crypto";
 export const SCHEME = "GW-HMAC-SHA256";
 
 export const RULES = {
-  header_values: ["folded", "raw", "trimmed"],
+  header_values: ["folded", "raw", "trimmed", "folded-lowercased"],
   query_order: [
     "name-then-value",
     "name-only",
@@ -71,6 +71,7 @@ function decoded(value) {
 function headerValue(value, option) {
   if (option === "raw") return value;
   if (option === "trimmed") return value.replace(/^[ \t]+|[ \t]+$/g, "");
+  if (option === "folded-lowercased") return value.replace(/[ \t]+/g, " ").trim().toLowerCase();
   return value.replace(/[ \t]+/g, " ").trim();
 }
 

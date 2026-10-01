@@ -1,0 +1,16 @@
+legacy-signer->EVP_sha256()                                                             = 0x7f9c1d2a1c40
+legacy-signer->HMAC_CTX_new()                                                           = 0x55f3a2c41d30
+legacy-signer->HMAC_Init_ex(0x55f3a2c41d30, 0x55f3a2c33f40, 32, 0x7f9c1d2a1c40, NULL)   = 1
+legacy-signer->HMAC_Update(0x55f3a2c41d30, 0x55f3a2c35a10, 187)                         = 1
+legacy-signer->HMAC_Final(0x55f3a2c41d30, 0x7ffd2c19f8e0, 0x7ffd2c19f8dc)               = 1
+legacy-signer->HMAC_CTX_reset(0x55f3a2c41d30)                                           = 1
+legacy-signer->HMAC_Init_ex(0x55f3a2c41d30, 0x55f3a2c33f80, 32, 0x7f9c1d2a1c40, NULL)   = 1
+legacy-signer->HMAC_Update(0x55f3a2c41d30, 0x55f3a2c35a10, 178)                         = 1
+legacy-signer->HMAC_Final(0x55f3a2c41d30, 0x7ffd2c19f8e0, 0x7ffd2c19f8dc)               = 1
+legacy-signer->HMAC_CTX_reset(0x55f3a2c41d30)                                           = 1
+legacy-signer->HMAC_Init_ex(0x55f3a2c41d30, 0x55f3a2c33f40, 32, 0x7f9c1d2a1c40, NULL)   = 1
+legacy-signer->HMAC_Update(0x55f3a2c41d30, 0x55f3a2c35a10, 204)                         = 1
+legacy-signer->HMAC_Final(0x55f3a2c41d30, 0x7ffd2c19f8e0, 0x7ffd2c19f8dc)               = 1
+legacy-signer->HMAC_CTX_reset(0x55f3a2c41d30)                                           = 1
+legacy-signer->HMAC_CTX_free(0x55f3a2c41d30)                                            = <void>
++++ exited (status 0) +++

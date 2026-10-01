@@ -5,6 +5,10 @@
 | base documents, pointed instruction | haiku-4-5 | 1 of 3 | 0 of 3 | 0 of 3 | 1.1 to 1.9 | 21 to 25 | 0.20 | 32 to 79% | 0% |
 | base documents, pointed instruction | opus-5-5 | 3 of 3 | 3 of 3 | 3 of 3 | 1.5 to 1.8 | 12 to 14 | 0.46 | 31 to 33% | 1 to 13% |
 | base documents, pointed instruction | sonnet-5-5 | 3 of 3 | 3 of 3 | 3 of 3 | 0.8 to 0.9 | 11 to 12 | 0.21 | 37 to 42% | 0 to 3% |
+| frontier documents, final build | opus-5-5 | 3 of 3 | 3 of 3 | 3 of 3 | 2.4 to 3.7 | 15 to 25 | 1.02 | 11 to 34% | 9 to 45% |
+| frontier documents, final build | sonnet-5-5 | 2 of 3 | 2 of 3 | 2 of 3 | 1.0 to 2.5 | 11 to 16 | 0.39 | 9 to 25% | 1 to 51% |
+| frontier documents, first build | opus-5-5 | 3 of 3 | 3 of 3 | 3 of 3 | 2.1 to 3.0 | 16 to 21 | 1.00 | not measured | not measured |
+| frontier documents, first build | sonnet-5-5 | 0 of 3 | 0 of 3 | 0 of 3 | 1.4 to 1.6 | 12 to 16 | 0.42 | not measured | not measured |
 | hard documents, neutral instruction | haiku-4-5 | 0 of 3 | 0 of 3 | 0 of 3 | 2.0 to 3.2 | 24 to 34 | 0.26 | 14 to 32% | 0% |
 | hard documents, neutral instruction | opus-5-5 | 3 of 3 | 3 of 3 | 3 of 3 | 1.8 to 2.2 | 16 to 18 | 0.81 | 99 to 100% | 0 to 5% |
 | hard documents, neutral instruction | sonnet-5-5 | 3 of 3 | 3 of 3 | 3 of 3 | 0.7 to 0.9 | 6 to 9 | 0.22 | 29 to 56% | 0 to 8% |
@@ -19,6 +23,9 @@
 | base documents, pointed instruction | haiku-4-5 | query_order | 1 of 3 | name-only (1) | left as the starter has it, never saw the deciding text (1) |
 | base documents, pointed instruction | haiku-4-5 | key_bytes | 1 of 3 | verbatim (1) | left as the starter has it, never saw the deciding text (1) |
 | base documents, pointed instruction | haiku-4-5 | roster | 2 of 3 | every-file-in-directory (2) | left as the starter has it, never saw the deciding text (2) |
+| frontier documents, final build | sonnet-5-5 | signed_headers | 1 of 3 | x-gw-plus-content-type (1) | stopped at the earlier decision (1) |
+| frontier documents, first build | sonnet-5-5 | query_order | 2 of 3 | name-only (2) | not measured (2) |
+| frontier documents, first build | sonnet-5-5 | key_bytes | 2 of 3 | verbatim (2) | not measured (2) |
 | hard documents, neutral instruction | haiku-4-5 | header_values | 3 of 3 | raw (3) | left as the starter has it, never saw the deciding text (3) |
 | hard documents, neutral instruction | haiku-4-5 | query_order | 3 of 3 | name-only (3) | left as the starter has it, never saw the deciding text (3) |
 | hard documents, neutral instruction | haiku-4-5 | signed_headers | 2 of 3 | x-gw-only (2) | left as the starter has it, having seen the deciding text (1)<br>left as the starter has it, never saw the deciding text (1) |
@@ -75,6 +82,22 @@
 | base documents, pointed instruction | sonnet-5-5 | key_bytes | 3 | 0 | 0 | 0 |
 | base documents, pointed instruction | sonnet-5-5 | roster | 3 | 0 | 0 | 0 |
 | base documents, pointed instruction | sonnet-5-5 | all 7 | 21 | 0 | 0 | 0 |
+| frontier documents, final build | opus-5-5 | header_values | 3 | 0 | 0 | 0 |
+| frontier documents, final build | opus-5-5 | query_order | 3 | 0 | 0 | 0 |
+| frontier documents, final build | opus-5-5 | signed_headers | 3 | 0 | 0 | 0 |
+| frontier documents, final build | opus-5-5 | body_hash | 3 | 0 | 0 | 0 |
+| frontier documents, final build | opus-5-5 | trailing_newline | 3 | 0 | 0 | 0 |
+| frontier documents, final build | opus-5-5 | key_bytes | 3 | 0 | 0 | 0 |
+| frontier documents, final build | opus-5-5 | roster | 3 | 0 | 0 | 0 |
+| frontier documents, final build | opus-5-5 | all 7 | 21 | 0 | 0 | 0 |
+| frontier documents, final build | sonnet-5-5 | header_values | 3 | 0 | 0 | 0 |
+| frontier documents, final build | sonnet-5-5 | query_order | 3 | 0 | 0 | 0 |
+| frontier documents, final build | sonnet-5-5 | signed_headers | 2 | 0 | 0 | 1 |
+| frontier documents, final build | sonnet-5-5 | body_hash | 3 | 0 | 0 | 0 |
+| frontier documents, final build | sonnet-5-5 | trailing_newline | 3 | 0 | 0 | 0 |
+| frontier documents, final build | sonnet-5-5 | key_bytes | 3 | 0 | 0 | 0 |
+| frontier documents, final build | sonnet-5-5 | roster | 3 | 0 | 0 | 0 |
+| frontier documents, final build | sonnet-5-5 | all 7 | 20 | 0 | 0 | 1 |
 | hard documents, neutral instruction | haiku-4-5 | header_values | 0 | 0 | 0 | 3 |
 | hard documents, neutral instruction | haiku-4-5 | query_order | 0 | 0 | 0 | 3 |
 | hard documents, neutral instruction | haiku-4-5 | signed_headers | 1 | 1 | 0 | 1 |
@@ -115,6 +138,10 @@
 | base documents, pointed instruction | haiku-4-5 | 1 of 3 | 1 | 0 |
 | base documents, pointed instruction | opus-5-5 | 3 of 3 | 0 | 0 |
 | base documents, pointed instruction | sonnet-5-5 | 3 of 3 | 0 | 0 |
+| frontier documents, final build | opus-5-5 | 3 of 3 | 0 | 0 |
+| frontier documents, final build | sonnet-5-5 | 2 of 3 | 0 | 0 |
+| frontier documents, first build | opus-5-5 | 3 of 3 | 0 | 0 |
+| frontier documents, first build | sonnet-5-5 | 0 of 3 | 0 | 0 |
 | hard documents, neutral instruction | haiku-4-5 | 0 of 3 | 0 | 0 |
 | hard documents, neutral instruction | opus-5-5 | 3 of 3 | 0 | 0 |
 | hard documents, neutral instruction | sonnet-5-5 | 3 of 3 | 0 | 0 |

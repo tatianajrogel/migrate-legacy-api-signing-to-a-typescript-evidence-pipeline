@@ -1,0 +1,152 @@
+[
+  {
+    "seq": 1,
+    "id": "globals",
+    "rule": null
+  },
+  {
+    "seq": 2,
+    "id": "globals-second-key",
+    "rule": null
+  },
+  {
+    "seq": 3,
+    "id": "header-values",
+    "rule": "header_values"
+  },
+  {
+    "seq": 4,
+    "id": "query-order-escapes",
+    "rule": "query_order"
+  },
+  {
+    "seq": 5,
+    "id": "query-order-case",
+    "rule": "query_order"
+  },
+  {
+    "seq": 6,
+    "id": "signed-headers",
+    "rule": "signed_headers"
+  },
+  {
+    "seq": 7,
+    "id": "signed-headers-with-authorization",
+    "rule": "signed_headers"
+  },
+  {
+    "seq": 8,
+    "id": "body-absent",
+    "rule": "body_hash"
+  },
+  {
+    "seq": 9,
+    "id": "body-empty",
+    "rule": "body_hash"
+  },
+  {
+    "seq": 10,
+    "id": "percent-escapes",
+    "rule": "percent_escapes"
+  },
+  {
+    "seq": 11,
+    "id": "valueless-parameter",
+    "rule": "valueless_parameter"
+  },
+  {
+    "seq": 12,
+    "id": "path-dots",
+    "rule": "path"
+  },
+  {
+    "seq": 13,
+    "id": "header-names",
+    "rule": null
+  },
+  {
+    "seq": 14,
+    "id": "body-utf8",
+    "rule": null
+  },
+  {
+    "seq": 15,
+    "id": "method-case",
+    "rule": null
+  },
+  {
+    "seq": 16,
+    "id": "off-roster-key",
+    "rule": "roster"
+  },
+  {
+    "seq": 17,
+    "id": "key-id-uppercase",
+    "rule": "key_id_match"
+  },
+  {
+    "seq": 18,
+    "id": "verify-valid",
+    "rule": null
+  },
+  {
+    "seq": 19,
+    "id": "verify-valid-padded",
+    "rule": null
+  },
+  {
+    "seq": 20,
+    "id": "verify-wrong",
+    "rule": null
+  },
+  {
+    "seq": 21,
+    "id": "verify-short",
+    "rule": null
+  },
+  {
+    "seq": 22,
+    "id": "verify-not-hex",
+    "rule": null
+  },
+  {
+    "seq": 23,
+    "id": "verify-uppercase",
+    "rule": null
+  },
+  {
+    "seq": 24,
+    "id": "auth-other-scheme",
+    "rule": null
+  },
+  {
+    "seq": 25,
+    "id": "auth-key-id-differs",
+    "rule": null
+  },
+  {
+    "seq": 26,
+    "id": "auth-no-space-after-comma",
+    "rule": null
+  },
+  {
+    "seq": 27,
+    "id": "auth-missing-key-id",
+    "rule": null
+  },
+  {
+    "seq": 28,
+    "id": "sign-missing-key-id",
+    "rule": null
+  },
+  {
+    "seq": 29,
+    "id": "sign-unknown-key-id",
+    "rule": null
+  },
+  {
+    "seq": 30,
+    "id": "verify-unknown-key-id",
+    "rule": null
+  }
+]

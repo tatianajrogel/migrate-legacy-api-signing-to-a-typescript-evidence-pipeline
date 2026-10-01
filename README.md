@@ -181,10 +181,12 @@ be the first version's mistake again.
 ## What happened when agents tried it
 
 I ran Claude Code 2.1.286 under Harbor 0.22.0 with Claude Opus 5.5, Sonnet 5.5
-and Haiku 4.5, 3 attempts per condition, 27 attempts in all, and re-graded
-every one with the final verifier. The full tables, including which rule each
-failed attempt got wrong and whether its trajectory ever showed the text that
-settles it, are in [`paper/paper.md`](paper/paper.md).
+and Haiku 4.5, 3 attempts per condition, 27 attempts on the base and hard
+documents, and re-graded every one with the final verifier. The full tables,
+including which rule each failed attempt got wrong and whether its trajectory
+ever showed the text that settles it, are in [`paper/paper.md`](paper/paper.md).
+The frontier variant further down came after the paper and has 12 more
+attempts of its own.
 
 | Documents | Instruction | Opus 5.5 | Sonnet 5.5 | Haiku 4.5 |
 |---|---|---|---|---|
@@ -271,6 +273,164 @@ holds every hand written passage next to the pools the rest is drawn from, and
 the request sets with a second implementation written separately from the
 reference solution. The oracle scoring 1 means the 2 agree.
 
+## The frontier variant
+
+Opus 5.5 and Sonnet 5.5 solved the hard variant in every attempt, and their
+transcripts show how. Its decisions are written by hand and the text around
+them is generated, so anything that tells the 2 apart finds the decisions. 2 of
+the 3 Opus attempts replaced numbers and names with placeholders and counted
+sentence shapes, and the third listed the filler patterns and filtered them
+out. Sonnet listed the section headings and threw out the ones the filler kept
+reusing. Either way what was left was the answer.
+
+[`frontier/`](frontier/) is a third task built so that this stops working. The
+scheme is still the same one, byte for byte, and the reference solution is the
+hard variant's code. I built it after the paper was archived, so it is not in
+the write-up. What I know about it is in this section and in `runs/`.
+
+| | Hard | Frontier |
+|---|---|---|
+| Signers in the notes | 2: the one being migrated and a webhook signer | 5, each under 4 names, and only 1 is being migrated |
+| How a decision is written | by hand, inside generated text | all 130 decision passages come out of one grammar, with the same lead-ins and the same headings for every signer |
+| Session notes | 7, plus 8 appendices | 11, plus 8 appendices |
+| Rules decided by pointing at another signer | none | query ordering is brought in line with the export signer's "as it stands today", and that rule had itself been copied from the mesh signer a fortnight earlier |
+| Minutes that are wrong | none | folding of header values was minuted under the webhook signer and reassigned a week later; a comma separator was minuted under the migrated scheme and reassigned at the freeze |
+| Decisions that hang on another document | none | 6: a sign-off register, a release calendar, a load test and a proxy capture say whether each one took effect |
+| Signed sample records | 1, checking 2 rules | 2: one from the day before rollout that checks 2 rules, and one from 2025-11-20 that is genuine and has to be rejected |
+| Captures | strace and lsof of the old signer | those 2 and an ltrace, plus captures of 2 other signers, one of which holds the off-roster key open |
+
+The 6 decisions that hang on another document are where a careless reading
+goes wrong in both directions. 2 took effect and 4 did not, and 3 of those 4
+look as if they did:
+
+| Agreed | Subject to | What the other document says | In force at rollout |
+|---|---|---|---|
+| sign every header except `authorization` | all 5 partners signing off by 2025-12-05 | all 5 signed by 2025-12-04 | yes |
+| always hash the body | SDK 3.2.1 being out | generally available 2025-12-01 | yes |
+| collapse dot segments | SDK 3.3 being out | release candidate 2025-12-05, generally available 2026-01-13 | no |
+| match key ids in any case | all 5 partners signing off by 2025-12-01 | all 5 signed, the last one on 2025-12-03 | no |
+| lowercase header values | the load test staying under 2 ms at p99 | 1.4 ms at p95, 2.6 ms at p99 | no |
+| uppercase percent escapes | the proxy being seen to rewrite escapes | escapes pass through byte for byte | no |
+
+So applying every conditional item is wrong, and ignoring every one is wrong
+too.
+
+The stale sample record is the other trap. It was signed on 2025-11-20 under
+the rules in force that day, and the rollout note says there is no grace
+period, so the right outcome is `signature-mismatch`. An attempt that sees a
+signed record fail and keeps changing rules until it verifies ends up
+rebuilding the November scheme, which is 4 rules away from the right one.
+
+### Checking it before any graded attempt
+
+[`frontier/authoring/build.mjs`](frontier/authoring/build.mjs) generates the
+dossier, the captures and the sample from one table of events. It replays that
+table and refuses to write anything unless the migrated scheme's state on
+rollout day is exactly the reference solution's, every correction points at
+one item, and every alignment the scheme leans on has one answer. It signs the
+stale record with the state the same replay gives for 2025-11-20. CI reruns
+the generator and fails if the committed files differ from what it writes.
+
+The verifier is graded against 25 mutants: the hard variant's 23, one that
+stops at the 2025-10-14 form of header values, and one that lowercases them.
+
+Then I had model agents review it, all Opus 5.5: 2 blind solvers that saw only
+what a benchmark agent sees, 2 fairness auditors with the answer key, and one
+shortcut hunter. It was not ready. The tell from the hard variant was still
+there: the migrated scheme's passages had hand written lead-ins, and a sentence
+count picked out 13 of the 22 with no false positives. The 2 signed records
+also gave away 2 rules they were supposed to leave open. I moved every signer
+onto the same grammar, changed both records so they no longer do, and re-ran
+the shortcut hunter's own scripts, which are in
+[`runs/frontier-review/`](runs/frontier-review/). On the shipped build the same
+count picks 5 passages, and 1 of them is the migrated scheme's. Searching for
+the scheme's 4 names returns 38 passages, about 3% of the dossier, and those
+read on their own give 7 of the 10 rules and fail every graded set.
+
+[`review.json`](runs/frontier-review/review.json) in that folder is that review
+as it came back, on the build before the fixes. The ltrace and the 3 conditions
+that look met came later still, after the first graded attempts, so it never
+saw them. A second review, again by Opus 5.5 agents, went over them before this
+section was published. It found each condition settled by one decision and one
+line in an appendix, with nothing else in the dossier restating or
+contradicting it, and the key length shown by the ltrace and by nothing else.
+What it found is in
+[`review-before-publishing.json`](runs/frontier-review/review-before-publishing.json),
+and the corrections it led to are already made.
+
+One thing it found is still in the shipped dossier. The lead-in sentences come
+from a stock pool, and the rollout note opens the declined request about
+forwarding headers with "A request's `content-type` can be swapped in transit
+without invalidating the signature", which is not true of the migrated scheme
+on that day. The decisions still settle the rule, and no attempt ended on the
+rule that sentence suggests. Fixing it means regenerating the dossier, and then
+the stored attempts would no longer be attempts at the shipped files, so it is
+written down here instead.
+
+### What happened when agents tried it
+
+12 attempts, 3 per cell, same harness and agent as above.
+
+| Build | Opus 5.5 | Sonnet 5.5 |
+|---|---|---|
+| first | 3 of 3 | 0 of 3 |
+| final | 3 of 3 | 2 of 3 |
+
+**Part of the first 0 of 3 was mine again.** 2 of those Sonnet attempts used
+the key file whole, newline included. Both blind solvers had told me the
+captures could not settle that: the strace shows 33 bytes read and nothing
+about what is handed to HMAC, so the only check was getting the fresh signed
+record to verify. One attempt put its 2 failing signed records down to both
+being old. The other worked out that the fresh record verifies once the newline
+is stripped, and decided the record was the trap, because the strace showed all
+33 bytes being read. It was doing what the instruction said, which was that the
+strace and the lsof settle which keys the signer used and "how it read them".
+They show how a key file is read, not what is handed to HMAC. I added an ltrace
+of the same run, which shows a key length of 32, changed that sentence of the
+instruction to match, and that rule has been right in every attempt since. One
+of the 3 failed on nothing else.
+
+The other first-build failure was the model's. 2 attempts ended on ordering
+by name only, which is what the register says and what the starter does. Both
+had the alignment sentence in their tool output, and one also had the support
+ticket that states the result. Opus resolved the same chain in all 3 of its
+attempts on that build.
+
+Between the builds I also made 3 conditions look met when they are not. 2
+requests that the first build declined outright became conditional, and the SDK
+3.3 condition got a release candidate dated before rollout. On the final build
+no attempt applied any of them. 5 of the 6 had all 3 in front of them, and the
+failing Sonnet attempt never saw 2.
+
+**The one failure on the final build was a search that was too narrow.** That
+Sonnet attempt kept only paragraphs containing words like `agreed`, `decision`,
+`effective` or `correction`. The item that widens the signed header set reads
+"For inbound request signing: every header on the request is signed, whatever
+its name, except `authorization`, provided all 5 partners have signed off on it
+by 2025-12-05", which has none of them. It never reached the attempt, which
+shipped the earlier rule and never read a line of the sign-off register. It was
+also the fastest attempt in its cell, 1.0 minute and 11 tool calls.
+
+**How Opus got through.** It made 15 to 25 tool calls over 2.4 to 3.7 minutes,
+about $1.02 an attempt. In 2 of the 3 final-build attempts it did to this
+dossier what it had done to the hard one, blanking numbers and names and
+counting sentence shapes. Here that removes the filler and nothing else, so it
+was left with the decisions of all 5 signers and read them. Between 11 and 34%
+of the session notes' paragraphs reached its tool output whole, and from the
+rest it saw extracted sentences or nothing. It then opened the release calendar
+and the sign-off register and worked each chain through. 2 of the 3 also
+rebuilt the November rules to confirm that the stale record verifies under
+them, and rejected it anyway.
+
+**What that says about difficulty.** This variant separates Sonnet 5.5 from
+Opus 5.5, by one attempt out of 3 on the final build, and does not trouble
+Opus. Making the decisions impossible to tell from the filler did not help,
+because once the filler is gone every decision in the dossier fits in one
+read. My guess is that a version Opus fails would need more decisions than it
+can read in one go, or a rule that has to be measured from the captures and
+cannot be read anywhere. 3 attempts per cell is also a small sample: these are
+observations, not rates.
+
 ## Run it yourself
 
 You need Docker.
@@ -281,6 +441,12 @@ bash ci/validate.sh
 
 # the same for the hard variant, with its 23 mutants
 bash ci/validate.sh hard
+
+# and for the frontier variant, with its 25
+bash ci/validate.sh frontier
+
+# rebuild the frontier dossier, captures and sample from the event table
+node frontier/authoring/build.mjs
 ```
 
 Under Harbor (tested with 0.22.0) the reference solution scores 1.0:
@@ -302,9 +468,10 @@ For a real attempt, swap `-a oracle` for an agent and a model, for example
 - `tests/`: verifier image, `test.sh`, `test_outputs.py` and the hidden request sets
 - `ci/`: the self-grading script and the rule mutants
 - `hard/`: the hard variant, a complete task with the same layout, plus `authoring/` with the generators for its dossier and request sets
+- `frontier/`: the frontier variant, same layout again, plus `authoring/` with its generator, the answer key the generator writes, and the list of passages that bear on the migrated scheme
 - `analysis/`: tools for reading agent attempts: probe requests that reveal which form of each rule an attempt implemented, a check of what its trajectory showed it, a re-grader, and the run matrix
 - `paper/`: the write-up (`paper.md`, `paper.pdf`), its figures generated from `runs/` by `figures/build_figures.mjs`, and `build_paper.py` which builds the HTML and PDF
-- `runs/`: every stored attempt (sources, trajectory, probe outputs, re-grade), the per-attempt diagnosis and the summary tables, and the red-team scripts and notes
+- `runs/`: every stored attempt (sources, trajectory, probe outputs, re-grade), the per-attempt diagnosis and the summary tables, the red-team scripts and notes, and the review of the frontier variant with the scripts that measured its shortcuts
 
 ## Cite
 

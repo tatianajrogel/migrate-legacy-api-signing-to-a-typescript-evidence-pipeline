@@ -1,7 +1,7 @@
 name: validate
 
-# Builds both images and grades the oracle, a do-nothing agent, the shipped
-# starter, and one mutant per graded rule. See ci/validate.sh.
+# For each of the 3 variants: builds both images and grades the oracle, a
+# do-nothing agent, the shipped starter and every mutant. See ci/validate.sh.
 on:
   push:
   pull_request:
@@ -18,5 +18,11 @@ jobs:
       - uses: actions/checkout@v5
       - name: Grade oracle, nop, starter and mutants
         run: bash ci/validate.sh
-      - name: Grade the hard variant the same way, with its 16 mutants
+      - name: Grade the hard variant the same way
         run: bash ci/validate.sh hard
+      - name: Check the frontier dossier is what its generator produces
+        run: |
+          node frontier/authoring/build.mjs
+          git diff --exit-code -- frontier
+      - name: Grade the frontier variant the same way
+        run: bash ci/validate.sh frontier

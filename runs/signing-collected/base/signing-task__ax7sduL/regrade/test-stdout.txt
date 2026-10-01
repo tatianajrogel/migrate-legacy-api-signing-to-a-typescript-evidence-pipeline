@@ -20,4 +20,4 @@ PASSED ../tests/test_outputs.py::test_no_network_access_is_attempted
 PASSED ../tests/test_outputs.py::test_sources_contain_no_network_calls
 PASSED ../tests/test_outputs.py::test_verification_outcomes_are_correct
 PASSED ../tests/test_outputs.py::test_retired_key_is_never_signed
-============================== 12 passed in 0.67s ==============================
+============================== 12 passed in 0.65s ==============================

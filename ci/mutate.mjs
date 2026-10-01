@@ -6,8 +6,10 @@
 //
 // The first 7 leave a register entry standing that the dossier changed. The
 // next 9 apply to the hard variant: each one adopts a rule the dossier held for
-// a while and then changed again, trialled and backed out, or declined. The
-// last 7 get the rules right and depart from the output contract.
+// a while and then changed again, trialled and backed out, or declined. 2 more
+// apply to the frontier variant only: one stops at an intermediate form of
+// header values, the other applies a lowercasing whose condition was not met.
+// The last 7 get the rules right and depart from the output contract.
 //
 // Usage (inside the agent image): node mutate.mjs <mutant>
 
@@ -120,6 +122,23 @@ const MUTANTS = {
     CANONICAL,
     'signed.map(([n]) => n).join(";")',
     'signed.map(([n]) => n).join(",")',
+  ],
+
+  // Frontier variant only. GW-041 stopped at its 2025-10-14 form: the ends of a
+  // header value stripped, the inside left alone. The item that collapses the
+  // inside was minuted under another signer and reassigned by a correction.
+  "header-values-trimmed-only": [
+    CANONICAL,
+    "[n.toLowerCase(), foldHeaderValue(v)]",
+    '[n.toLowerCase(), v.replace(/^[ \\t]+|[ \\t]+$/g, "")]',
+  ],
+
+  // Frontier variant only. Lowercasing after folding was agreed subject to a
+  // load test with a limit at p99; the test passed at p95 and failed at p99.
+  "header-values-lowercased": [
+    CANONICAL,
+    "[n.toLowerCase(), foldHeaderValue(v)]",
+    "[n.toLowerCase(), foldHeaderValue(v).toLowerCase()]",
   ],
 
   // The mutants from here on get every signing rule right and depart from the
