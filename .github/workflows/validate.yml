@@ -18,3 +18,5 @@ jobs:
       - uses: actions/checkout@v5
       - name: Grade oracle, nop, starter and mutants
         run: bash ci/validate.sh
+      - name: Grade the hard variant the same way, with its 16 mutants
+        run: bash ci/validate.sh hard

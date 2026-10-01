@@ -70,21 +70,28 @@ There are 6 ways to fail here and they are independent of each other. The \
 evidence at /app/out/evidence.ndjson has to match the approved bytes for the \
 shipped requests, and the only route to those bytes is all 5 reversals plus \
 the key newline rule. Then the verifier throws away whatever the agent left \
-behind, recompiles the agent's own TypeScript, and runs it against 2 request \
-sets it has never seen. Both have to come out byte exact. This is the part that \
-kills a faked answer, because writing the sample evidence by hand or pinning it \
-to the shipped fixtures gets you nothing on inputs you were never shown. Running \
-twice on the same input has to give the same bytes. The retired key file gets \
-its permissions stripped before a run, and the run has to be completely \
-unaffected, which breaks any pipeline that globs the key directory or just \
-trusts whatever key id the request hands it. The pipeline also has to produce \
-approved bytes with every proxy variable aimed at a dead port, and its sources \
-get scanned for network clients, since claiming no network access in a comment \
-is not the same as not having any. Last, the 8 evidence records have to \
-carry the right outcome and the right rejection reason, which covers signing, a \
-successful verification, and all 4 documented rejection paths. All of this \
-happens in a separate container built after the agent's is gone, running the \
-agent's code as a user that owns nothing outside its own scratch directory.\
+behind, recompiles the agent's own TypeScript, and runs it against 3 request \
+sets it has never seen. All 3 have to come out byte exact. 2 of them exercise \
+the signing rules. The third exercises the output contract in instruction.md \
+one sentence per record: a padded signature verifies, a header naming another \
+key is malformed, an uppercase signature is a mismatch, a missing space after \
+the comma is malformed, and a record with no key header is missing-key-id \
+whatever the Authorization header says. It was added after an agent attempt \
+passed the first 2 sets while never checking the keyId in the Authorization \
+header against the record. This is the part that kills a faked answer, because \
+writing the sample evidence by hand or pinning it to the shipped fixtures gets \
+you nothing on inputs you were never shown. Running twice on the same input \
+has to give the same bytes. The retired key file gets its permissions stripped \
+before a run, and the run has to be completely unaffected, which breaks any \
+pipeline that globs the key directory or just trusts whatever key id the \
+request hands it. The pipeline also has to produce approved bytes with every \
+proxy variable aimed at a dead port, and its sources get scanned for network \
+clients, since claiming no network access in a comment is not the same as not \
+having any. Last, the 8 evidence records have to carry the right outcome and \
+the right rejection reason, which covers signing, a successful verification, \
+and all 4 documented rejection paths. All of this happens in a separate \
+container built after the agent's is gone, running the agent's code as a user \
+that owns nothing outside its own scratch directory.\
 """
 
 relevant_experience = """\

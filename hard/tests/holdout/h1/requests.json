@@ -1,0 +1,123 @@
+[
+  {
+    "method": "patch",
+    "target": "/v3/disputes/55?z=1&a=9&a=2&a=10",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-02"
+      ],
+      [
+        "Content-Type",
+        "application/json"
+      ],
+      [
+        "Host",
+        "edge.example.net"
+      ],
+      [
+        "X-GW-Trace",
+        "qr"
+      ]
+    ],
+    "body": "{\"state\":\"open\"}"
+  },
+  {
+    "method": "GET",
+    "target": "/v3/ping",
+    "headers": [
+      [
+        "x-gw-key-id",
+        "gw-prod-01"
+      ],
+      [
+        "HOST",
+        "edge.example.net"
+      ]
+    ]
+  },
+  {
+    "method": "POST",
+    "target": "/v3/payouts",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-03"
+      ],
+      [
+        "Host",
+        "edge.example.net"
+      ]
+    ],
+    "body": "{}"
+  },
+  {
+    "method": "PUT",
+    "target": "/v3/onboarding?flag&x=1",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "Host",
+        "edge.example.net"
+      ]
+    ],
+    "body": ""
+  },
+  {
+    "method": "GET",
+    "target": "/v3/./orders/../orders%2fopen?q=%7e&q=z&q=%7E",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-02"
+      ],
+      [
+        "Host",
+        "edge.example.net"
+      ]
+    ]
+  },
+  {
+    "method": "POST",
+    "target": "/v3/ledger/export",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "Host",
+        "edge.example.net"
+      ],
+      [
+        "Via",
+        "1.1 egress-7"
+      ],
+      [
+        "X-Forwarded-For",
+        "203.0.113.9"
+      ],
+      [
+        "Content-Type",
+        "text/csv"
+      ]
+    ]
+  },
+  {
+    "method": "GET",
+    "target": "/v3/catalog",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "GW-PROD-01"
+      ],
+      [
+        "Host",
+        "edge.example.net"
+      ]
+    ]
+  }
+]

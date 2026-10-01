@@ -1,0 +1,23 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.2, pytest-9.1.1, pluggy-1.6.0
+rootdir: /tests
+plugins: json-ctrf-0.5.2
+collected 12 items
+
+../tests/test_outputs.py ............                                    [100%]
+
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED ../tests/test_outputs.py::test_evidence_file_exists
+PASSED ../tests/test_outputs.py::test_evidence_is_valid_ndjson
+PASSED ../tests/test_outputs.py::test_evidence_matches_approved_bytes
+PASSED ../tests/test_outputs.py::test_holdout_reproduces_approved_bytes[h1]
+PASSED ../tests/test_outputs.py::test_holdout_reproduces_approved_bytes[h2]
+PASSED ../tests/test_outputs.py::test_holdout_reproduces_approved_bytes[h3]
+PASSED ../tests/test_outputs.py::test_output_is_deterministic
+PASSED ../tests/test_outputs.py::test_only_approved_key_files_are_opened
+PASSED ../tests/test_outputs.py::test_no_network_access_is_attempted
+PASSED ../tests/test_outputs.py::test_sources_contain_no_network_calls
+PASSED ../tests/test_outputs.py::test_verification_outcomes_are_correct
+PASSED ../tests/test_outputs.py::test_retired_key_is_never_signed
+============================== 12 passed in 0.68s ==============================

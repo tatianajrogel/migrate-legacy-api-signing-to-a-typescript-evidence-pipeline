@@ -1,0 +1,149 @@
+{
+    "reportFormat": "CTRF",
+    "specVersion": "0.0.0",
+    "timestamp": "2026-10-01T04:27:47.956211+00:00",
+    "generatedBy": "pytest",
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "9.1.1"
+        },
+        "summary": {
+            "tests": 12,
+            "passed": 11,
+            "failed": 1,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1790828867259,
+            "stop": 1790828867956
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_outputs.py::test_evidence_file_exists",
+                "status": "passed",
+                "duration": 1,
+                "start": 1790828867271,
+                "stop": 1790828867272,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_evidence_is_valid_ndjson",
+                "status": "passed",
+                "duration": 0,
+                "start": 1790828867272,
+                "stop": 1790828867272,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_evidence_matches_approved_bytes",
+                "status": "passed",
+                "duration": 0,
+                "start": 1790828867272,
+                "stop": 1790828867272,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_holdout_reproduces_approved_bytes",
+                "status": "passed",
+                "duration": 553,
+                "start": 1790828867273,
+                "stop": 1790828867826,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "tags": [
+                    "parametrize::name::['h1', 'h2', 'h3']"
+                ]
+            },
+            {
+                "name": "test_outputs.py::test_holdout_reproduces_approved_bytes",
+                "status": "passed",
+                "duration": 20,
+                "start": 1790828867826,
+                "stop": 1790828867846,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "tags": [
+                    "parametrize::name::['h1', 'h2', 'h3']"
+                ]
+            },
+            {
+                "name": "test_outputs.py::test_holdout_reproduces_approved_bytes",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 30,
+                "start": 1790828867846,
+                "stop": 1790828867876,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "tags": [
+                    "parametrize::name::['h1', 'h2', 'h3']"
+                ],
+                "trace": "built_entry = PosixPath('/app/dist/pipeline.js'), name = 'h3'\n\n    @pytest.mark.parametrize(\"name\", sorted(EXPECTED_HOLDOUT))\n    def test_holdout_reproduces_approved_bytes(built_entry, name):\n        \"\"\"Re-running the agent's pipeline on unseen requests reproduces approved bytes.\n    \n        This is the anti-cheat axis. Producing the shipped evidence once is cheap to\n        fake; re-deriving correct signatures for requests the agent has never seen\n        requires the canonicalisation and key-selection rules to actually be right.\n        \"\"\"\n        result = run_pipeline(built_entry, HOLDOUT / name / \"requests.json\")\n        assert result.returncode == 0, (\n            f\"pipeline failed on held-out set {name}:\\n{result.stderr.decode()}\"\n        )\n        # h3 was added after an agent attempt scored a full reward while verifying\n        # an Authorization header whose keyId named a different key than the record\n        # did. Its records each turn one sentence of instruction.md into a request:\n        # a padded signature verifies, a header naming another key is malformed, an\n        # uppercase signature is a mismatch, a missing space after the comma is\n        # malformed, a record with no key header is missing-key-id whatever the\n        # Authorization header says, and an unknown key id is reported before a\n        # malformed header is.\n        # After a red-team of the verifier it gained 11 more: the scheme and the\n        # parameter names in another case, the right key id in the wrong case,\n        # whitespace around the separators, text after the signature, a quoted and\n        # an empty signature, a key id with path characters, and a roster id in\n        # upper case.\n        actual = sha256_bytes(result.stdout)\n>       assert actual == EXPECTED_HOLDOUT[name], (\n            f\"held-out set {name} did not reproduce the approved bytes\\n\"\n            f\"  expected sha256 {EXPECTED_HOLDOUT[name]}\\n  actual   sha256 {actual}\"\n        )\nE       AssertionError: held-out set h3 did not reproduce the approved bytes\nE           expected sha256 db3beea078df245463a9f0a92838852829ce3b5e7b523041816429f198248e6a\nE           actual   sha256 22049971e3d5c7facd3bd7add9dc6810b8e4a9130d1c8eff5f5fc58d541cc0f9\nE       assert '22049971e3d5...fc58d541cc0f9' == 'db3beea078df...429f198248e6a'\nE         \nE         - db3beea078df245463a9f0a92838852829ce3b5e7b523041816429f198248e6a\nE         + 22049971e3d5c7facd3bd7add9dc6810b8e4a9130d1c8eff5f5fc58d541cc0f9\n\n/tests/test_outputs.py:163: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_outputs.py::test_output_is_deterministic",
+                "status": "passed",
+                "duration": 39,
+                "start": 1790828867876,
+                "stop": 1790828867915,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_only_approved_key_files_are_opened",
+                "status": "passed",
+                "duration": 20,
+                "start": 1790828867915,
+                "stop": 1790828867935,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_no_network_access_is_attempted",
+                "status": "passed",
+                "duration": 19,
+                "start": 1790828867935,
+                "stop": 1790828867954,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_sources_contain_no_network_calls",
+                "status": "passed",
+                "duration": 1,
+                "start": 1790828867954,
+                "stop": 1790828867955,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_verification_outcomes_are_correct",
+                "status": "passed",
+                "duration": 0,
+                "start": 1790828867955,
+                "stop": 1790828867955,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_retired_key_is_never_signed",
+                "status": "passed",
+                "duration": 1,
+                "start": 1790828867955,
+                "stop": 1790828867956,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            }
+        ]
+    }
+}

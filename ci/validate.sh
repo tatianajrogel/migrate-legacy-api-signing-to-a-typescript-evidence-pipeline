@@ -8,7 +8,17 @@
 #   oracle        solution/solve.sh as shipped             reward must be 1
 #   nop           /app untouched, agent did nothing         reward must be 0
 #   starter       the shipped starter built and run as-is   reward must be 0
-#   mutant:<x>    oracle with one of the 7 rules reverted   reward must be 0
+#   mutant:<x>    oracle with exactly one rule wrong        reward must be 0
+#
+# Usage: ci/validate.sh [base|hard]
+#
+# With no argument it grades the base task at the repository root. With "hard"
+# it grades the variant under hard/.
+#
+# Both get the 7 rule mutants and the 7 contract mutants, which get every rule
+# right and depart from the output contract in instruction.md instead. The hard
+# variant adds 9 more that each adopt a rule the dossier trialled, changed again
+# or declined.
 #
 # Exits non-zero if any case gets the wrong reward.
 set -euo pipefail
@@ -17,8 +27,15 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 
-ENV_IMAGE=signing-task-env
-VERIFIER_IMAGE=signing-task-verifier
+VARIANT="${1:-base}"
+case "$VARIANT" in
+  base) TASK="$ROOT" ;;
+  hard) TASK="$ROOT/hard" ;;
+  *) echo "unknown variant $VARIANT; known: base, hard" >&2; exit 2 ;;
+esac
+
+ENV_IMAGE="signing-task-env-$VARIANT"
+VERIFIER_IMAGE="signing-task-verifier-$VARIANT"
 
 MUTANTS=(
   header-values-raw
@@ -29,10 +46,32 @@ MUTANTS=(
   key-file-verbatim
   roster-from-directory
 )
+if [ "$VARIANT" = hard ]; then
+  MUTANTS+=(
+    query-sort-decoded-value
+    sign-x-gw-plus-content-type
+    absent-body-unsigned
+    percent-escapes-uppercased
+    valueless-parameter-bare
+    path-dot-segments-collapsed
+    key-id-any-case
+    forwarding-headers-unsigned
+    signed-names-comma-joined
+  )
+fi
+MUTANTS+=(
+  auth-key-id-unbound
+  signature-case-insensitive
+  signature-not-trimmed
+  short-signature-malformed
+  rejected-signature-empty
+  auth-loose-separator
+  key-id-from-authorization
+)
 
 echo "building images..."
-docker build -q -t "$ENV_IMAGE" "$ROOT/environment" >/dev/null
-docker build -q -t "$VERIFIER_IMAGE" "$ROOT/tests" >/dev/null
+docker build -q -t "$ENV_IMAGE" "$TASK/environment" >/dev/null
+docker build -q -t "$VERIFIER_IMAGE" "$TASK/tests" >/dev/null
 
 # Runs a prep command in a fresh agent container, then grades what it left in /app.
 grade() {
@@ -42,7 +81,7 @@ grade() {
 
   local agent
   agent="$(docker create "$ENV_IMAGE" bash -c "$prep")"
-  docker cp "$ROOT/solution" "$agent:/solution"
+  docker cp "$TASK/solution" "$agent:/solution"
   docker cp "$ROOT/ci" "$agent:/ci"
   # A mutant that fails to compile would score 0 for the wrong reason, so the
   # prep step itself has to succeed for the reward to mean anything.

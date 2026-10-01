@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="468" viewBox="0 0 760 468" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12">
+<defs><marker id="head" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#52514e"/></marker></defs>
+<rect width="760" height="468" fill="#fcfcfb"/>
+<text x="16" y="24" fill="#0b0b0b" font-size="14" font-weight="600">The task: the rules the shipped code needs, where each one is settled, and what grades it</text>
+<rect x="16" y="48" width="212" height="92" rx="3" fill="#fcfcfb" stroke="#c3c2b7" stroke-width="1"/>
+<text x="26" y="66" fill="#0b0b0b" font-size="12.5" font-weight="600">Decision register (01)</text>
+<text x="26" y="84" fill="#52514e" font-size="11.5">append only; entries never edited</text>
+<text x="26" y="99" fill="#52514e" font-size="11.5">reads like a specification</text>
+<text x="26" y="114" fill="#52514e" font-size="11.5">5 of its entries were reversed later</text>
+<rect x="16" y="176" width="212" height="76" rx="3" fill="#fcfcfb" stroke="#c3c2b7" stroke-width="1"/>
+<text x="26" y="194" fill="#0b0b0b" font-size="12.5" font-weight="600">Starter pipeline.ts</text>
+<text x="26" y="212" fill="#52514e" font-size="11.5">written from the register alone</text>
+<text x="26" y="227" fill="#52514e" font-size="11.5">compiles, runs, every signature wrong</text>
+<line x1="122" y1="140" x2="122" y2="176" stroke="#52514e" stroke-width="1.5" marker-end="url(#head)"/>
+<text x="122" y="152" fill="#898781" font-size="10.5" text-anchor="middle">what the previous engineer read</text>
+<rect x="276" y="48" width="212" height="108" rx="3" fill="#fcfcfb" stroke="#2a78d6" stroke-width="1.5"/>
+<text x="286" y="66" fill="#0b0b0b" font-size="12.5" font-weight="600">Session notes (02 to 08)</text>
+<text x="286" y="84" fill="#52514e" font-size="11.5">5 reversals: header folding, query</text>
+<text x="286" y="99" fill="#52514e" font-size="11.5">order, signed header set, body hash,</text>
+<text x="286" y="114" fill="#52514e" font-size="11.5">trailing newline</text>
+<rect x="276" y="176" width="212" height="92" rx="3" fill="#fcfcfb" stroke="#2a78d6" stroke-width="1.5"/>
+<text x="286" y="194" fill="#0b0b0b" font-size="12.5" font-weight="600">Captures: strace and lsof</text>
+<text x="286" y="212" fill="#52514e" font-size="11.5">key file read whole: 32 bytes + LF,</text>
+<text x="286" y="227" fill="#52514e" font-size="11.5">the LF is not key material</text>
+<text x="286" y="242" fill="#52514e" font-size="11.5">directory listed, 2 of 3 keys opened</text>
+<line x1="228" y1="94" x2="276" y2="94" stroke="#52514e" stroke-width="1.5" marker-end="url(#head)"/>
+<rect x="536" y="48" width="208" height="92" rx="3" fill="#fcfcfb" stroke="#c3c2b7" stroke-width="1"/>
+<text x="546" y="66" fill="#0b0b0b" font-size="12.5" font-weight="600">7 rules in the shipped code</text>
+<text x="546" y="84" fill="#52514e" font-size="11.5">5 from the notes, 2 from the captures</text>
+<text x="546" y="99" fill="#52514e" font-size="11.5">any one wrong breaks every signature</text>
+<line x1="488" y1="102" x2="536" y2="94" stroke="#52514e" stroke-width="1.5" marker-end="url(#head)"/>
+<line x1="488" y1="222" x2="536" y2="128" stroke="#52514e" stroke-width="1.5" marker-end="url(#head)"/>
+<rect x="536" y="176" width="208" height="124" rx="3" fill="#fcfcfb" stroke="#c3c2b7" stroke-width="1"/>
+<text x="546" y="194" fill="#0b0b0b" font-size="12.5" font-weight="600">Verifier (separate container)</text>
+<text x="546" y="212" fill="#52514e" font-size="11.5">rebuilds the agent's TypeScript</text>
+<text x="546" y="227" fill="#52514e" font-size="11.5">sample bytes; h1, h2: the rules;</text>
+<text x="546" y="242" fill="#52514e" font-size="11.5">h3: the output contract, 19 records</text>
+<text x="546" y="257" fill="#52514e" font-size="11.5">determinism; retired key unreadable;</text>
+<text x="546" y="272" fill="#52514e" font-size="11.5">network blocked; 14 or 23 mutants</text>
+<line x1="640" y1="140" x2="640" y2="176" stroke="#52514e" stroke-width="1.5" marker-end="url(#head)"/>
+<text x="632" y="162" fill="#898781" font-size="10.5" text-anchor="end">re-run on request sets</text>
+<text x="632" y="172" fill="#898781" font-size="10.5" text-anchor="end">the agent never saw</text>
+<line x1="16" y1="322" x2="744" y2="322" stroke="#e1e0d9" stroke-width="1"/>
+<text x="16" y="344" fill="#0b0b0b" font-size="12.5" font-weight="600">Hard variant: same scheme, same reference solution, the evidence laid out differently</text>
+<circle cx="21" cy="362" r="3" fill="#2a78d6"/>
+<text x="32" y="366" fill="#0b0b0b" font-size="11.5" font-weight="600">no SUPERSEDED headings, no entry ids</text>
+<text x="32" y="379" fill="#52514e" font-size="10.5">changes written as ordinary minutes</text>
+<circle cx="387" cy="362" r="3" fill="#2a78d6"/>
+<text x="398" y="366" fill="#0b0b0b" font-size="11.5" font-weight="600">3 rules changed twice</text>
+<text x="398" y="379" fill="#52514e" font-size="10.5">the first change found is itself out of date</text>
+<circle cx="21" cy="394" r="3" fill="#2a78d6"/>
+<text x="32" y="398" fill="#0b0b0b" font-size="11.5" font-weight="600">5 proposals raised and declined</text>
+<text x="32" y="411" fill="#52514e" font-size="10.5">escape case, bare parameters, dot segments, key id case, forwarding headers</text>
+<circle cx="387" cy="394" r="3" fill="#2a78d6"/>
+<text x="398" y="398" fill="#0b0b0b" font-size="11.5" font-weight="600">a decoy scheme in the same notes</text>
+<text x="398" y="411" fill="#52514e" font-size="10.5">the webhook signer does the opposite on 3 of the 7 rules</text>
+<circle cx="21" cy="426" r="3" fill="#2a78d6"/>
+<text x="32" y="430" fill="#0b0b0b" font-size="11.5" font-weight="600">generated filler, same vocabulary</text>
+<text x="32" y="443" fill="#52514e" font-size="10.5">headers, query strings, key files, newlines</text>
+<circle cx="387" cy="426" r="3" fill="#2a78d6"/>
+<text x="398" y="430" fill="#0b0b0b" font-size="11.5" font-weight="600">the signed sample checks 2 of 7 rules</text>
+<text x="398" y="443" fill="#52514e" font-size="10.5">it verifies with 4 of the 5 changed rules still wrong</text>
+</svg>

@@ -1,0 +1,18 @@
+{
+    "job_name": "2026-09-30__21-21-16",
+    "jobs_dir": "/Users/administrator/jet/signing-hard-agent-jobs",
+    "n_attempts": 3,
+    "n_concurrent_trials": 1,
+    "quiet": true,
+    "agents": [
+        {
+            "name": "claude-code",
+            "model_name": "anthropic/claude-haiku-4-5-20251001"
+        }
+    ],
+    "tasks": [
+        {
+            "path": "hard"
+        }
+    ]
+}

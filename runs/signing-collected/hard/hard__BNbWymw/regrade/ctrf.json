@@ -1,0 +1,146 @@
+{
+    "reportFormat": "CTRF",
+    "specVersion": "0.0.0",
+    "timestamp": "2026-10-01T04:28:12.421280+00:00",
+    "generatedBy": "pytest",
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "9.1.1"
+        },
+        "summary": {
+            "tests": 12,
+            "passed": 12,
+            "failed": 0,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1790828891726,
+            "stop": 1790828892421
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_outputs.py::test_evidence_file_exists",
+                "status": "passed",
+                "duration": 0,
+                "start": 1790828891740,
+                "stop": 1790828891740,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_evidence_is_valid_ndjson",
+                "status": "passed",
+                "duration": 1,
+                "start": 1790828891740,
+                "stop": 1790828891741,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_evidence_matches_approved_bytes",
+                "status": "passed",
+                "duration": 0,
+                "start": 1790828891741,
+                "stop": 1790828891741,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_holdout_reproduces_approved_bytes",
+                "status": "passed",
+                "duration": 560,
+                "start": 1790828891741,
+                "stop": 1790828892301,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "tags": [
+                    "parametrize::name::['h1', 'h2', 'h3']"
+                ]
+            },
+            {
+                "name": "test_outputs.py::test_holdout_reproduces_approved_bytes",
+                "status": "passed",
+                "duration": 20,
+                "start": 1790828892302,
+                "stop": 1790828892322,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "tags": [
+                    "parametrize::name::['h1', 'h2', 'h3']"
+                ]
+            },
+            {
+                "name": "test_outputs.py::test_holdout_reproduces_approved_bytes",
+                "status": "passed",
+                "duration": 20,
+                "start": 1790828892322,
+                "stop": 1790828892342,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "tags": [
+                    "parametrize::name::['h1', 'h2', 'h3']"
+                ]
+            },
+            {
+                "name": "test_outputs.py::test_output_is_deterministic",
+                "status": "passed",
+                "duration": 40,
+                "start": 1790828892342,
+                "stop": 1790828892382,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_only_approved_key_files_are_opened",
+                "status": "passed",
+                "duration": 20,
+                "start": 1790828892382,
+                "stop": 1790828892402,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_no_network_access_is_attempted",
+                "status": "passed",
+                "duration": 17,
+                "start": 1790828892402,
+                "stop": 1790828892419,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_sources_contain_no_network_calls",
+                "status": "passed",
+                "duration": 1,
+                "start": 1790828892419,
+                "stop": 1790828892420,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_verification_outcomes_are_correct",
+                "status": "passed",
+                "duration": 0,
+                "start": 1790828892420,
+                "stop": 1790828892420,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_inactive_key_is_never_signed",
+                "status": "passed",
+                "duration": 1,
+                "start": 1790828892420,
+                "stop": 1790828892421,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            }
+        ]
+    }
+}

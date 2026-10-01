@@ -1,0 +1,161 @@
+{
+    "reportFormat": "CTRF",
+    "specVersion": "0.0.0",
+    "timestamp": "2026-10-01T04:27:33.965286+00:00",
+    "generatedBy": "pytest",
+    "results": {
+        "tool": {
+            "name": "pytest",
+            "version": "9.1.1"
+        },
+        "summary": {
+            "tests": 12,
+            "passed": 7,
+            "failed": 5,
+            "skipped": 0,
+            "pending": 0,
+            "other": 0,
+            "start": 1790828853242,
+            "stop": 1790828853965
+        },
+        "environment": {
+            "buildName": "Pytest JSON CTRF Report",
+            "buildNumber": "000",
+            "buildUrl": "https://ctrf.io"
+        },
+        "tests": [
+            {
+                "name": "test_outputs.py::test_evidence_file_exists",
+                "status": "passed",
+                "duration": 1,
+                "start": 1790828853254,
+                "stop": 1790828853255,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_evidence_is_valid_ndjson",
+                "status": "passed",
+                "duration": 0,
+                "start": 1790828853255,
+                "stop": 1790828853255,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_evidence_matches_approved_bytes",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 8,
+                "start": 1790828853255,
+                "stop": 1790828853263,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "trace": "def test_evidence_matches_approved_bytes():\n        \"\"\"The evidence is byte-identical to the approved output for the shipped inputs.\n    \n        This is where the superseded canonicalisation rules bite: any one of them\n        left unreversed changes the canonical string and therefore every signature.\n        \"\"\"\n        actual = sha256_bytes(EVIDENCE.read_bytes())\n>       assert actual == EXPECTED_PRIMARY, (\n            \"evidence.ndjson does not match the approved bytes\\n\"\n            f\"  expected sha256 {EXPECTED_PRIMARY}\\n  actual   sha256 {actual}\"\n        )\nE       AssertionError: evidence.ndjson does not match the approved bytes\nE           expected sha256 cf4c8c1e8d935d802838f6f3f5f39871b83cca554d65904319df14fe1f94e3a0\nE           actual   sha256 c2d96ea6a9706c135b54b5168bd7b5572051eca0d426981dea1e1bfddd2073d5\nE       assert 'c2d96ea6a970...e1bfddd2073d5' == 'cf4c8c1e8d93...f14fe1f94e3a0'\nE         \nE         - cf4c8c1e8d935d802838f6f3f5f39871b83cca554d65904319df14fe1f94e3a0\nE         + c2d96ea6a9706c135b54b5168bd7b5572051eca0d426981dea1e1bfddd2073d5\n\n/tests/test_outputs.py:131: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_outputs.py::test_holdout_reproduces_approved_bytes",
+                "status": "passed",
+                "duration": 571,
+                "start": 1790828853263,
+                "stop": 1790828853834,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "tags": [
+                    "parametrize::name::['h1', 'h2', 'h3']"
+                ]
+            },
+            {
+                "name": "test_outputs.py::test_holdout_reproduces_approved_bytes",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 21,
+                "start": 1790828853834,
+                "stop": 1790828853855,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "tags": [
+                    "parametrize::name::['h1', 'h2', 'h3']"
+                ],
+                "trace": "built_entry = PosixPath('/app/dist/pipeline.js'), name = 'h2'\n\n    @pytest.mark.parametrize(\"name\", sorted(EXPECTED_HOLDOUT))\n    def test_holdout_reproduces_approved_bytes(built_entry, name):\n        \"\"\"Re-running the agent's pipeline on unseen requests reproduces approved bytes.\n    \n        This is the anti-cheat axis. Producing the shipped evidence once is cheap to\n        fake; re-deriving correct signatures for requests the agent has never seen\n        requires the canonicalisation and key-selection rules to actually be right.\n        \"\"\"\n        result = run_pipeline(built_entry, HOLDOUT / name / \"requests.json\")\n        assert result.returncode == 0, (\n            f\"pipeline failed on held-out set {name}:\\n{result.stderr.decode()}\"\n        )\n        # h3 was added after an agent attempt scored a full reward while verifying\n        # an Authorization header whose keyId named a different key than the record\n        # did. Its records each turn one sentence of instruction.md into a request:\n        # a padded signature verifies, a header naming another key is malformed, an\n        # uppercase signature is a mismatch, a missing space after the comma is\n        # malformed, a record with no key header is missing-key-id whatever the\n        # Authorization header says, and an unknown key id is reported before a\n        # malformed header is.\n        # After a red-team of the verifier it gained 11 more: the scheme and the\n        # parameter names in another case, the right key id in the wrong case,\n        # whitespace around the separators, text after the signature, a quoted and\n        # an empty signature, a key id with path characters, and a roster id in\n        # upper case.\n        actual = sha256_bytes(result.stdout)\n>       assert actual == EXPECTED_HOLDOUT[name], (\n            f\"held-out set {name} did not reproduce the approved bytes\\n\"\n            f\"  expected sha256 {EXPECTED_HOLDOUT[name]}\\n  actual   sha256 {actual}\"\n        )\nE       AssertionError: held-out set h2 did not reproduce the approved bytes\nE           expected sha256 83089c61af1f0c911e5626f3f3d00dd21d045e364160a19d1defa850befafbb0\nE           actual   sha256 cd304fc11534199dcecc3e1f8e6753c76853ca7442d6da2e6a645565f6386d29\nE       assert 'cd304fc11534...45565f6386d29' == '83089c61af1f...fa850befafbb0'\nE         \nE         - 83089c61af1f0c911e5626f3f3d00dd21d045e364160a19d1defa850befafbb0\nE         + cd304fc11534199dcecc3e1f8e6753c76853ca7442d6da2e6a645565f6386d29\n\n/tests/test_outputs.py:163: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_outputs.py::test_holdout_reproduces_approved_bytes",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 21,
+                "start": 1790828853855,
+                "stop": 1790828853876,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "tags": [
+                    "parametrize::name::['h1', 'h2', 'h3']"
+                ],
+                "trace": "built_entry = PosixPath('/app/dist/pipeline.js'), name = 'h3'\n\n    @pytest.mark.parametrize(\"name\", sorted(EXPECTED_HOLDOUT))\n    def test_holdout_reproduces_approved_bytes(built_entry, name):\n        \"\"\"Re-running the agent's pipeline on unseen requests reproduces approved bytes.\n    \n        This is the anti-cheat axis. Producing the shipped evidence once is cheap to\n        fake; re-deriving correct signatures for requests the agent has never seen\n        requires the canonicalisation and key-selection rules to actually be right.\n        \"\"\"\n        result = run_pipeline(built_entry, HOLDOUT / name / \"requests.json\")\n        assert result.returncode == 0, (\n            f\"pipeline failed on held-out set {name}:\\n{result.stderr.decode()}\"\n        )\n        # h3 was added after an agent attempt scored a full reward while verifying\n        # an Authorization header whose keyId named a different key than the record\n        # did. Its records each turn one sentence of instruction.md into a request:\n        # a padded signature verifies, a header naming another key is malformed, an\n        # uppercase signature is a mismatch, a missing space after the comma is\n        # malformed, a record with no key header is missing-key-id whatever the\n        # Authorization header says, and an unknown key id is reported before a\n        # malformed header is.\n        # After a red-team of the verifier it gained 11 more: the scheme and the\n        # parameter names in another case, the right key id in the wrong case,\n        # whitespace around the separators, text after the signature, a quoted and\n        # an empty signature, a key id with path characters, and a roster id in\n        # upper case.\n        actual = sha256_bytes(result.stdout)\n>       assert actual == EXPECTED_HOLDOUT[name], (\n            f\"held-out set {name} did not reproduce the approved bytes\\n\"\n            f\"  expected sha256 {EXPECTED_HOLDOUT[name]}\\n  actual   sha256 {actual}\"\n        )\nE       AssertionError: held-out set h3 did not reproduce the approved bytes\nE           expected sha256 db3beea078df245463a9f0a92838852829ce3b5e7b523041816429f198248e6a\nE           actual   sha256 3d68190eebd5ae7421e69763788f2f8988c8b5e26ddfbddb76f272bbe448ccef\nE       assert '3d68190eebd5...272bbe448ccef' == 'db3beea078df...429f198248e6a'\nE         \nE         - db3beea078df245463a9f0a92838852829ce3b5e7b523041816429f198248e6a\nE         + 3d68190eebd5ae7421e69763788f2f8988c8b5e26ddfbddb76f272bbe448ccef\n\n/tests/test_outputs.py:163: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_outputs.py::test_output_is_deterministic",
+                "status": "passed",
+                "duration": 43,
+                "start": 1790828853877,
+                "stop": 1790828853920,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_only_approved_key_files_are_opened",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 22,
+                "start": 1790828853920,
+                "stop": 1790828853942,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "trace": "built_entry = PosixPath('/app/dist/pipeline.js')\n\n    def test_only_approved_key_files_are_opened(built_entry):\n        \"\"\"The pipeline reads only the roster keys, never the retired one.\n    \n        The retired key is made unreadable before the run. A pipeline that derives\n        its roster from the captures never touches it and is unaffected; one that\n        globs the key directory or trusts the key id blindly fails here.\n        \"\"\"\n        retired = KEYS / RETIRED_KEY\n        assert retired.is_file(), f\"{retired} is missing from the environment\"\n    \n        original_mode = retired.stat().st_mode\n        os.chmod(retired, 0o000)\n        try:\n            result = run_pipeline(built_entry, REQUESTS)\n            assert result.returncode == 0, (\n                \"pipeline failed while the retired key was unreadable, which means it \"\n                f\"tried to read it:\\n{result.stderr.decode()}\"\n            )\n            actual = sha256_bytes(result.stdout)\n>           assert actual == EXPECTED_PRIMARY, (\n                \"evidence changed when the retired key was made unreadable, so the \"\n                \"pipeline depends on a key that is off the approved roster\"\n            )\nE           AssertionError: evidence changed when the retired key was made unreadable, so the pipeline depends on a key that is off the approved roster\nE           assert 'c2d96ea6a970...e1bfddd2073d5' == 'cf4c8c1e8d93...f14fe1f94e3a0'\nE             \nE             - cf4c8c1e8d935d802838f6f3f5f39871b83cca554d65904319df14fe1f94e3a0\nE             + c2d96ea6a9706c135b54b5168bd7b5572051eca0d426981dea1e1bfddd2073d5\n\n/tests/test_outputs.py:198: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_outputs.py::test_no_network_access_is_attempted",
+                "status": "failed",
+                "raw_status": "call_failed",
+                "duration": 21,
+                "start": 1790828853942,
+                "stop": 1790828853963,
+                "retries": 0,
+                "file_path": "test_outputs.py",
+                "trace": "built_entry = PosixPath('/app/dist/pipeline.js')\n\n    def test_no_network_access_is_attempted(built_entry):\n        \"\"\"The pipeline completes correctly with all outbound network redirected.\n    \n        Signing is a pure local computation. The run happens with every proxy\n        variable pointed at a closed port; a pipeline that reaches out for anything\n        stalls or errors instead of producing the approved bytes.\n        \"\"\"\n        blocked = {\n            \"http_proxy\": \"http://127.0.0.1:9\",\n            \"https_proxy\": \"http://127.0.0.1:9\",\n            \"HTTP_PROXY\": \"http://127.0.0.1:9\",\n            \"HTTPS_PROXY\": \"http://127.0.0.1:9\",\n        }\n        result = run_pipeline(built_entry, REQUESTS, extra_env=blocked)\n        assert result.returncode == 0, (\n            f\"pipeline failed with networking blocked:\\n{result.stderr.decode()}\"\n        )\n>       assert sha256_bytes(result.stdout) == EXPECTED_PRIMARY, (\n            \"evidence changed with networking blocked, so the pipeline depends on \"\n            \"network access\"\n        )\nE       AssertionError: evidence changed with networking blocked, so the pipeline depends on network access\nE       assert 'c2d96ea6a970...e1bfddd2073d5' == 'cf4c8c1e8d93...f14fe1f94e3a0'\nE         \nE         - cf4c8c1e8d935d802838f6f3f5f39871b83cca554d65904319df14fe1f94e3a0\nE         + c2d96ea6a9706c135b54b5168bd7b5572051eca0d426981dea1e1bfddd2073d5\n\n/tests/test_outputs.py:223: AssertionError",
+                "message": "The test failed in the call phase due to an assertion error"
+            },
+            {
+                "name": "test_outputs.py::test_sources_contain_no_network_calls",
+                "status": "passed",
+                "duration": 1,
+                "start": 1790828853963,
+                "stop": 1790828853964,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_verification_outcomes_are_correct",
+                "status": "passed",
+                "duration": 0,
+                "start": 1790828853964,
+                "stop": 1790828853964,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            },
+            {
+                "name": "test_outputs.py::test_retired_key_is_never_signed",
+                "status": "passed",
+                "duration": 1,
+                "start": 1790828853964,
+                "stop": 1790828853965,
+                "retries": 0,
+                "file_path": "test_outputs.py"
+            }
+        ]
+    }
+}

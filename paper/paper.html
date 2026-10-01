@@ -1,0 +1,619 @@
+<!doctype html><html><head><meta charset='utf-8'><title>Validate the Benchmark Before Trusting the Score: Spec Gaps, Verifier Gaps and Presentation Hardening in an Evidence-Driven API Migration Task</title><style>
+body{font-family:Georgia,'Times New Roman',serif;font-size:11pt;line-height:1.45;max-width:7in;margin:0.6in auto;color:#111}
+h1{font-size:18pt;line-height:1.2;margin-top:0} h2{font-size:13.5pt;margin-top:1.4em} h3{font-size:11.5pt}
+table{border-collapse:collapse;font-size:9pt;margin:0.6em 0;width:100%} th,td{border:1px solid #999;padding:3px 5px;vertical-align:top;text-align:left}
+code{font-family:Consolas,Menlo,monospace;font-size:9.5pt} p{margin:0.45em 0;text-align:justify}
+figure{margin:0.8em 0;page-break-inside:avoid} figure svg{max-width:100%;height:auto;display:block}
+@page{size:Letter;margin:0.9in} @media print{body{margin:0;max-width:none}}
+</style></head><body><h1>Validate the Benchmark Before Trusting the Score: Spec Gaps, Verifier Gaps and Presentation Hardening in an Evidence-Driven API Migration Task</h1>
+<p><strong>Tatiana Rogel</strong><br>
+LaunchPeak Studio AI<br>
+tatianarogel03@gmail.com</p>
+<p>September 30, 2026</p>
+<h2>Abstract</h2>
+<p>I present a Terminal-Bench style task in which a coding agent must finish a TypeScript port of a request signer by recovering the final signing scheme from about 75k tokens of migration documents. Five of the seven rules the agent needs were reversed in meeting notes after being recorded in a decision register that reads like a specification, and two exist only in syscall captures of the system being replaced. The task is graded byte-exact against hidden request sets re-run from the agent's own code in a separate container. Before trusting any model result I validated the grader: mutation testing with 23 single-fault variants of the reference solution, a red-team pass in which every claimed gap had to be proved by running code over the graded sets, and a per-attempt diagnosis that reads which form of each rule an attempt implemented and whether its trajectory ever showed the text that settles it. The validation found two grading errors that would otherwise have been reported as model behaviour. The first version of the instruction scored Claude Opus 5.5 at 0 of 3 while every signing rule in its code was correct, because two rules of the output contract were never stated. The corrected task then awarded a full score to a Claude Haiku 4.5 attempt that verified any <code>Authorization</code> header whose signature matched, whatever key the header named, because no hidden record exercised that sentence; a third hidden set now grades the contract sentence by sentence, and every stored attempt was re-graded. On the validated task, a presentation-hardened variant that removes every announcement of a changed rule, adds rules that changed twice and proposals that were declined, and plants a decoy scheme in the same notes, did not change the outcome for Opus 5.5 or Claude Sonnet 5.5, which solved both variants in every attempt by collapsing the generated filler with a few commands. It did change what Haiku 4.5 does with text it has already read: on the base documents Haiku applied every deciding passage it retrieved (31 of 31 rule instances); on the hard documents it applied 18 of 28; one paragraph in the instruction pointing at the notes brought that to 13 of 16. The contribution is a task whose grader has been checked against itself, and tooling that turns a pass or a fail into a statement about which rule was wrong, what the agent read, and whether it applied what it read.</p>
+<h2>1 Introduction</h2>
+<p>Agent benchmarks report pass rates. A pass rate rests on three things: the instruction the agent was given, the verifier that scored it, and the reading of the trajectory that explains the number. Each can be wrong in a way that looks exactly like a model failure or a model success. This paper is a worked example of checking all three on one task, and of what the checks found.</p>
+<p>The task comes from document intelligence work, where the most common failure I see is a system that takes the first authoritative looking statement it finds and never checks whether something later overrode it. The benchmark turns that into an engineering job. A decision register reads like a specification and is append only by policy, so reversed decisions sit in it looking current. The reversals live in meeting notes. Two further rules exist only as evidence in an <code>strace</code> and an <code>lsof</code> of the system being replaced. The agent must ship code that signs byte-for-byte like the reference on request sets it never saw.</p>
+<p>Three findings came out of validating the task rather than running models on it.</p>
+<ol>
+<li><strong>A spec gap that read as a model failure.</strong> The first instruction never said what the <code>signature</code> field holds on a rejected verification, nor whether <code>signature=deadbeef</code> is a malformed header or a wrong signature. Opus 5.5 got every signing rule right in 3 of 3 attempts and scored 0 of 3 (Section 3.2).</li>
+<li><strong>A verifier gap that read as a model success.</strong> With the instruction fixed, the hidden request sets exercised the signing rules but not the output contract. A Haiku 4.5 attempt that verified any <code>Authorization</code> header whose signature matched, whatever <code>keyId</code> it named, scored a full reward. Seven contract mutants showed the grader let 5 of 7 such departures through; a third hidden set built sentence by sentence from the instruction catches them, and a red-team pass found 11 more that it now catches (Sections 3.3 and 3.4).</li>
+<li><strong>Presentation hardening separated models by what they do with text they have read, not by whether they read it.</strong> Removing every announcement of a changed rule, adding intermediate and declined rules and a decoy scheme did nothing to Opus 5.5 or Sonnet 5.5, which strip the generated filler with a few commands and read what is left. It changed Haiku 4.5: on the base documents it applied every deciding passage it had in front of it; on the hard documents it applied 18 of 28, and a one-paragraph pointer in the instruction brought that to 13 of 16 (Section 6).</li>
+</ol>
+<p>The repository that accompanies this paper holds both variants of the task, the reference solution, the mutants, the red-team scripts, the diagnosis tooling, every stored attempt, and every number reported here.</p>
+<h2>2 The task</h2>
+<h3>2.1 What the agent has to do</h3>
+<p>The agent is told that a Perl request signer is being retired and that a TypeScript replacement, <code>/app/src/pipeline.ts</code>, was started by someone who has left. It compiles and writes evidence, and the gateway rejects every signature it produces. The pipeline reads a JSON array of HTTP request records on stdin, signs each one under GW-HMAC-SHA256 or verifies it if it carries an <code>Authorization</code> header, and writes one compact JSON evidence object per line with exactly the keys <code>seq</code>, <code>key_id</code>, <code>method</code>, <code>path</code>, <code>outcome</code>, <code>signature</code>, <code>canonical_sha256</code> and, on rejection, <code>reason</code>. Four rejection reasons exist and are checked in a stated order.</p>
+<p>The starter was written from <code>/app/dossier/01-decision-register.md</code>. The register is append only and says so: entries are never edited, so a reversed decision sits there looking authoritative. Five of its entries were reversed later in meeting notes elsewhere in the dossier (Table 1). Any one of them left unfixed changes every signature.</p>
+<p><strong>Table 1.</strong> Register entries the meeting notes reversed.</p>
+<table>
+<thead>
+<tr>
+<th>Entry</th>
+<th>The register says</th>
+<th>The notes changed it to</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GW-041</td>
+<td>header values signed as received</td>
+<td>whitespace folded</td>
+</tr>
+<tr>
+<td>GW-017</td>
+<td>query parameters sorted by name only</td>
+<td>by name, then value, bytewise</td>
+</tr>
+<tr>
+<td>GW-023</td>
+<td>only <code>x-gw-*</code> headers signed</td>
+<td>every header except <code>authorization</code></td>
+</tr>
+<tr>
+<td>GW-009</td>
+<td>an empty body signs the token <code>UNSIGNED</code></td>
+<td>always the SHA-256 of the body</td>
+</tr>
+<tr>
+<td>GW-052</td>
+<td>the canonical string ends in a newline</td>
+<td>no trailing newline</td>
+</tr>
+</tbody>
+</table>
+<p>Two more rules appear in no document. The key files are 33 bytes, 32 of key and a trailing newline that is not key material; only the <code>strace</code> shows the 33-byte read, and only the 32-byte key reproduces the one already-signed record in the sample. One key file sits in the key directory off the active roster: the <code>strace</code> lists the directory and opens only two files, the <code>lsof</code> holds only those two, so a request naming the third key must be rejected, not signed.</p>
+<p><figure><svg xmlns="http://www.w3.org/2000/svg" width="760" height="468" viewBox="0 0 760 468" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12">
+<defs><marker id="head" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#52514e"/></marker></defs>
+<rect width="760" height="468" fill="#fcfcfb"/>
+<text x="16" y="24" fill="#0b0b0b" font-size="14" font-weight="600">The task: the rules the shipped code needs, where each one is settled, and what grades it</text>
+<rect x="16" y="48" width="212" height="92" rx="3" fill="#fcfcfb" stroke="#c3c2b7" stroke-width="1"/>
+<text x="26" y="66" fill="#0b0b0b" font-size="12.5" font-weight="600">Decision register (01)</text>
+<text x="26" y="84" fill="#52514e" font-size="11.5">append only; entries never edited</text>
+<text x="26" y="99" fill="#52514e" font-size="11.5">reads like a specification</text>
+<text x="26" y="114" fill="#52514e" font-size="11.5">5 of its entries were reversed later</text>
+<rect x="16" y="176" width="212" height="76" rx="3" fill="#fcfcfb" stroke="#c3c2b7" stroke-width="1"/>
+<text x="26" y="194" fill="#0b0b0b" font-size="12.5" font-weight="600">Starter pipeline.ts</text>
+<text x="26" y="212" fill="#52514e" font-size="11.5">written from the register alone</text>
+<text x="26" y="227" fill="#52514e" font-size="11.5">compiles, runs, every signature wrong</text>
+<line x1="122" y1="140" x2="122" y2="176" stroke="#52514e" stroke-width="1.5" marker-end="url(#head)"/>
+<text x="122" y="152" fill="#898781" font-size="10.5" text-anchor="middle">what the previous engineer read</text>
+<rect x="276" y="48" width="212" height="108" rx="3" fill="#fcfcfb" stroke="#2a78d6" stroke-width="1.5"/>
+<text x="286" y="66" fill="#0b0b0b" font-size="12.5" font-weight="600">Session notes (02 to 08)</text>
+<text x="286" y="84" fill="#52514e" font-size="11.5">5 reversals: header folding, query</text>
+<text x="286" y="99" fill="#52514e" font-size="11.5">order, signed header set, body hash,</text>
+<text x="286" y="114" fill="#52514e" font-size="11.5">trailing newline</text>
+<rect x="276" y="176" width="212" height="92" rx="3" fill="#fcfcfb" stroke="#2a78d6" stroke-width="1.5"/>
+<text x="286" y="194" fill="#0b0b0b" font-size="12.5" font-weight="600">Captures: strace and lsof</text>
+<text x="286" y="212" fill="#52514e" font-size="11.5">key file read whole: 32 bytes + LF,</text>
+<text x="286" y="227" fill="#52514e" font-size="11.5">the LF is not key material</text>
+<text x="286" y="242" fill="#52514e" font-size="11.5">directory listed, 2 of 3 keys opened</text>
+<line x1="228" y1="94" x2="276" y2="94" stroke="#52514e" stroke-width="1.5" marker-end="url(#head)"/>
+<rect x="536" y="48" width="208" height="92" rx="3" fill="#fcfcfb" stroke="#c3c2b7" stroke-width="1"/>
+<text x="546" y="66" fill="#0b0b0b" font-size="12.5" font-weight="600">7 rules in the shipped code</text>
+<text x="546" y="84" fill="#52514e" font-size="11.5">5 from the notes, 2 from the captures</text>
+<text x="546" y="99" fill="#52514e" font-size="11.5">any one wrong breaks every signature</text>
+<line x1="488" y1="102" x2="536" y2="94" stroke="#52514e" stroke-width="1.5" marker-end="url(#head)"/>
+<line x1="488" y1="222" x2="536" y2="128" stroke="#52514e" stroke-width="1.5" marker-end="url(#head)"/>
+<rect x="536" y="176" width="208" height="124" rx="3" fill="#fcfcfb" stroke="#c3c2b7" stroke-width="1"/>
+<text x="546" y="194" fill="#0b0b0b" font-size="12.5" font-weight="600">Verifier (separate container)</text>
+<text x="546" y="212" fill="#52514e" font-size="11.5">rebuilds the agent's TypeScript</text>
+<text x="546" y="227" fill="#52514e" font-size="11.5">sample bytes; h1, h2: the rules;</text>
+<text x="546" y="242" fill="#52514e" font-size="11.5">h3: the output contract, 19 records</text>
+<text x="546" y="257" fill="#52514e" font-size="11.5">determinism; retired key unreadable;</text>
+<text x="546" y="272" fill="#52514e" font-size="11.5">network blocked; 14 or 23 mutants</text>
+<line x1="640" y1="140" x2="640" y2="176" stroke="#52514e" stroke-width="1.5" marker-end="url(#head)"/>
+<text x="632" y="162" fill="#898781" font-size="10.5" text-anchor="end">re-run on request sets</text>
+<text x="632" y="172" fill="#898781" font-size="10.5" text-anchor="end">the agent never saw</text>
+<line x1="16" y1="322" x2="744" y2="322" stroke="#e1e0d9" stroke-width="1"/>
+<text x="16" y="344" fill="#0b0b0b" font-size="12.5" font-weight="600">Hard variant: same scheme, same reference solution, the evidence laid out differently</text>
+<circle cx="21" cy="362" r="3" fill="#2a78d6"/>
+<text x="32" y="366" fill="#0b0b0b" font-size="11.5" font-weight="600">no SUPERSEDED headings, no entry ids</text>
+<text x="32" y="379" fill="#52514e" font-size="10.5">changes written as ordinary minutes</text>
+<circle cx="387" cy="362" r="3" fill="#2a78d6"/>
+<text x="398" y="366" fill="#0b0b0b" font-size="11.5" font-weight="600">3 rules changed twice</text>
+<text x="398" y="379" fill="#52514e" font-size="10.5">the first change found is itself out of date</text>
+<circle cx="21" cy="394" r="3" fill="#2a78d6"/>
+<text x="32" y="398" fill="#0b0b0b" font-size="11.5" font-weight="600">5 proposals raised and declined</text>
+<text x="32" y="411" fill="#52514e" font-size="10.5">escape case, bare parameters, dot segments, key id case, forwarding headers</text>
+<circle cx="387" cy="394" r="3" fill="#2a78d6"/>
+<text x="398" y="398" fill="#0b0b0b" font-size="11.5" font-weight="600">a decoy scheme in the same notes</text>
+<text x="398" y="411" fill="#52514e" font-size="10.5">the webhook signer does the opposite on 3 of the 7 rules</text>
+<circle cx="21" cy="426" r="3" fill="#2a78d6"/>
+<text x="32" y="430" fill="#0b0b0b" font-size="11.5" font-weight="600">generated filler, same vocabulary</text>
+<text x="32" y="443" fill="#52514e" font-size="10.5">headers, query strings, key files, newlines</text>
+<circle cx="387" cy="426" r="3" fill="#2a78d6"/>
+<text x="398" y="430" fill="#0b0b0b" font-size="11.5" font-weight="600">the signed sample checks 2 of 7 rules</text>
+<text x="398" y="443" fill="#52514e" font-size="10.5">it verifies with 4 of the 5 changed rules still wrong</text>
+</svg></figure></p>
+<p><strong>Figure 1.</strong> Where the 7 rules come from and what grades them. The hard variant keeps the rules and the reference solution and changes only the presentation.</p>
+<h3>2.2 The documents</h3>
+<p>The dossier is 16 Markdown files, about 317 KB and about 75k tokens: the register, 7 session notes from kickoff to rollout, and 8 appendices (onboarding matrix, load test observations, key rotation runbook, error taxonomy, rollback procedure, capacity notes, support escalations, dashboards). In the base variant each reversal sits under a heading of the form <code>### GW-041 - SUPERSEDED</code> and the surrounding text is boilerplate that says it does not affect the scheme.</p>
+<h3>2.3 Grading</h3>
+<p>The verifier runs in a separate container after the agent's is gone and trusts nothing the agent left behind. It recompiles the agent's TypeScript, so a hand-written evidence file scores nothing, and checks six independent things: the evidence file for the shipped sample matches the approved bytes; the rebuilt pipeline reproduces approved bytes on three hidden request sets (<code>h1</code> and <code>h2</code> exercise the signing rules, <code>h3</code> the output contract); two runs over the same input give identical bytes; the off-roster key file is made unreadable before one run, which must be unaffected; one run happens with every proxy variable pointed at a closed port and the sources are scanned for network APIs; and the eight sample records carry the right outcome and rejection reason. Agent code runs as a user that owns nothing, and the reward file sits where that user cannot write.</p>
+<h3>2.4 The hard variant</h3>
+<p>The hard variant keeps the scheme and the reference solution byte for byte and changes only how the evidence is laid out, so any difference in scores comes from presentation (Table 2).</p>
+<p><strong>Table 2.</strong> What the hard variant changes.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Base</th>
+<th>Hard</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Changed rules</td>
+<td>under a heading with the entry id and <code>SUPERSEDED</code></td>
+<td>ordinary minutes, no entry ids, none of the words a search would look for</td>
+</tr>
+<tr>
+<td>Rules that changed twice</td>
+<td>none</td>
+<td>3: query ordering gained then lost percent-decoding; the signed set gained <code>content-type</code>, then everything; the <code>UNSIGNED</code> token was narrowed, then removed</td>
+</tr>
+<tr>
+<td>Changes raised and not adopted</td>
+<td>none</td>
+<td>5: escape case, bare parameters, dot segments, key id case, forwarding headers</td>
+</tr>
+<tr>
+<td>A second scheme in the same notes</td>
+<td>no</td>
+<td>the outbound webhook signer, which does the opposite on 3 of the 7 rules</td>
+</tr>
+<tr>
+<td>Text around the decisions</td>
+<td>boilerplate that says it is not about the scheme</td>
+<td>generated text about headers, query strings, key files and newlines</td>
+</tr>
+<tr>
+<td>Captures</td>
+<td>commented</td>
+<td>raw</td>
+</tr>
+<tr>
+<td>Off-roster key</td>
+<td><code>gw-legacy-99</code>, containing <code>retiredkeymaterial_do_not_use</code></td>
+<td><code>gw-prod-03</code>, indistinguishable from the others</td>
+</tr>
+<tr>
+<td>The signed sample record</td>
+<td>carries <code>Host</code>, so it checks 3 of the 7 rules</td>
+<td>carries only <code>x-gw-*</code> headers, so it checks 2</td>
+</tr>
+</tbody>
+</table>
+<p>The last row is the trap the variant is built around. Fix the trailing newline and the key length in the starter and the sample's signed record verifies, with 4 of the 5 changed rules still wrong. The dossier is generated from a fixed seed with every hand-written passage listed next to the sentence pools the filler is drawn from, and the request sets are signed by a second implementation written separately from the reference solution, so the reference reproducing them in CI is itself a check.</p>
+<h2>3 Validating the verifier</h2>
+<h3>3.1 Mutation testing</h3>
+<p>The repository grades the task against itself on every push. It builds both images, produces an <code>/app</code> for each case, hands it to a fresh verifier container the same way the harness does, and checks the reward: the reference solution must score 1; an agent that does nothing, 0; the shipped starter built and run as is, 0; and every mutant, 0. A mutant is the reference solution with exactly one thing wrong, and it must compile and run before it is graded, so a 0 means the tests caught wrong output and not a build error. There are 7 rule mutants, one per rule; 9 hard-variant mutants that each adopt a rule the notes held for a while, trialled, or turned down; and 7 output-contract mutants (Section 3.3). The script prints which test caught each mutant.</p>
+<p>That column is where the first lesson was. The query-sort mutant is caught only by the hidden sets: the sample's one repeated query name arrives with its values already in order, so sorting by name alone reproduces the sample byte for byte. Without <code>h1</code> and <code>h2</code> the rule would not have been graded at all. In the hard variant three mutants (decoded-value sorting, uppercased escapes, any-case key ids) are each caught by a single hidden set.</p>
+<h3>3.2 The spec gap</h3>
+<p>The first version of the instruction did not say what <code>signature</code> holds when a verification is rejected, nor whether a well-formed header carrying a short or non-hex signature is <code>malformed-authorization</code> or <code>signature-mismatch</code>. Opus 5.5 ran 3 attempts against it and scored 0 of 3. The per-attempt diagnosis of Section 4 shows that all 3 attempts implemented every one of the 7 rules correctly, 21 of 21 rule instances, and differed from the reference only on those two points. The agent made sensible choices; the reference made different ones; the bytes could not match. Both rules were written into the instruction and the next 3 attempts scored 3 of 3. The first 3 attempts are kept in every table as their own condition, because they are the cleanest demonstration in the data that a 0 can be the specification's fault.</p>
+<h3>3.3 The verifier gap</h3>
+<p>With the instruction fixed and both hidden sets in place, a Haiku 4.5 attempt on the base documents scored a full reward. Its probe diagnosis showed two departures from the instruction: it verified an <code>Authorization</code> header whose <code>keyId</code> named a different key than the record did, as long as the signature matched, and it accepted a signature in upper case. The instruction states both. Neither the sample nor <code>h1</code> nor <code>h2</code> exercised them.</p>
+<p>I wrote 7 mutants that get every signing rule right and depart from the output contract instead, each something an attempt had shipped: the unbound <code>keyId</code>, case-insensitive signatures, an untrimmed signature, a short signature called malformed, an empty signature on rejection, an optional space after the comma, and a key id taken from the <code>Authorization</code> header when the key header is absent. The verifier let 5 of the 7 through. The third hidden set, <code>h3</code>, turns one sentence of the instruction into one request each and catches all 5. Under the fixed verifier the Haiku attempt scores 0, and no other stored attempt changes score.</p>
+<h3>3.4 Red-teaming the fixed verifier</h3>
+<p>I then had agents attack the fixed verifier, each from one angle, under the rule that nothing counts unless it is proved by running code over all four graded sets of both variants against a harness that first reproduces the eight approved hashes. Two angles were run to completion: the <code>Authorization</code> header, and key handling. They found 11 further departures from the same two sentences of the instruction that still passed everything: the scheme token or the parameter names in another case; the right key id in the wrong case inside the header; extra whitespace after the scheme, after the comma, or around <code>=</code>; text after the signature ignored; a quoted signature unquoted; an empty signature called malformed; a key id with path characters resolved to a roster file and signed; and a roster id in upper case, which only the hard variant's sets had been catching. Each was checked against the reference implementation and the instruction text and added to <code>h3</code>, which now has 19 records. CI confirms that the reference reproduces the set and that every mutant still scores 0.</p>
+<p>The same pass found the inverse problem. The byte-exact verifier enforces the order of the keys in an evidence object, and the instruction lists the keys without saying that the order is fixed. It also found 10 input classes on which the instruction is silent and no graded record says anything: whitespace around the key id value, which the reference trims while the dossier says the value is used verbatim; duplicate headers; empty header values; the <code>Authorization</code> header name in another case; non-ASCII whitespace around a signature; key file line endings; a roster key whose file is missing. None of these is graded, on purpose: grading a behaviour the instruction does not state would repeat the mistake of Section 3.2. They are recorded with the repository as open specification decisions.</p>
+<h2>4 Reading an attempt: probes and exposure</h2>
+<p>A pass or a fail says that the bytes matched or did not. To say why, two tools read each attempt.</p>
+<p><strong>Probe diagnosis.</strong> A second implementation of the scheme has every rule turned into a switch: 3 forms of header folding, 5 of query ordering, 6 of the signed header set, 3 of the body hash, 2 of the trailing newline, and so on, including every intermediate and declined form from the hard dossier and the webhook signer's rules, 12,960 settings in all. Thirty probe requests each exercise one rule and nothing else, plus the outcome cases of the instruction. Each stored attempt's own sources are rebuilt in a verifier container and run over the probes and the graded sets. The diagnosis then finds, for each probe, which settings reproduce the attempt's canonical hash, and intersects across probes until each rule has one form left; the key rules are read off the signatures and outcomes. Whatever still differs between the attempt and a correct implementation of its own settings is reported as an outcome deviation: the attempt understood the scheme its own way and also departed from the output contract. As a check, the settings the diagnosis lands on are replayed over the graded sets; for every passing attempt the replay matches every line.</p>
+<p><strong>Exposure.</strong> The exposure check reads the attempt's trajectory, concatenates the output of every tool call, and looks for a distinctive phrase from each passage that settles a rule and from each passage that introduces a form that is not final. A rule the attempt got wrong is then classified: left as the starter had it having seen the deciding text, or never having seen it; stopped at an earlier decision; or saw the later decision and kept the earlier one. The check also measures how much of the dossier appeared in tool output, counting only paragraph openings unique to one file so that shared filler sentences do not count. It is a string check on tool output: a passage inside a large <code>cat</code> counts as seen whether or not the model attended to it, which makes "saw it, got it wrong" the conservative category.</p>
+<h2>5 Experimental setup</h2>
+<p>Agent: Claude Code 2.1.286 under Harbor 0.22.0, with Claude Opus 5.5, Claude Sonnet 5.5 and Claude Haiku 4.5. Each attempt is one container with the task's instruction as its only prompt, no interaction, a limit of 2 CPUs and 8 GB, and the verifier in a separate container afterwards. Attempts ran one at a time on an Apple M2 host. Three attempts per cell, 27 attempts in all, $9.84 of model usage at list price.</p>
+<p>A condition is a set of documents and an instruction wording. The base instruction points at the notes in so many words ("the reversals live in the meeting notes next to it"); the hard instruction only says what the rest of the dossier is. To separate the documents from the pointer, each set of documents was also run with the other wording, derived by swapping that one paragraph and nothing else. The three attempts against the first instruction wording form a fifth condition.</p>
+<p>Every attempt was re-graded with the final verifier over its stored <code>/app</code>, so all numbers below are on one verifier.</p>
+<h2>6 Results</h2>
+<h3>6.1 Pass rates</h3>
+<p><strong>Table 3.</strong> Outcomes per condition under the final verifier. Session notes read and appendices read are the share of unique paragraph openings that appeared in tool output.</p>
+<table>
+<thead>
+<tr>
+<th>Documents</th>
+<th>Instruction</th>
+<th>Model</th>
+<th>Solved</th>
+<th>Agent time (min)</th>
+<th>Tool calls</th>
+<th>Cost per attempt</th>
+<th>Session notes read</th>
+<th>Appendices read</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>base</td>
+<td>first, 2 rules unstated</td>
+<td>Opus 5.5</td>
+<td>0 of 3</td>
+<td>1.7 to 2.4</td>
+<td>10 to 13</td>
+<td>$0.57</td>
+<td>38 to 44%</td>
+<td>0 to 4%</td>
+</tr>
+<tr>
+<td>base</td>
+<td>pointed</td>
+<td>Opus 5.5</td>
+<td>3 of 3</td>
+<td>1.5 to 1.8</td>
+<td>12 to 14</td>
+<td>$0.46</td>
+<td>31 to 33%</td>
+<td>1 to 13%</td>
+</tr>
+<tr>
+<td>base</td>
+<td>pointed</td>
+<td>Sonnet 5.5</td>
+<td>3 of 3</td>
+<td>0.8 to 0.9</td>
+<td>11 to 12</td>
+<td>$0.21</td>
+<td>37 to 42%</td>
+<td>0 to 3%</td>
+</tr>
+<tr>
+<td>base</td>
+<td>pointed</td>
+<td>Haiku 4.5</td>
+<td>0 of 3</td>
+<td>1.1 to 1.9</td>
+<td>21 to 25</td>
+<td>$0.20</td>
+<td>32 to 79%</td>
+<td>0%</td>
+</tr>
+<tr>
+<td>base</td>
+<td>neutral</td>
+<td>Haiku 4.5</td>
+<td>0 of 3</td>
+<td>1.8 to 3.0</td>
+<td>34 to 37</td>
+<td>$0.30</td>
+<td>32 to 81%</td>
+<td>0 to 5%</td>
+</tr>
+<tr>
+<td>hard</td>
+<td>neutral</td>
+<td>Opus 5.5</td>
+<td>3 of 3</td>
+<td>1.8 to 2.2</td>
+<td>16 to 18</td>
+<td>$0.81</td>
+<td>99 to 100%</td>
+<td>0 to 5%</td>
+</tr>
+<tr>
+<td>hard</td>
+<td>neutral</td>
+<td>Sonnet 5.5</td>
+<td>3 of 3</td>
+<td>0.7 to 0.9</td>
+<td>6 to 9</td>
+<td>$0.22</td>
+<td>29 to 56%</td>
+<td>0 to 8%</td>
+</tr>
+<tr>
+<td>hard</td>
+<td>neutral</td>
+<td>Haiku 4.5</td>
+<td>0 of 3</td>
+<td>2.0 to 3.2</td>
+<td>24 to 34</td>
+<td>$0.26</td>
+<td>14 to 32%</td>
+<td>0%</td>
+</tr>
+<tr>
+<td>hard</td>
+<td>pointed</td>
+<td>Haiku 4.5</td>
+<td>0 of 3</td>
+<td>2.0 to 3.0</td>
+<td>17 to 34</td>
+<td>$0.24</td>
+<td>32 to 71%</td>
+<td>0%</td>
+</tr>
+</tbody>
+</table>
+<p>Harbor's original score differs from Table 3 in one cell: Haiku on the base documents with the pointed instruction scored 1 of 3 before <code>h3</code> existed. Every passing attempt is also clean on all 30 probes, with no departure from the instruction anywhere, not only on the graded records.</p>
+<p>Opus 5.5 and Sonnet 5.5 solve both variants in every attempt. The hard documents cost Opus more reading (it read essentially all of the session notes, against a third of them on the base documents) and about 75% more per attempt; they cost Sonnet nothing measurable. Haiku 4.5 solved nothing in any condition.</p>
+<h3>6.2 Where Haiku fails: reading against applying</h3>
+<p>Table 4 counts each of the 7 graded rules in each attempt, 21 per cell, by whether the attempt's trajectory ever showed the text that settles the rule and whether the shipped code got the rule right. Opus and Sonnet are 21, 0, 0 in every cell.</p>
+<p><strong>Table 4.</strong> Haiku 4.5, rule instances per condition.</p>
+<table>
+<thead>
+<tr>
+<th>Documents</th>
+<th>Instruction</th>
+<th>Saw the deciding text and got it right</th>
+<th>Saw it, got it wrong</th>
+<th>Never saw it, got it wrong</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>base</td>
+<td>pointed</td>
+<td>16</td>
+<td>0</td>
+<td>5</td>
+</tr>
+<tr>
+<td>base</td>
+<td>neutral</td>
+<td>15</td>
+<td>0</td>
+<td>6</td>
+</tr>
+<tr>
+<td>hard</td>
+<td>pointed</td>
+<td>13</td>
+<td>3</td>
+<td>5</td>
+</tr>
+<tr>
+<td>hard</td>
+<td>neutral</td>
+<td>5</td>
+<td>7</td>
+<td>9</td>
+</tr>
+</tbody>
+</table>
+<p><figure><svg xmlns="http://www.w3.org/2000/svg" width="760" height="428" viewBox="0 0 760 428" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="12">
+<defs>
+<pattern id="hatch-read_wrong" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#b94a1e" stroke-width="1"/></pattern>
+<pattern id="hatch-unread_wrong" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(135)"><line x1="0" y1="0" x2="0" y2="6" stroke="#117a55" stroke-width="1"/></pattern>
+<pattern id="hatch-unread_right" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#9a6a00" stroke-width="1"/></pattern>
+</defs>
+<rect width="760" height="428" fill="#fcfcfb"/>
+<text x="16" y="24" fill="#0b0b0b" font-size="14" font-weight="600">Rule instances per condition: 7 graded rules in each of 3 attempts, 21 per row</text>
+<rect x="16" y="38" width="14" height="14" fill="#2a78d6"/>
+<text x="36" y="49" fill="#52514e">read the deciding text, got the rule right</text>
+<rect x="314.2" y="38" width="14" height="14" fill="#eb6834"/>
+<rect x="314.2" y="38" width="14" height="14" fill="url(#hatch-read_wrong)"/>
+<text x="334.2" y="49" fill="#52514e">read it, left the rule wrong</text>
+<rect x="527" y="38" width="14" height="14" fill="#1baf7a"/>
+<rect x="527" y="38" width="14" height="14" fill="url(#hatch-unread_wrong)"/>
+<text x="547" y="49" fill="#52514e">never read it, left the rule wrong</text>
+<line x1="244" y1="68" x2="244" y2="378" stroke="#c3c2b7" stroke-width="1"/>
+<text x="244" y="396" fill="#898781" text-anchor="middle" font-size="11">0</text>
+<line x1="408" y1="68" x2="408" y2="378" stroke="#e1e0d9" stroke-width="1"/>
+<text x="408" y="396" fill="#898781" text-anchor="middle" font-size="11">7</text>
+<line x1="572" y1="68" x2="572" y2="378" stroke="#e1e0d9" stroke-width="1"/>
+<text x="572" y="396" fill="#898781" text-anchor="middle" font-size="11">14</text>
+<line x1="736" y1="68" x2="736" y2="378" stroke="#e1e0d9" stroke-width="1"/>
+<text x="736" y="396" fill="#898781" text-anchor="middle" font-size="11">21</text>
+<text x="490" y="418" fill="#898781" text-anchor="middle" font-size="11">rule instances (3 attempts × 7 rules)</text>
+<text x="16" y="93" fill="#0b0b0b" font-weight="600">Opus 5.5</text>
+<text x="232" y="93" fill="#52514e" text-anchor="end">base, first wording</text>
+<path d="M244,78 H732 a4,4 0 0 1 4,4 V96 a4,4 0 0 1 -4,4 H244 Z" fill="#2a78d6"/>
+<text x="490" y="93" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="600">21</text>
+<text x="16" y="127" fill="#0b0b0b" font-weight="400"></text>
+<text x="232" y="127" fill="#52514e" text-anchor="end">base, pointed instruction</text>
+<path d="M244,112 H732 a4,4 0 0 1 4,4 V130 a4,4 0 0 1 -4,4 H244 Z" fill="#2a78d6"/>
+<text x="490" y="127" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="600">21</text>
+<text x="16" y="161" fill="#0b0b0b" font-weight="400"></text>
+<text x="232" y="161" fill="#52514e" text-anchor="end">hard, neutral instruction</text>
+<path d="M244,146 H732 a4,4 0 0 1 4,4 V164 a4,4 0 0 1 -4,4 H244 Z" fill="#2a78d6"/>
+<text x="490" y="161" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="600">21</text>
+<line x1="16" y1="174" x2="736" y2="174" stroke="#e1e0d9" stroke-width="1"/>
+<text x="16" y="195" fill="#0b0b0b" font-weight="600">Sonnet 5.5</text>
+<text x="232" y="195" fill="#52514e" text-anchor="end">base, pointed instruction</text>
+<path d="M244,180 H732 a4,4 0 0 1 4,4 V198 a4,4 0 0 1 -4,4 H244 Z" fill="#2a78d6"/>
+<text x="490" y="195" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="600">21</text>
+<text x="16" y="229" fill="#0b0b0b" font-weight="400"></text>
+<text x="232" y="229" fill="#52514e" text-anchor="end">hard, neutral instruction</text>
+<path d="M244,214 H732 a4,4 0 0 1 4,4 V232 a4,4 0 0 1 -4,4 H244 Z" fill="#2a78d6"/>
+<text x="490" y="229" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="600">21</text>
+<line x1="16" y1="242" x2="736" y2="242" stroke="#e1e0d9" stroke-width="1"/>
+<text x="16" y="263" fill="#0b0b0b" font-weight="600">Haiku 4.5</text>
+<text x="232" y="263" fill="#52514e" text-anchor="end">base, pointed instruction</text>
+<path d="M244,248 H618.8571428571429 V270 H244 Z" fill="#2a78d6"/>
+<text x="431.42857142857144" y="263" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="600">16</text>
+<path d="M620.8571428571429,248 H732 a4,4 0 0 1 4,4 V266 a4,4 0 0 1 -4,4 H620.8571428571429 Z" fill="#1baf7a"/>
+<path d="M620.8571428571429,248 H732 a4,4 0 0 1 4,4 V266 a4,4 0 0 1 -4,4 H620.8571428571429 Z" fill="url(#hatch-unread_wrong)"/>
+<text x="678.4285714285714" y="263" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="600">5</text>
+<text x="16" y="297" fill="#0b0b0b" font-weight="400"></text>
+<text x="232" y="297" fill="#52514e" text-anchor="end">base, neutral instruction</text>
+<path d="M244,282 H595.4285714285714 V304 H244 Z" fill="#2a78d6"/>
+<text x="419.7142857142857" y="297" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="600">15</text>
+<path d="M597.4285714285714,282 H732 a4,4 0 0 1 4,4 V300 a4,4 0 0 1 -4,4 H597.4285714285714 Z" fill="#1baf7a"/>
+<path d="M597.4285714285714,282 H732 a4,4 0 0 1 4,4 V300 a4,4 0 0 1 -4,4 H597.4285714285714 Z" fill="url(#hatch-unread_wrong)"/>
+<text x="666.7142857142858" y="297" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="600">6</text>
+<text x="16" y="331" fill="#0b0b0b" font-weight="400"></text>
+<text x="232" y="331" fill="#52514e" text-anchor="end">hard, pointed instruction</text>
+<path d="M244,316 H548.5714285714286 V338 H244 Z" fill="#2a78d6"/>
+<text x="396.2857142857143" y="331" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="600">13</text>
+<path d="M550.5714285714286,316 H618.8571428571429 V338 H550.5714285714286 Z" fill="#eb6834"/>
+<path d="M550.5714285714286,316 H618.8571428571429 V338 H550.5714285714286 Z" fill="url(#hatch-read_wrong)"/>
+<text x="584.7142857142858" y="331" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="600">3</text>
+<path d="M620.8571428571429,316 H732 a4,4 0 0 1 4,4 V334 a4,4 0 0 1 -4,4 H620.8571428571429 Z" fill="#1baf7a"/>
+<path d="M620.8571428571429,316 H732 a4,4 0 0 1 4,4 V334 a4,4 0 0 1 -4,4 H620.8571428571429 Z" fill="url(#hatch-unread_wrong)"/>
+<text x="678.4285714285714" y="331" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="600">5</text>
+<text x="16" y="365" fill="#0b0b0b" font-weight="400"></text>
+<text x="232" y="365" fill="#52514e" text-anchor="end">hard, neutral instruction</text>
+<path d="M244,350 H361.1428571428571 V372 H244 Z" fill="#2a78d6"/>
+<text x="302.57142857142856" y="365" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="600">5</text>
+<path d="M363.1428571428571,350 H525.1428571428571 V372 H363.1428571428571 Z" fill="#eb6834"/>
+<path d="M363.1428571428571,350 H525.1428571428571 V372 H363.1428571428571 Z" fill="url(#hatch-read_wrong)"/>
+<text x="444.1428571428571" y="365" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="600">7</text>
+<path d="M527.1428571428571,350 H732 a4,4 0 0 1 4,4 V368 a4,4 0 0 1 -4,4 H527.1428571428571 Z" fill="#1baf7a"/>
+<path d="M527.1428571428571,350 H732 a4,4 0 0 1 4,4 V368 a4,4 0 0 1 -4,4 H527.1428571428571 Z" fill="url(#hatch-unread_wrong)"/>
+<text x="631.5714285714286" y="365" fill="#ffffff" text-anchor="middle" font-size="11" font-weight="600">9</text>
+</svg></figure></p>
+<p><strong>Figure 2.</strong> Table 4 as a chart, with Opus 5.5 and Sonnet 5.5 for contrast. Hatching carries the series identity in print.</p>
+<p>Two effects sit in the table. The first is reading. In every condition Haiku left 5 to 9 rules untouched because it never opened the note or the capture that settles them; one base attempt got all 5 dossier rules right and never opened the captures, so both key rules stayed as the starter had them. Since one wrong rule breaks every signature, this alone fails almost every attempt. The second effect is the hard documents. On the base documents Haiku applied every deciding passage it retrieved, 31 of 31. On the hard documents, where nothing announces a passage as a change, it applied 18 of 28, and in the neutral-instruction cell 5 of 12. The pointed instruction, one paragraph saying the reversals live in the notes, brought that to 13 of 16 on the same documents. On the base documents the pointer made no measurable difference, 16 and 15 of 21.</p>
+<p>The per-rule breakdown shows that the rules Haiku most often never reached are header folding and query ordering, which live in the two session notes it opens least, and that on the hard documents the roster rule was wrong in all 3 neutral attempts although the captures had been opened in each: the raw <code>strace</code>, with no comment saying what it shows, was read and not acted on.</p>
+<h3>6.3 How the models read</h3>
+<p>Every tool call of every attempt is stored with the repository. The patterns:</p>
+<ul>
+<li><strong>Opus 5.5 on the hard documents</strong> read every session note in all 3 attempts, by <code>cat</code> in one pass or file by file. Two of the three then wrote a short Python script that replaced numbers, partner names and service names with placeholders, so that the generated filler collapsed into a few dozen templates and the hand-written passages stood out; the third wrote a filter listing the filler sentence patterns and printed what remained. One attempt recomputed the sample's already-signed record with <code>node</code> before writing any code.</li>
+<li><strong>Sonnet 5.5 on the hard documents</strong> solved it in 6 to 9 tool calls and under a minute. Its moves were cheaper than Opus's: list the section headings of each note, drop the headings that recur across files (the filler headings come from a small pool), and print only the sections under headings that occur once. One attempt extracted the hand-written sections by naming their headings in an <code>awk</code> filter after a single listing.</li>
+<li><strong>Haiku 4.5</strong> read with the file reader one file at a time, often with a line limit of 100 or 200 lines on notes that run longer, and in several attempts opened only the register, the scheme-freeze note and the rollout note. It did not strip filler in any attempt.</li>
+</ul>
+<p>The filler was meant to defeat keyword search, and it did: no completed attempt found the changed rules by searching for them. It did not defeat normalisation, and generated text cannot: whatever its vocabulary, templated sentences collapse under a regex that blanks the variable parts. A harder version needs hand-written filler.</p>
+<h3>6.4 Self-reports</h3>
+<p>Every Haiku attempt's final message states that the port is complete and correct. In the attempts that failed, those messages name rules the attempt did fix and omit the ones it did not; none says it left a document unread. Opus and Sonnet messages on passing attempts are accurate. The attempt whose score the verifier fix changed (Section 3.3) was, before the fix, indistinguishable from a passing attempt by its own report, by Harbor's score and by its sample output. Only the probe diagnosis separated it.</p>
+<h2>7 Discussion</h2>
+<p><strong>Validate the grader with the same rigour as the model.</strong> Two of the three findings here are about the benchmark, not the models. Both would have gone into a results table as model behaviour: a 0 of 3 for a frontier model on the first version, a 1 of 3 for Haiku on the second. Mutation testing caught neither, because mutants test what the author thought to vary. What caught them was reading attempts at the level of rules and contract sentences, and then turning each finding into a mutant and a graded record so it stays caught. The order matters: diagnose, then add the mutant, then add the record, then re-grade everything stored.</p>
+<p><strong>Separate the documents from the pointer.</strong> The hard variant changed two things at once, the documents and the instruction's one paragraph about where to look, and the first Haiku result, 0 of 3 on hard against 1 of 3 on base before the verifier fix, could have been attributed to either. The two swapped conditions cost six attempts and showed that on the base documents the pointer does not matter and on the hard documents it does.</p>
+<p><strong>Reading, not reasoning, is the bottleneck for the small model here.</strong> Haiku's errors are mostly rules it never had in front of it, and when it does have the text, the base documents' announcements are enough and the hard documents' minutes are not. This is a different failure from the one the task was designed around, taking the first authoritative statement and never checking for a later one. Opus and Sonnet never showed that failure either; they read everything or filtered to the unique passages. Whether the designed failure appears in any current model at this document size is open; it may need documents that do not fit in context, or filler that cannot be stripped.</p>
+<p><strong>A pass should mean clean, not matched.</strong> The probes are stricter than the verifier and are not part of it; they say whether an attempt departs from the instruction anywhere, not only on the graded records. Every passing attempt in this study is clean on all 30. That is a stronger statement than the pass rate, and it is the one a benchmark should report.</p>
+<h2>8 Limitations</h2>
+<p>Three attempts per cell. The tables are observations, not estimates of a rate; a 0 of 3 is consistent with a true rate of one third. Rules within one attempt are not independent, so the 21-per-cell counts in Table 4 overstate the sample size. One agent harness and one model family. The exposure measure is a string match on tool output and over-credits "seen". The red-team covered two angles of the output contract; the output format, canonicalisation edge cases, over-specification and input robustness were not red-teamed to completion. The reading of trajectories in Sections 6.3 and 6.4 is the author's, from the stored tool-call listings. Costs are list prices for API usage.</p>
+<h2>9 Reproducibility</h2>
+<p>The repository contains both tasks in Harbor's format, the reference solutions, the self-grading script that runs the oracle, a no-op agent, the starter and all mutants on both variants on every push, the generators for the hard dossier and all request sets, the analysis tools, the two swapped instructions and the run matrix script. Every stored attempt's sources, trajectory, probe outputs and re-grade are included, with the per-attempt diagnosis and the summary tables above derived from them. The reference solution runs under Harbor with <code>harbor run -p . -a oracle</code>.</p>
+<h2>10 Related work</h2>
+<p>SWE-bench (Jimenez et al., 2024) established the pattern of grading agents on repository-level tasks with hidden tests, and its follow-ups found that the grading itself needs checking: SWE-bench Verified (OpenAI, 2024) had human annotators remove tasks whose tests were under- or over-specified, and SWE-Bench+ (Aleithan et al., 2024) reported solution leakage and weak test cases that let incorrect patches pass. Terminal-Bench and its Harbor harness (The Terminal-Bench Team, 2025) provide the task format used here, with a separate verifier container and a reward file. Mutation testing as a way to measure what a test suite can detect goes back to DeMillo, Lipton and Sayward (1978) and is surveyed by Jia and Harman (2011); this paper applies it to a benchmark verifier rather than to application tests. Long-context evaluations such as needle-in-a-haystack (Kamradt, 2023), Lost in the Middle (Liu et al., 2024) and RULER (Hsieh et al., 2024) test whether a model can find and use a passage; the task here differs in that the passage to find contradicts an earlier, more authoritative looking one, and the measurement is whether the agent's shipped code applies it.</p>
+<h2>References</h2>
+<p>Aleithan, R., Xue, H., Mohajer, M. M., Nnorom, E., Uddin, G., and Wang, S. (2024). SWE-Bench+: Enhanced coding benchmark for LLMs. arXiv:2410.06992.</p>
+<p>DeMillo, R. A., Lipton, R. J., and Sayward, F. G. (1978). Hints on test data selection: Help for the practicing programmer. IEEE Computer, 11(4), 34–41.</p>
+<p>Hsieh, C.-P., Sun, S., Kriman, S., Acharya, S., Rekesh, D., Jia, F., Zhang, Y., and Ginsburg, B. (2024). RULER: What's the real context size of your long-context language models? arXiv:2404.06654.</p>
+<p>Jia, Y., and Harman, M. (2011). An analysis and survey of the development of mutation testing. IEEE Transactions on Software Engineering, 37(5), 649–678.</p>
+<p>Jimenez, C. E., Yang, J., Wettig, A., Yao, S., Pei, K., Press, O., and Narasimhan, K. (2024). SWE-bench: Can language models resolve real-world GitHub issues? International Conference on Learning Representations.</p>
+<p>Kamradt, G. (2023). Needle in a haystack: Pressure testing LLMs. github.com/gkamradt/LLMTest_NeedleInAHaystack.</p>
+<p>Liu, N. F., Lin, K., Hewitt, J., Paranjape, A., Bevilacqua, M., Petroni, F., and Liang, P. (2024). Lost in the middle: How language models use long contexts. Transactions of the Association for Computational Linguistics, 12, 157–173.</p>
+<p>OpenAI (2024). Introducing SWE-bench Verified. openai.com/index/introducing-swe-bench-verified.</p>
+<p>The Terminal-Bench Team (2025). Terminal-Bench: Benchmarking agents on hard, realistic terminal tasks. tbench.ai; Harbor: github.com/laude-institute/harbor.</p>
+<h2>Appendix A. The mutants and what catches them</h2>
+<table>
+<thead>
+<tr>
+<th>Mutant</th>
+<th>What it gets wrong</th>
+<th>Caught by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>header-values-raw</td>
+<td>GW-041 left standing</td>
+<td>sample, h1</td>
+</tr>
+<tr>
+<td>query-sort-name-only</td>
+<td>GW-017 left standing</td>
+<td>h1, h2</td>
+</tr>
+<tr>
+<td>sign-x-gw-only</td>
+<td>GW-023 left standing</td>
+<td>sample, h1, h2, outcomes</td>
+</tr>
+<tr>
+<td>unsigned-sentinel</td>
+<td>GW-009 left standing</td>
+<td>sample, h1, h2</td>
+</tr>
+<tr>
+<td>canonical-trailing-newline</td>
+<td>GW-052 left standing</td>
+<td>sample, h1, h2, outcomes</td>
+</tr>
+<tr>
+<td>key-file-verbatim</td>
+<td>key file used with its newline</td>
+<td>sample, h1, h2, outcomes</td>
+</tr>
+<tr>
+<td>roster-from-directory</td>
+<td>every key file on disk treated as active</td>
+<td>sample, h1, retired-key test, outcomes</td>
+</tr>
+<tr>
+<td>query-sort-decoded-value (hard)</td>
+<td>the 2025-11-18 form kept</td>
+<td>h1</td>
+</tr>
+<tr>
+<td>sign-x-gw-plus-content-type (hard)</td>
+<td>the 2025-11-18 form kept</td>
+<td>sample, h1, h2</td>
+</tr>
+<tr>
+<td>absent-body-unsigned (hard)</td>
+<td>the 2025-10-21 form kept</td>
+<td>sample, h1, h2</td>
+</tr>
+<tr>
+<td>percent-escapes-uppercased (hard)</td>
+<td>withdrawn proposal adopted</td>
+<td>h1</td>
+</tr>
+<tr>
+<td>valueless-parameter-bare (hard)</td>
+<td>backed-out trial kept</td>
+<td>h1, h2</td>
+</tr>
+<tr>
+<td>path-dot-segments-collapsed (hard)</td>
+<td>declined proposal adopted</td>
+<td>h1, h2</td>
+</tr>
+<tr>
+<td>key-id-any-case (hard)</td>
+<td>declined proposal adopted</td>
+<td>h1, h3</td>
+</tr>
+<tr>
+<td>forwarding-headers-unsigned (hard)</td>
+<td>post-freeze request adopted</td>
+<td>h1, h2</td>
+</tr>
+<tr>
+<td>signed-names-comma-joined (hard)</td>
+<td>the webhook signer's rule</td>
+<td>sample, h1, h2, outcomes</td>
+</tr>
+<tr>
+<td>auth-key-id-unbound</td>
+<td><code>keyId</code> in the header not checked against the record</td>
+<td>h3</td>
+</tr>
+<tr>
+<td>signature-case-insensitive</td>
+<td>presented signature compared ignoring case</td>
+<td>h3</td>
+</tr>
+<tr>
+<td>signature-not-trimmed</td>
+<td>whitespace around the presented signature kept</td>
+<td>h3</td>
+</tr>
+<tr>
+<td>short-signature-malformed</td>
+<td>a short or non-hex signature called malformed</td>
+<td>h2, h3</td>
+</tr>
+<tr>
+<td>rejected-signature-empty</td>
+<td><code>signature</code> left empty on a rejected verification</td>
+<td>sample, h2</td>
+</tr>
+<tr>
+<td>auth-loose-separator</td>
+<td>the space after the comma made optional</td>
+<td>h3</td>
+</tr>
+<tr>
+<td>key-id-from-authorization</td>
+<td>key id taken from the header when the key header is absent</td>
+<td>h3</td>
+</tr>
+</tbody>
+</table>
+<h2>Appendix B. The 19 records of <code>h3</code></h2>
+<p>Each record turns one sentence of the instruction into a request: a padded signature verifies; a header naming another key is malformed; an uppercase signature is a mismatch; a missing space after the comma is malformed; a record with no key header is <code>missing-key-id</code> whatever the <code>Authorization</code> header says; an unknown key id is reported before a malformed header; a plain verification and a plain signing; the scheme token in another case, the parameter names in another case, the right key id in the wrong case, two spaces after the comma, spaces around the equals signs, and two spaces after the scheme, each malformed; text after the signature, a quoted signature, and an empty signature, each a mismatch; a key id with path characters, and a roster id in upper case, each <code>unknown-key-id</code>.</p></body></html>

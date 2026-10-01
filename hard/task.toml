@@ -1,0 +1,140 @@
+# TB3.0 task manifest.
+
+name = "migrate-legacy-api-signing-to-a-typescript-evidence-pipeline-hard"
+
+# The verifier rebuilds and re-runs the agent's own TypeScript sources against
+# held-out request sets, so the whole project directory is declared, not just the
+# evidence file the agent writes to /app/out/evidence.ndjson.
+artifacts = ["/app/"]
+
+[metadata]
+author_name = "Tatiana Rogel"
+author_email = "tatianarogel349@gmail.com"
+
+category = "security"
+subcategories = ["Long Context"]
+tags = ["hmac", "request-signing", "canonicalization", "typescript", "audit-evidence"]
+languages = ["TypeScript", "JavaScript", "Bash"]
+codebase_size = "small"
+number_of_milestones = 0
+
+difficulty = "advanced"
+expert_time_estimate_hours = 5
+
+difficulty_explanation = """\
+This is the hard variant of the signing migration task. The scheme the agent \
+has to end up with is the same one, byte for byte, and so is the reference \
+solution. What changed is how the evidence for it is laid out. In the base task \
+every changed rule sat under a heading that named the register entry and said \
+SUPERSEDED, the filler around it was boilerplate, and the captures carried \
+comments explaining what they showed. Agents solved it by reading everything \
+and grepping for the announcement. Here nothing announces itself. The 5 changed \
+rules are written as ordinary minutes under ordinary headings, with no entry \
+ids and none of the words a search would look for. 3 of them changed twice, so \
+the first change an agent finds is itself out of date: query ordering went to \
+name then decoded value before the decoding was dropped, the signed header set \
+picked up content-type before it was widened to everything, and the UNSIGNED \
+token was narrowed to missing bodies before it was removed. 5 more register \
+entries were challenged and left standing: uppercasing percent escapes was \
+proposed and withdrawn, writing a valueless parameter bare was trialled and \
+backed out, and collapsing dot segments, case-insensitive key ids and unsigned \
+forwarding headers were asked for and declined. An agent that adopts any one of \
+them fails. The notes also describe the outbound webhook signer, a separate \
+scheme that does terminate its string with a line feed, signs raw header \
+values and reads its key file with the newline included, and the support log \
+holds dated advice that was right on the day and wrong by the freeze. The \
+generated text around all this talks about headers, query strings, key files \
+and newlines too, so the scheme cannot be recovered by filtering on vocabulary. \
+The key that is off the roster is named gw-prod-03 and looks like the others. \
+The captures have no comments. And the one sample record that arrives already \
+signed carries only x-gw-* headers, one query parameter and a body, so it \
+verifies as soon as the trailing newline and the key length are right, with 4 \
+of the 5 changed rules still wrong.\
+"""
+
+solution_explanation = """\
+Read the session notes in date order and keep, for each register entry, the \
+last thing that was actually agreed before the scheme was frozen on 2025-12-02. \
+Header values are folded from 2025-11-04. Query parameters sort by name then \
+value on the text as it arrives: the 2025-11-18 addendum introduced the value \
+ordering with percent-decoding and the 2025-11-25 partner review took the \
+decoding out. The signed header set is everything except authorization: the \
+2025-11-18 stopgap added only content-type and the freeze replaced the list. \
+The body hash is always SHA-256 of the body bytes, with a missing body treated \
+as zero length: the 2025-10-21 note kept UNSIGNED for missing bodies and the \
+freeze removed the token. The canonical string has no trailing newline, per the \
+design doc audit at the freeze. The other 5 challenged entries stand as the \
+register has them: percent escapes keep their case, a parameter with no = is \
+written with a trailing =, the path is signed as received, key ids are matched \
+exactly, and via and x-forwarded-for are signed like any other header because \
+that request came after the freeze and was declined. Everything said about the \
+webhook signer is ignored. The last 2 rules come from the captures. Each key \
+file is 33 bytes and is read whole, ending in a newline, and only the 32 bytes \
+before it reproduce the Authorization header on the sample's signed record. \
+The strace lists the key directory and then opens gw-prod-01 and gw-prod-02 \
+only, the lsof holds the same 2, and the rollout note says activating \
+gw-prod-03 is a separate change, so a request naming it is an unknown-key-id. \
+The reference solution is the base task's with the roster comment updated.\
+"""
+
+verification_explanation = """\
+The verifier is the base task's with new request sets. The evidence at \
+/app/out/evidence.ndjson has to match the approved bytes for the shipped \
+requests. Then the verifier recompiles the agent's own TypeScript in a \
+separate container and runs it against 3 request sets the agent never saw, and \
+all 3 have to come out byte exact. The third set grades the output contract in \
+instruction.md, one sentence per record, and is the same in both variants. The \
+held-out sets carry the inputs that separate a rule's final form from its \
+intermediate one and an adopted change from a declined one: values that sort \
+differently once decoded, a missing body next to an empty one, a request with \
+content-type and host and forwarding headers, dot segments and a lowercase \
+percent escape in the path, a parameter with no =, a key id in upper case, and \
+a signed record that only verifies if every rule is right at once. Running \
+twice has to give the same bytes. gw-prod-03.key loses its permissions before \
+one run and that run must be unaffected. One run happens with every proxy \
+variable aimed at a dead port, and the sources are scanned for network \
+clients. The 8 sample records have to carry the right outcome and reason. \
+ci/validate.sh grades the oracle, a no-op agent, the starter and 23 mutants \
+against this verifier: the base task's 7 rule mutants and 7 contract mutants, \
+plus 9 that each adopt one intermediate or declined rule. Every mutant has to \
+compile, run and score 0. All of it runs as a user that owns nothing outside \
+its own scratch directory, in a container built after the agent's is gone.\
+"""
+
+relevant_experience = """\
+I have spent about 7 years on document intelligence and model evaluation. \
+Right now I am a Clinical AI Specialist at iFlipd. Before that I spent 3 and \
+a half years as a Document Intelligence Analyst at Arck Interactive, and I \
+started out doing NLP and machine learning work at Smarsh. I hold a BS in \
+Artificial Intelligence from the University of Portland. Most of my day goes \
+into pulling facts out of long, messy source material, clinical notes, scanned \
+records, OCR output that came back half wrong, and then proving the extraction \
+was actually right instead of just believable. Reviewing model output, hunting \
+failure cases, and validating extracted fields against ground truth is the job. \
+I built this task around a failure I have watched happen repeatedly. A system \
+reads the first authoritative looking statement it finds, never checks whether \
+something later overrode it, and produces output that looks completely fine. \
+Nobody catches it until someone diffs it against a known good answer. That is \
+why the register here is append only and says so, why the reversals sit in \
+meeting notes instead, and why 2 of the 7 rules only exist in the syscall \
+captures. I graded it on byte exact output across held out inputs for the same \
+reason I do that at work. Plausible output and correct output are not the same \
+thing, and only one of them survives being checked.\
+"""
+
+[verifier]
+timeout_sec = 600
+# "separate" is required: the verifier runs in its own container built from
+# tests/Dockerfile, after the agent's container is torn down. Tests and oracle
+# data are therefore never visible to the agent.
+environment_mode = "separate"
+
+[agent]
+timeout_sec = 3600
+
+[environment]
+network_mode = "public"
+build_timeout_sec = 900
+cpus = 2
+memory_mb = 8192
+storage_mb = 10240

@@ -1,0 +1,276 @@
+{
+  "scheme-case-insensitive": {
+    "method": "GET",
+    "target": "/v5/contract/scheme-case",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "Host",
+        "contract.example.net"
+      ],
+      [
+        "Authorization",
+        "gw-hmac-sha256 keyId=gw-prod-01, signature=e099d88899bec39373cbe051d5ea433bf8580f1e523f7b73d4f50fd4995055b5"
+      ]
+    ]
+  },
+  "param-names-case-insensitive": {
+    "method": "GET",
+    "target": "/v5/contract/param-case",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-02"
+      ],
+      [
+        "Host",
+        "contract.example.net"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyid=gw-prod-02, Signature=052d35870fddf96442980a1e645c18d2c002db1035225f140dff2b29c9d7912c"
+      ]
+    ]
+  },
+  "keyid-value-case-insensitive": {
+    "method": "GET",
+    "target": "/v5/contract/keyid-case",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "Host",
+        "contract.example.net"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=GW-PROD-01, signature=d1d2de70beca00673f1a45bce03bf02874bfcf5e254da86b448d2fa7ef5e54fb"
+      ]
+    ]
+  },
+  "comma-then-one-or-more-spaces": {
+    "method": "GET",
+    "target": "/v5/contract/two-spaces",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-02"
+      ],
+      [
+        "Host",
+        "contract.example.net"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-02,  signature=4694714e62b84ec09ed71b225e5240a46bc0187d6ae3d8e3704a770170de10bf"
+      ]
+    ]
+  },
+  "whitespace-around-equals-and-before-comma": {
+    "method": "GET",
+    "target": "/v5/contract/spaced-equals",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "Host",
+        "contract.example.net"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId = gw-prod-01 , signature = 55e32941d2cfd0ebdad9c33827ad83290f4409f44e24ce57bcab7fdf33d4bedf"
+      ]
+    ]
+  },
+  "scheme-then-one-or-more-spaces": {
+    "method": "GET",
+    "target": "/v5/contract/scheme-two-spaces",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "Host",
+        "contract.example.net"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256  keyId=gw-prod-01, signature=61ed1db20b7eeacacf8f91dbb6afa071fd7a5535e5ac5f309eddbef003e843de"
+      ]
+    ]
+  },
+  "trailing-params-ignored": {
+    "method": "GET",
+    "target": "/v5/contract/trailing-param",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-02"
+      ],
+      [
+        "Host",
+        "contract.example.net"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-02, signature=ced832e8dac086f4822c842436ca0478596c748faec6de89284e06b7c24330bf, nonce=17"
+      ]
+    ]
+  },
+  "quoted-signature-accepted": {
+    "method": "GET",
+    "target": "/v5/contract/quoted",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "Host",
+        "contract.example.net"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-01, signature=\"d5fb5e5f07662279e1cc869121c33df20b0c7e7b0bb11b1bf5ff2278ed0001a3\""
+      ]
+    ]
+  },
+  "empty-signature-malformed": {
+    "method": "GET",
+    "target": "/v5/contract/empty-sig",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-02"
+      ],
+      [
+        "Host",
+        "contract.example.net"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-02, signature="
+      ]
+    ]
+  },
+  "leading-whitespace-is-malformed": {
+    "method": "GET",
+    "target": "/v5/contract/leading-space",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "Host",
+        "contract.example.net"
+      ],
+      [
+        "Authorization",
+        " GW-HMAC-SHA256 keyId=gw-prod-01, signature=53e224a6a3e3b605940a1fd4c8e511c2dfc3361abdad239057a51149d996d3d6"
+      ]
+    ]
+  },
+  "header-name-case-sensitive": {
+    "method": "GET",
+    "target": "/v5/contract/lower-name",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-02"
+      ],
+      [
+        "Host",
+        "contract.example.net"
+      ],
+      [
+        "authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-02, signature=cc43abd2c8d85d0af57ec875c28d818f2ed8ab1995f59a6a11d268c6527dc2ac"
+      ]
+    ]
+  },
+  "duplicate-authorization": {
+    "method": "GET",
+    "target": "/v5/contract/dup",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "Host",
+        "contract.example.net"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-01, signature=965a0b6fa8b265068e89bc82429328797e1d8ddc60003f92abbcf2cc01eefdf7"
+      ],
+      [
+        "Authorization",
+        "Bearer x"
+      ]
+    ]
+  },
+  "empty-authorization-value-as-absent": {
+    "method": "GET",
+    "target": "/v5/contract/empty-auth",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-02"
+      ],
+      [
+        "Host",
+        "contract.example.net"
+      ],
+      [
+        "Authorization",
+        ""
+      ]
+    ]
+  },
+  "trim-ascii-space-tab-only": {
+    "method": "GET",
+    "target": "/v5/contract/tab-padded",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "Host",
+        "contract.example.net"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-01, signature=\t72f5f385f9b699830c6e1e2f30c1e27caa7bcff13270fde6c79b7449f0686b86\r\n"
+      ]
+    ]
+  },
+  "record-key-id-untrimmed": {
+    "method": "GET",
+    "target": "/v5/contract/padded-key-id",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        " gw-prod-02 "
+      ],
+      [
+        "Host",
+        "contract.example.net"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-02, signature=2a84eddeadc8ab2d09164f74475c078e1b660e2aa7d8d746d9cf319ae2e53ab3"
+      ]
+    ]
+  }
+}

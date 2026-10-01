@@ -1,0 +1,17 @@
+{
+    "jobs_dir": "/Users/administrator/jet/signing-agent-jobs",
+    "n_attempts": 3,
+    "n_concurrent_trials": 1,
+    "quiet": true,
+    "agents": [
+        {
+            "name": "claude-code",
+            "model_name": "anthropic/claude-opus-5-5"
+        }
+    ],
+    "tasks": [
+        {
+            "path": "/Users/administrator/jet/signing-task"
+        }
+    ]
+}

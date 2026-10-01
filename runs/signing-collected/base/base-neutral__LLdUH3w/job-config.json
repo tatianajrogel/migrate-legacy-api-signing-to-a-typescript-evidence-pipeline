@@ -1,0 +1,17 @@
+{
+    "jobs_dir": "/Users/administrator/jet/signing-base-agent-jobs",
+    "n_attempts": 3,
+    "n_concurrent_trials": 1,
+    "quiet": true,
+    "agents": [
+        {
+            "name": "claude-code",
+            "model_name": "anthropic/claude-haiku-4-5-20251001"
+        }
+    ],
+    "tasks": [
+        {
+            "path": "/var/folders/83/jrm1szbs6pq0zzw01nj54v1w0000gn/T/tmp.uyvBxGdgeZ/base-neutral"
+        }
+    ]
+}

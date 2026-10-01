@@ -1,0 +1,866 @@
+[
+  {
+    "id": "scheme-case-insensitive",
+    "description": "the scheme token GW-HMAC-SHA256 is matched ignoring case",
+    "survivesBase": true,
+    "survivesHard": true,
+    "caughtBy": [],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-prod-01"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          "gw-hmac-sha256 keyId=gw-prod-01, signature=9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66"
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"malformed-authorization\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"verified\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\"}",
+    "diffs": {
+      "base": {},
+      "hard": {}
+    }
+  },
+  {
+    "id": "param-names-case-insensitive",
+    "description": "the parameter names keyId and signature are matched ignoring case",
+    "survivesBase": true,
+    "survivesHard": true,
+    "caughtBy": [],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-prod-01"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          "GW-HMAC-SHA256 keyid=gw-prod-01, Signature=9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66"
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"malformed-authorization\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"verified\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\"}",
+    "diffs": {
+      "base": {},
+      "hard": {}
+    }
+  },
+  {
+    "id": "keyid-value-case-insensitive",
+    "description": "the keyId inside the header is compared to the record key id ignoring case",
+    "survivesBase": true,
+    "survivesHard": true,
+    "caughtBy": [],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-prod-01"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          "GW-HMAC-SHA256 keyId=GW-PROD-01, signature=9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66"
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"malformed-authorization\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"verified\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\"}",
+    "diffs": {
+      "base": {},
+      "hard": {}
+    }
+  },
+  {
+    "id": "comma-then-one-or-more-spaces",
+    "description": "after the comma, any run of 1+ spaces/tabs is accepted (zero is still malformed)",
+    "survivesBase": true,
+    "survivesHard": true,
+    "caughtBy": [],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-prod-01"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          "GW-HMAC-SHA256 keyId=gw-prod-01,  signature=9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66"
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"malformed-authorization\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"verified\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\"}",
+    "diffs": {
+      "base": {},
+      "hard": {}
+    }
+  },
+  {
+    "id": "whitespace-around-equals-and-before-comma",
+    "description": "optional whitespace around '=' and before the comma is accepted",
+    "survivesBase": true,
+    "survivesHard": true,
+    "caughtBy": [],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-prod-01"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          "GW-HMAC-SHA256 keyId = gw-prod-01 , signature = 9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66"
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"malformed-authorization\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"verified\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\"}",
+    "diffs": {
+      "base": {},
+      "hard": {}
+    }
+  },
+  {
+    "id": "scheme-then-one-or-more-spaces",
+    "description": "after the scheme token, any run of 1+ spaces is accepted",
+    "survivesBase": true,
+    "survivesHard": false,
+    "caughtBy": [
+      "hard/h2 seq 5"
+    ],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-prod-01"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          "GW-HMAC-SHA256  keyId=gw-prod-01, signature=9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66"
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"malformed-authorization\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"verified\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\"}",
+    "diffs": {
+      "base": {},
+      "hard": {
+        "h2": [
+          {
+            "seq": 5,
+            "expected": "{\"seq\":5,\"key_id\":\"gw-prod-01\",\"method\":\"GET\",\"path\":\"/v4/ledger\",\"outcome\":\"rejected\",\"signature\":\"bf3848897b5acefcc41211dd70b7a3f1a806447a0942837eb4e8859602e3a545\",\"canonical_sha256\":\"0e779ef0293f446ab22e31352643f9e821275d529a158d83b8a92294a5abe6ab\",\"reason\":\"malformed-authorization\"}",
+            "got": "{\"seq\":5,\"key_id\":\"gw-prod-01\",\"method\":\"GET\",\"path\":\"/v4/ledger\",\"outcome\":\"rejected\",\"signature\":\"bf3848897b5acefcc41211dd70b7a3f1a806447a0942837eb4e8859602e3a545\",\"canonical_sha256\":\"0e779ef0293f446ab22e31352643f9e821275d529a158d83b8a92294a5abe6ab\",\"reason\":\"signature-mismatch\"}"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "leading-whitespace-is-malformed",
+    "description": "the header value is taken untrimmed, so a leading space before the scheme is malformed-authorization",
+    "survivesBase": true,
+    "survivesHard": true,
+    "caughtBy": [],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-prod-01"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          " GW-HMAC-SHA256 keyId=gw-prod-01, signature=9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66"
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"verified\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"malformed-authorization\"}",
+    "diffs": {
+      "base": {},
+      "hard": {}
+    }
+  },
+  {
+    "id": "header-name-case-sensitive",
+    "description": "only a header literally named Authorization is seen; 'authorization' is treated as absent (record is signed)",
+    "survivesBase": true,
+    "survivesHard": true,
+    "caughtBy": [],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-prod-01"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "authorization",
+          "GW-HMAC-SHA256 keyId=gw-prod-01, signature=9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66"
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"verified\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"signed\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\"}",
+    "diffs": {
+      "base": {},
+      "hard": {}
+    }
+  },
+  {
+    "id": "duplicate-authorization-last-wins",
+    "description": "with 2 Authorization headers the last is verified (reference verifies the first)",
+    "survivesBase": true,
+    "survivesHard": true,
+    "caughtBy": [],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-prod-01"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          "GW-HMAC-SHA256 keyId=gw-prod-01, signature=9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66"
+        ],
+        [
+          "Authorization",
+          "Bearer x"
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"verified\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"malformed-authorization\"}",
+    "diffs": {
+      "base": {},
+      "hard": {}
+    }
+  },
+  {
+    "id": "duplicate-authorization-malformed",
+    "description": "with 2 Authorization headers the record is malformed-authorization",
+    "survivesBase": true,
+    "survivesHard": true,
+    "caughtBy": [],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-prod-01"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          "GW-HMAC-SHA256 keyId=gw-prod-01, signature=9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66"
+        ],
+        [
+          "Authorization",
+          "Bearer x"
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"verified\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"malformed-authorization\"}",
+    "diffs": {
+      "base": {},
+      "hard": {}
+    }
+  },
+  {
+    "id": "empty-signature-malformed",
+    "description": "nothing after signature= is malformed-authorization instead of signature-mismatch",
+    "survivesBase": true,
+    "survivesHard": true,
+    "caughtBy": [],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-prod-01"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          "GW-HMAC-SHA256 keyId=gw-prod-01, signature="
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"signature-mismatch\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"malformed-authorization\"}",
+    "diffs": {
+      "base": {},
+      "hard": {}
+    }
+  },
+  {
+    "id": "trailing-params-ignored",
+    "description": "the presented signature is the token up to the first ',' or whitespace; trailing text/params are ignored",
+    "survivesBase": true,
+    "survivesHard": true,
+    "caughtBy": [],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-prod-01"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          "GW-HMAC-SHA256 keyId=gw-prod-01, signature=9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66, nonce=17"
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"signature-mismatch\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"verified\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\"}",
+    "diffs": {
+      "base": {},
+      "hard": {}
+    }
+  },
+  {
+    "id": "trailing-text-malformed",
+    "description": "a presented signature containing internal whitespace or a comma is malformed-authorization",
+    "survivesBase": true,
+    "survivesHard": true,
+    "caughtBy": [],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-prod-01"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          "GW-HMAC-SHA256 keyId=gw-prod-01, signature=9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66, nonce=17"
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"signature-mismatch\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"malformed-authorization\"}",
+    "diffs": {
+      "base": {},
+      "hard": {}
+    }
+  },
+  {
+    "id": "quoted-signature-accepted",
+    "description": "a presented signature wrapped in double quotes is unquoted before comparison",
+    "survivesBase": true,
+    "survivesHard": true,
+    "caughtBy": [],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-prod-01"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          "GW-HMAC-SHA256 keyId=gw-prod-01, signature=\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\""
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"signature-mismatch\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"verified\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\"}",
+    "diffs": {
+      "base": {},
+      "hard": {}
+    }
+  },
+  {
+    "id": "empty-authorization-value-as-absent",
+    "description": "an Authorization header with an empty or whitespace-only value is treated as no header (record is signed)",
+    "survivesBase": true,
+    "survivesHard": true,
+    "caughtBy": [],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-prod-01"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          ""
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"malformed-authorization\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"signed\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\"}",
+    "diffs": {
+      "base": {},
+      "hard": {}
+    }
+  },
+  {
+    "id": "trim-ascii-space-tab-only",
+    "description": "only spaces and tabs count as surrounding whitespace of the presented signature; NBSP/CR/LF padding is a mismatch",
+    "survivesBase": true,
+    "survivesHard": true,
+    "caughtBy": [],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-prod-01"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          "GW-HMAC-SHA256 keyId=gw-prod-01, signature= 9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66 "
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"verified\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"signature-mismatch\"}",
+    "diffs": {
+      "base": {},
+      "hard": {}
+    }
+  },
+  {
+    "id": "record-key-id-untrimmed",
+    "description": "the x-gw-key-id value is used untrimmed, so ' gw-prod-01 ' is unknown-key-id and key_id carries the spaces",
+    "survivesBase": true,
+    "survivesHard": true,
+    "caughtBy": [],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          " gw-prod-01 "
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          "GW-HMAC-SHA256 keyId=gw-prod-01, signature=9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66"
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"verified\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\" gw-prod-01 \",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"unknown-key-id\"}",
+    "diffs": {
+      "base": {},
+      "hard": {}
+    }
+  },
+  {
+    "id": "reason-after-outcome-key-order",
+    "description": "the reason key is emitted immediately after outcome rather than last",
+    "survivesBase": false,
+    "survivesHard": false,
+    "caughtBy": [
+      "base/sample seq 4,5,7,8",
+      "base/h1 seq 3",
+      "base/h2 seq 2,3",
+      "base/h3 seq 2,3,4,5,6",
+      "hard/sample seq 4,5,7,8",
+      "hard/h1 seq 3,7",
+      "hard/h2 seq 2,3,5",
+      "hard/h3 seq 2,3,4,5,6"
+    ],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-prod-01"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          "Bearer z"
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"malformed-authorization\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"reason\":\"malformed-authorization\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\"}",
+    "diffs": {
+      "base": {
+        "sample": [
+          {
+            "seq": 4,
+            "expected": "{\"seq\":4,\"key_id\":\"gw-legacy-99\",\"method\":\"POST\",\"path\":\"/v2/refunds\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"32d5d22517134786b632bfbc7ed3cf4ac95c97fcfe00b694b1964e6997cbfde2\",\"reason\":\"unknown-key-id\"}",
+            "got": "{\"seq\":4,\"key_id\":\"gw-legacy-99\",\"method\":\"POST\",\"path\":\"/v2/refunds\",\"outcome\":\"rejected\",\"reason\":\"unknown-key-id\",\"signature\":\"\",\"canonical_sha256\":\"32d5d22517134786b632bfbc7ed3cf4ac95c97fcfe00b694b1964e6997cbfde2\"}"
+          },
+          {
+            "seq": 5,
+            "expected": "{\"seq\":5,\"key_id\":\"\",\"method\":\"DELETE\",\"path\":\"/v2/webhooks/12\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"6931315d8988f5ccaa8bfde931ba8a8fe373300aaecef7e130550bb529cd9842\",\"reason\":\"missing-key-id\"}",
+            "got": "{\"seq\":5,\"key_id\":\"\",\"method\":\"DELETE\",\"path\":\"/v2/webhooks/12\",\"outcome\":\"rejected\",\"reason\":\"missing-key-id\",\"signature\":\"\",\"canonical_sha256\":\"6931315d8988f5ccaa8bfde931ba8a8fe373300aaecef7e130550bb529cd9842\"}"
+          },
+          {
+            "seq": 7,
+            "expected": "{\"seq\":7,\"key_id\":\"gw-prod-02\",\"method\":\"POST\",\"path\":\"/v2/settlement\",\"outcome\":\"rejected\",\"signature\":\"34059f302a32b98f2fc15c05c8cafb4b13a40ea1654d34ac6509ced6f4e9bccf\",\"canonical_sha256\":\"b77a368e0e6a033eb8696025ec712938069fac1e0278bcca8f723221011ce504\",\"reason\":\"signature-mismatch\"}",
+            "got": "{\"seq\":7,\"key_id\":\"gw-prod-02\",\"method\":\"POST\",\"path\":\"/v2/settlement\",\"outcome\":\"rejected\",\"reason\":\"signature-mismatch\",\"signature\":\"34059f302a32b98f2fc15c05c8cafb4b13a40ea1654d34ac6509ced6f4e9bccf\",\"canonical_sha256\":\"b77a368e0e6a033eb8696025ec712938069fac1e0278bcca8f723221011ce504\"}"
+          },
+          {
+            "seq": 8,
+            "expected": "{\"seq\":8,\"key_id\":\"gw-prod-01\",\"method\":\"GET\",\"path\":\"/v2/ledger\",\"outcome\":\"rejected\",\"signature\":\"b43cfff6d6ed576aa8b132157edb43ec2635b95363494f296b1c4b6fba5e4f5a\",\"canonical_sha256\":\"27ba8ed44f7507f9f92fd20e90574c1f339188a173d6fc029e6cf699c0a4f230\",\"reason\":\"malformed-authorization\"}",
+            "got": "{\"seq\":8,\"key_id\":\"gw-prod-01\",\"method\":\"GET\",\"path\":\"/v2/ledger\",\"outcome\":\"rejected\",\"reason\":\"malformed-authorization\",\"signature\":\"b43cfff6d6ed576aa8b132157edb43ec2635b95363494f296b1c4b6fba5e4f5a\",\"canonical_sha256\":\"27ba8ed44f7507f9f92fd20e90574c1f339188a173d6fc029e6cf699c0a4f230\"}"
+          }
+        ],
+        "h1": [
+          {
+            "seq": 3,
+            "expected": "{\"seq\":3,\"key_id\":\"gw-legacy-99\",\"method\":\"POST\",\"path\":\"/v3/payouts\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"c51dc9daeec71d286eb48593d0ebdbbfa019ac0bd142aa25cc39e1a4a3cabd64\",\"reason\":\"unknown-key-id\"}",
+            "got": "{\"seq\":3,\"key_id\":\"gw-legacy-99\",\"method\":\"POST\",\"path\":\"/v3/payouts\",\"outcome\":\"rejected\",\"reason\":\"unknown-key-id\",\"signature\":\"\",\"canonical_sha256\":\"c51dc9daeec71d286eb48593d0ebdbbfa019ac0bd142aa25cc39e1a4a3cabd64\"}"
+          }
+        ],
+        "h2": [
+          {
+            "seq": 2,
+            "expected": "{\"seq\":2,\"key_id\":\"\",\"method\":\"DELETE\",\"path\":\"/v4/catalog/9\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"78c5490a8daef56a982cfa9aa576766575727c3ad84c27fe0dc26c8206e1cc0b\",\"reason\":\"missing-key-id\"}",
+            "got": "{\"seq\":2,\"key_id\":\"\",\"method\":\"DELETE\",\"path\":\"/v4/catalog/9\",\"outcome\":\"rejected\",\"reason\":\"missing-key-id\",\"signature\":\"\",\"canonical_sha256\":\"78c5490a8daef56a982cfa9aa576766575727c3ad84c27fe0dc26c8206e1cc0b\"}"
+          },
+          {
+            "seq": 3,
+            "expected": "{\"seq\":3,\"key_id\":\"gw-prod-02\",\"method\":\"GET\",\"path\":\"/v4/ledger\",\"outcome\":\"rejected\",\"signature\":\"a3273e8612bafc8d4d45e643a689eb0fc83fdaf8d03813c1033cca24e88e255c\",\"canonical_sha256\":\"062d158c77e15fc856861cc63be2c01340b6ab9d7cbc953c3308844c875eaad3\",\"reason\":\"signature-mismatch\"}",
+            "got": "{\"seq\":3,\"key_id\":\"gw-prod-02\",\"method\":\"GET\",\"path\":\"/v4/ledger\",\"outcome\":\"rejected\",\"reason\":\"signature-mismatch\",\"signature\":\"a3273e8612bafc8d4d45e643a689eb0fc83fdaf8d03813c1033cca24e88e255c\",\"canonical_sha256\":\"062d158c77e15fc856861cc63be2c01340b6ab9d7cbc953c3308844c875eaad3\"}"
+          }
+        ],
+        "h3": [
+          {
+            "seq": 2,
+            "expected": "{\"seq\":2,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/v5/contract/other-key\",\"outcome\":\"rejected\",\"signature\":\"24033f0e5844f42f6e9d9cfc8e11434211a6a67e991d428f463a62fc0ca9a30e\",\"canonical_sha256\":\"59d293ce6e8a801396945ec70081d13e1e581a54c42d05bea140586a32c199e5\",\"reason\":\"malformed-authorization\"}",
+            "got": "{\"seq\":2,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/v5/contract/other-key\",\"outcome\":\"rejected\",\"reason\":\"malformed-authorization\",\"signature\":\"24033f0e5844f42f6e9d9cfc8e11434211a6a67e991d428f463a62fc0ca9a30e\",\"canonical_sha256\":\"59d293ce6e8a801396945ec70081d13e1e581a54c42d05bea140586a32c199e5\"}"
+          },
+          {
+            "seq": 3,
+            "expected": "{\"seq\":3,\"key_id\":\"gw-prod-01\",\"method\":\"GET\",\"path\":\"/v5/contract/upper\",\"outcome\":\"rejected\",\"signature\":\"16a8ddc3b14410bbf6354ad49c3a38cec62074454d20de7a1def0803889c26be\",\"canonical_sha256\":\"c702274c9e6c348b69ea38240da8b5dee36eb7be100f5fa07d8885307dcacefe\",\"reason\":\"signature-mismatch\"}",
+            "got": "{\"seq\":3,\"key_id\":\"gw-prod-01\",\"method\":\"GET\",\"path\":\"/v5/contract/upper\",\"outcome\":\"rejected\",\"reason\":\"signature-mismatch\",\"signature\":\"16a8ddc3b14410bbf6354ad49c3a38cec62074454d20de7a1def0803889c26be\",\"canonical_sha256\":\"c702274c9e6c348b69ea38240da8b5dee36eb7be100f5fa07d8885307dcacefe\"}"
+          },
+          {
+            "seq": 4,
+            "expected": "{\"seq\":4,\"key_id\":\"gw-prod-02\",\"method\":\"GET\",\"path\":\"/v5/contract/comma\",\"outcome\":\"rejected\",\"signature\":\"a9b314344f6d17e544bd53eaec7a30aa869608e82049328f194064e9c2926f4d\",\"canonical_sha256\":\"bc3aa178f03ab3fa49cfddea9ef9a920fa7fba60e2532b14505227d6d40c4a8d\",\"reason\":\"malformed-authorization\"}",
+            "got": "{\"seq\":4,\"key_id\":\"gw-prod-02\",\"method\":\"GET\",\"path\":\"/v5/contract/comma\",\"outcome\":\"rejected\",\"reason\":\"malformed-authorization\",\"signature\":\"a9b314344f6d17e544bd53eaec7a30aa869608e82049328f194064e9c2926f4d\",\"canonical_sha256\":\"bc3aa178f03ab3fa49cfddea9ef9a920fa7fba60e2532b14505227d6d40c4a8d\"}"
+          },
+          {
+            "seq": 5,
+            "expected": "{\"seq\":5,\"key_id\":\"\",\"method\":\"POST\",\"path\":\"/v5/contract/no-key\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"7983bf46c2c20de1613a46b0dbfa191792b87944a4092940229d7fac5c665a75\",\"reason\":\"missing-key-id\"}",
+            "got": "{\"seq\":5,\"key_id\":\"\",\"method\":\"POST\",\"path\":\"/v5/contract/no-key\",\"outcome\":\"rejected\",\"reason\":\"missing-key-id\",\"signature\":\"\",\"canonical_sha256\":\"7983bf46c2c20de1613a46b0dbfa191792b87944a4092940229d7fac5c665a75\"}"
+          },
+          {
+            "seq": 6,
+            "expected": "{\"seq\":6,\"key_id\":\"gw-prod-09\",\"method\":\"GET\",\"path\":\"/v5/contract/unknown\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"2e57a183a34888f485137d6c22899f95a7121859d56d6b70aa77e803ffebbec8\",\"reason\":\"unknown-key-id\"}",
+            "got": "{\"seq\":6,\"key_id\":\"gw-prod-09\",\"method\":\"GET\",\"path\":\"/v5/contract/unknown\",\"outcome\":\"rejected\",\"reason\":\"unknown-key-id\",\"signature\":\"\",\"canonical_sha256\":\"2e57a183a34888f485137d6c22899f95a7121859d56d6b70aa77e803ffebbec8\"}"
+          }
+        ]
+      },
+      "hard": {
+        "sample": [
+          {
+            "seq": 4,
+            "expected": "{\"seq\":4,\"key_id\":\"gw-prod-03\",\"method\":\"POST\",\"path\":\"/v2/refunds\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"c2ef503668e69b55504096b6e6c35fc177c18d99b542e027cb05597c202b0c56\",\"reason\":\"unknown-key-id\"}",
+            "got": "{\"seq\":4,\"key_id\":\"gw-prod-03\",\"method\":\"POST\",\"path\":\"/v2/refunds\",\"outcome\":\"rejected\",\"reason\":\"unknown-key-id\",\"signature\":\"\",\"canonical_sha256\":\"c2ef503668e69b55504096b6e6c35fc177c18d99b542e027cb05597c202b0c56\"}"
+          },
+          {
+            "seq": 5,
+            "expected": "{\"seq\":5,\"key_id\":\"\",\"method\":\"DELETE\",\"path\":\"/v2/webhooks/12\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"6931315d8988f5ccaa8bfde931ba8a8fe373300aaecef7e130550bb529cd9842\",\"reason\":\"missing-key-id\"}",
+            "got": "{\"seq\":5,\"key_id\":\"\",\"method\":\"DELETE\",\"path\":\"/v2/webhooks/12\",\"outcome\":\"rejected\",\"reason\":\"missing-key-id\",\"signature\":\"\",\"canonical_sha256\":\"6931315d8988f5ccaa8bfde931ba8a8fe373300aaecef7e130550bb529cd9842\"}"
+          },
+          {
+            "seq": 7,
+            "expected": "{\"seq\":7,\"key_id\":\"gw-prod-02\",\"method\":\"POST\",\"path\":\"/v2/settlement\",\"outcome\":\"rejected\",\"signature\":\"880cf7281e6d7ecd885d030aff479999a653ba2448da3441a2d27c661b4a978f\",\"canonical_sha256\":\"88c90abe277630e5be9a4bd8ef543e2a80ead98901231a1022d59debfbc3147a\",\"reason\":\"signature-mismatch\"}",
+            "got": "{\"seq\":7,\"key_id\":\"gw-prod-02\",\"method\":\"POST\",\"path\":\"/v2/settlement\",\"outcome\":\"rejected\",\"reason\":\"signature-mismatch\",\"signature\":\"880cf7281e6d7ecd885d030aff479999a653ba2448da3441a2d27c661b4a978f\",\"canonical_sha256\":\"88c90abe277630e5be9a4bd8ef543e2a80ead98901231a1022d59debfbc3147a\"}"
+          },
+          {
+            "seq": 8,
+            "expected": "{\"seq\":8,\"key_id\":\"gw-prod-01\",\"method\":\"GET\",\"path\":\"/v2/ledger\",\"outcome\":\"rejected\",\"signature\":\"b43cfff6d6ed576aa8b132157edb43ec2635b95363494f296b1c4b6fba5e4f5a\",\"canonical_sha256\":\"27ba8ed44f7507f9f92fd20e90574c1f339188a173d6fc029e6cf699c0a4f230\",\"reason\":\"malformed-authorization\"}",
+            "got": "{\"seq\":8,\"key_id\":\"gw-prod-01\",\"method\":\"GET\",\"path\":\"/v2/ledger\",\"outcome\":\"rejected\",\"reason\":\"malformed-authorization\",\"signature\":\"b43cfff6d6ed576aa8b132157edb43ec2635b95363494f296b1c4b6fba5e4f5a\",\"canonical_sha256\":\"27ba8ed44f7507f9f92fd20e90574c1f339188a173d6fc029e6cf699c0a4f230\"}"
+          }
+        ],
+        "h1": [
+          {
+            "seq": 3,
+            "expected": "{\"seq\":3,\"key_id\":\"gw-prod-03\",\"method\":\"POST\",\"path\":\"/v3/payouts\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"5d7152cf1d358c1fffeb890455c28a8356049618ff883681c39a6f4adb4d2eb1\",\"reason\":\"unknown-key-id\"}",
+            "got": "{\"seq\":3,\"key_id\":\"gw-prod-03\",\"method\":\"POST\",\"path\":\"/v3/payouts\",\"outcome\":\"rejected\",\"reason\":\"unknown-key-id\",\"signature\":\"\",\"canonical_sha256\":\"5d7152cf1d358c1fffeb890455c28a8356049618ff883681c39a6f4adb4d2eb1\"}"
+          },
+          {
+            "seq": 7,
+            "expected": "{\"seq\":7,\"key_id\":\"GW-PROD-01\",\"method\":\"GET\",\"path\":\"/v3/catalog\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"1d078dadaae9919b963582e90cd01ab6d752f79b3da7cd1487fb1a8a89978ae7\",\"reason\":\"unknown-key-id\"}",
+            "got": "{\"seq\":7,\"key_id\":\"GW-PROD-01\",\"method\":\"GET\",\"path\":\"/v3/catalog\",\"outcome\":\"rejected\",\"reason\":\"unknown-key-id\",\"signature\":\"\",\"canonical_sha256\":\"1d078dadaae9919b963582e90cd01ab6d752f79b3da7cd1487fb1a8a89978ae7\"}"
+          }
+        ],
+        "h2": [
+          {
+            "seq": 2,
+            "expected": "{\"seq\":2,\"key_id\":\"\",\"method\":\"DELETE\",\"path\":\"/v4/catalog/9\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"78c5490a8daef56a982cfa9aa576766575727c3ad84c27fe0dc26c8206e1cc0b\",\"reason\":\"missing-key-id\"}",
+            "got": "{\"seq\":2,\"key_id\":\"\",\"method\":\"DELETE\",\"path\":\"/v4/catalog/9\",\"outcome\":\"rejected\",\"reason\":\"missing-key-id\",\"signature\":\"\",\"canonical_sha256\":\"78c5490a8daef56a982cfa9aa576766575727c3ad84c27fe0dc26c8206e1cc0b\"}"
+          },
+          {
+            "seq": 3,
+            "expected": "{\"seq\":3,\"key_id\":\"gw-prod-02\",\"method\":\"GET\",\"path\":\"/v4/ledger\",\"outcome\":\"rejected\",\"signature\":\"a3273e8612bafc8d4d45e643a689eb0fc83fdaf8d03813c1033cca24e88e255c\",\"canonical_sha256\":\"062d158c77e15fc856861cc63be2c01340b6ab9d7cbc953c3308844c875eaad3\",\"reason\":\"signature-mismatch\"}",
+            "got": "{\"seq\":3,\"key_id\":\"gw-prod-02\",\"method\":\"GET\",\"path\":\"/v4/ledger\",\"outcome\":\"rejected\",\"reason\":\"signature-mismatch\",\"signature\":\"a3273e8612bafc8d4d45e643a689eb0fc83fdaf8d03813c1033cca24e88e255c\",\"canonical_sha256\":\"062d158c77e15fc856861cc63be2c01340b6ab9d7cbc953c3308844c875eaad3\"}"
+          },
+          {
+            "seq": 5,
+            "expected": "{\"seq\":5,\"key_id\":\"gw-prod-01\",\"method\":\"GET\",\"path\":\"/v4/ledger\",\"outcome\":\"rejected\",\"signature\":\"bf3848897b5acefcc41211dd70b7a3f1a806447a0942837eb4e8859602e3a545\",\"canonical_sha256\":\"0e779ef0293f446ab22e31352643f9e821275d529a158d83b8a92294a5abe6ab\",\"reason\":\"malformed-authorization\"}",
+            "got": "{\"seq\":5,\"key_id\":\"gw-prod-01\",\"method\":\"GET\",\"path\":\"/v4/ledger\",\"outcome\":\"rejected\",\"reason\":\"malformed-authorization\",\"signature\":\"bf3848897b5acefcc41211dd70b7a3f1a806447a0942837eb4e8859602e3a545\",\"canonical_sha256\":\"0e779ef0293f446ab22e31352643f9e821275d529a158d83b8a92294a5abe6ab\"}"
+          }
+        ],
+        "h3": [
+          {
+            "seq": 2,
+            "expected": "{\"seq\":2,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/v5/contract/other-key\",\"outcome\":\"rejected\",\"signature\":\"24033f0e5844f42f6e9d9cfc8e11434211a6a67e991d428f463a62fc0ca9a30e\",\"canonical_sha256\":\"59d293ce6e8a801396945ec70081d13e1e581a54c42d05bea140586a32c199e5\",\"reason\":\"malformed-authorization\"}",
+            "got": "{\"seq\":2,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/v5/contract/other-key\",\"outcome\":\"rejected\",\"reason\":\"malformed-authorization\",\"signature\":\"24033f0e5844f42f6e9d9cfc8e11434211a6a67e991d428f463a62fc0ca9a30e\",\"canonical_sha256\":\"59d293ce6e8a801396945ec70081d13e1e581a54c42d05bea140586a32c199e5\"}"
+          },
+          {
+            "seq": 3,
+            "expected": "{\"seq\":3,\"key_id\":\"gw-prod-01\",\"method\":\"GET\",\"path\":\"/v5/contract/upper\",\"outcome\":\"rejected\",\"signature\":\"16a8ddc3b14410bbf6354ad49c3a38cec62074454d20de7a1def0803889c26be\",\"canonical_sha256\":\"c702274c9e6c348b69ea38240da8b5dee36eb7be100f5fa07d8885307dcacefe\",\"reason\":\"signature-mismatch\"}",
+            "got": "{\"seq\":3,\"key_id\":\"gw-prod-01\",\"method\":\"GET\",\"path\":\"/v5/contract/upper\",\"outcome\":\"rejected\",\"reason\":\"signature-mismatch\",\"signature\":\"16a8ddc3b14410bbf6354ad49c3a38cec62074454d20de7a1def0803889c26be\",\"canonical_sha256\":\"c702274c9e6c348b69ea38240da8b5dee36eb7be100f5fa07d8885307dcacefe\"}"
+          },
+          {
+            "seq": 4,
+            "expected": "{\"seq\":4,\"key_id\":\"gw-prod-02\",\"method\":\"GET\",\"path\":\"/v5/contract/comma\",\"outcome\":\"rejected\",\"signature\":\"a9b314344f6d17e544bd53eaec7a30aa869608e82049328f194064e9c2926f4d\",\"canonical_sha256\":\"bc3aa178f03ab3fa49cfddea9ef9a920fa7fba60e2532b14505227d6d40c4a8d\",\"reason\":\"malformed-authorization\"}",
+            "got": "{\"seq\":4,\"key_id\":\"gw-prod-02\",\"method\":\"GET\",\"path\":\"/v5/contract/comma\",\"outcome\":\"rejected\",\"reason\":\"malformed-authorization\",\"signature\":\"a9b314344f6d17e544bd53eaec7a30aa869608e82049328f194064e9c2926f4d\",\"canonical_sha256\":\"bc3aa178f03ab3fa49cfddea9ef9a920fa7fba60e2532b14505227d6d40c4a8d\"}"
+          },
+          {
+            "seq": 5,
+            "expected": "{\"seq\":5,\"key_id\":\"\",\"method\":\"POST\",\"path\":\"/v5/contract/no-key\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"7983bf46c2c20de1613a46b0dbfa191792b87944a4092940229d7fac5c665a75\",\"reason\":\"missing-key-id\"}",
+            "got": "{\"seq\":5,\"key_id\":\"\",\"method\":\"POST\",\"path\":\"/v5/contract/no-key\",\"outcome\":\"rejected\",\"reason\":\"missing-key-id\",\"signature\":\"\",\"canonical_sha256\":\"7983bf46c2c20de1613a46b0dbfa191792b87944a4092940229d7fac5c665a75\"}"
+          },
+          {
+            "seq": 6,
+            "expected": "{\"seq\":6,\"key_id\":\"gw-prod-09\",\"method\":\"GET\",\"path\":\"/v5/contract/unknown\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"2e57a183a34888f485137d6c22899f95a7121859d56d6b70aa77e803ffebbec8\",\"reason\":\"unknown-key-id\"}",
+            "got": "{\"seq\":6,\"key_id\":\"gw-prod-09\",\"method\":\"GET\",\"path\":\"/v5/contract/unknown\",\"outcome\":\"rejected\",\"reason\":\"unknown-key-id\",\"signature\":\"\",\"canonical_sha256\":\"2e57a183a34888f485137d6c22899f95a7121859d56d6b70aa77e803ffebbec8\"}"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "CONTROL-malformed-before-unknown-key",
+    "description": "control: well-formedness checked before the roster, so an unknown key with a Bearer header is malformed",
+    "survivesBase": false,
+    "survivesHard": false,
+    "caughtBy": [
+      "base/h3 seq 6",
+      "hard/h3 seq 6"
+    ],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-nope-00"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          "Bearer t"
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-nope-00\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"f16436d6731d64f40233e106c040607f7fda6ca5a6ce253e3218d36c1770ed20\",\"reason\":\"unknown-key-id\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-nope-00\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"f16436d6731d64f40233e106c040607f7fda6ca5a6ce253e3218d36c1770ed20\",\"reason\":\"malformed-authorization\"}",
+    "diffs": {
+      "base": {
+        "h3": [
+          {
+            "seq": 6,
+            "expected": "{\"seq\":6,\"key_id\":\"gw-prod-09\",\"method\":\"GET\",\"path\":\"/v5/contract/unknown\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"2e57a183a34888f485137d6c22899f95a7121859d56d6b70aa77e803ffebbec8\",\"reason\":\"unknown-key-id\"}",
+            "got": "{\"seq\":6,\"key_id\":\"gw-prod-09\",\"method\":\"GET\",\"path\":\"/v5/contract/unknown\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"2e57a183a34888f485137d6c22899f95a7121859d56d6b70aa77e803ffebbec8\",\"reason\":\"malformed-authorization\"}"
+          }
+        ]
+      },
+      "hard": {
+        "h3": [
+          {
+            "seq": 6,
+            "expected": "{\"seq\":6,\"key_id\":\"gw-prod-09\",\"method\":\"GET\",\"path\":\"/v5/contract/unknown\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"2e57a183a34888f485137d6c22899f95a7121859d56d6b70aa77e803ffebbec8\",\"reason\":\"unknown-key-id\"}",
+            "got": "{\"seq\":6,\"key_id\":\"gw-prod-09\",\"method\":\"GET\",\"path\":\"/v5/contract/unknown\",\"outcome\":\"rejected\",\"signature\":\"\",\"canonical_sha256\":\"2e57a183a34888f485137d6c22899f95a7121859d56d6b70aa77e803ffebbec8\",\"reason\":\"malformed-authorization\"}"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "id": "CONTROL-scheme-whitespace-run",
+    "description": "control: 1+ spaces after the scheme accepted (expected caught by hard h2 record 5 only)",
+    "survivesBase": true,
+    "survivesHard": false,
+    "caughtBy": [
+      "hard/h2 seq 5"
+    ],
+    "exampleChangesOutput": true,
+    "example": {
+      "method": "POST",
+      "target": "/rt/auth",
+      "headers": [
+        [
+          "X-GW-Key-Id",
+          "gw-prod-01"
+        ],
+        [
+          "Host",
+          "redteam.example.net"
+        ],
+        [
+          "Authorization",
+          "GW-HMAC-SHA256  keyId=gw-prod-01, signature=9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66"
+        ]
+      ],
+      "body": "b"
+    },
+    "expectedLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"rejected\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\",\"reason\":\"malformed-authorization\"}",
+    "departureLine": "{\"seq\":1,\"key_id\":\"gw-prod-01\",\"method\":\"POST\",\"path\":\"/rt/auth\",\"outcome\":\"verified\",\"signature\":\"9e9c6061854cd9c53724bb0936e3bcecd4d1eab12353983fbf61a1c0274d0f66\",\"canonical_sha256\":\"dd0c0fc162bcde1d974ecfed27138cd748491e13abb5b680f8a8fc20736283b3\"}",
+    "diffs": {
+      "base": {},
+      "hard": {
+        "h2": [
+          {
+            "seq": 5,
+            "expected": "{\"seq\":5,\"key_id\":\"gw-prod-01\",\"method\":\"GET\",\"path\":\"/v4/ledger\",\"outcome\":\"rejected\",\"signature\":\"bf3848897b5acefcc41211dd70b7a3f1a806447a0942837eb4e8859602e3a545\",\"canonical_sha256\":\"0e779ef0293f446ab22e31352643f9e821275d529a158d83b8a92294a5abe6ab\",\"reason\":\"malformed-authorization\"}",
+            "got": "{\"seq\":5,\"key_id\":\"gw-prod-01\",\"method\":\"GET\",\"path\":\"/v4/ledger\",\"outcome\":\"rejected\",\"signature\":\"bf3848897b5acefcc41211dd70b7a3f1a806447a0942837eb4e8859602e3a545\",\"canonical_sha256\":\"0e779ef0293f446ab22e31352643f9e821275d529a158d83b8a92294a5abe6ab\",\"reason\":\"signature-mismatch\"}"
+          }
+        ]
+      }
+    }
+  }
+]

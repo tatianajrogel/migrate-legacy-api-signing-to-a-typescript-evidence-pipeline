@@ -1,0 +1,160 @@
+[harness] base/sample: OK   cf4c8c1e8d935d802838f6f3f5f39871b83cca554d65904319df14fe1f94e3a0
+[harness] base/h1: OK   0a1332b46a3c8ff8b15f1f89f53d483e3c85185fbd00c28aba9454b3a0755420
+[harness] base/h2: OK   83089c61af1f0c911e5626f3f3d00dd21d045e364160a19d1defa850befafbb0
+[harness] base/h3: OK   62b7ce36f02fbd8bd0f4552d7befbb6b12bda522c58106607ecdaa5ea1f2cbdf
+[harness] hard/sample: OK   4742b162386f85ebd6c5e195bbb4eb81882d8dbd9fea3e41285162b858d7d5b0
+[harness] hard/h1: OK   894907e217d0c6a84825fb9352915cd7c74e7c1c0ac32ae84bbd28381534305f
+[harness] hard/h2: OK   31f418d63672e2a2bd3a040e0af104cfc411d564fca612a57383853d4dbcf7de
+[harness] hard/h3: OK   62b7ce36f02fbd8bd0f4552d7befbb6b12bda522c58106607ecdaa5ea1f2cbdf
+
+== D0 keyEvidence with defaults (sanity): SURVIVES all 8 graded sets
+   base/sample=same base/h1=same base/h2=same base/h3=same hard/sample=same hard/h1=same hard/h2=same hard/h3=same
+
+== D1a header name matched exactly 'X-GW-Key-Id': caught
+   base/sample=DIFF base/h1=DIFF base/h2=same base/h3=same hard/sample=DIFF hard/h1=DIFF hard/h2=same hard/h3=same
+
+== D1b header name matched exactly 'x-gw-key-id': caught
+   base/sample=DIFF base/h1=DIFF base/h2=DIFF base/h3=DIFF hard/sample=DIFF hard/h1=DIFF hard/h2=DIFF hard/h3=DIFF
+   [D1a/base] request:   {"method":"GET","target":"/v2/health","headers":[["x-gw-key-id","gw-prod-02"],["host","gw.example.com"]]}
+   [D1a/base] expected:  {"seq":1,"key_id":"gw-prod-02","method":"GET","path":"/v2/health","outcome":"signed","signature":"74506630a8648be13af744e730a72abea6efd4f8ab00acb232b50c17d40ea5d3","canonical_sha256":"bab98b8d31b51e202d1d09d2c14559196220efe1ef4325f3e3d132aebc6e39ca"}
+   [D1a/base] departure: {"seq":1,"key_id":"","method":"GET","path":"/v2/health","outcome":"rejected","signature":"","canonical_sha256":"bab98b8d31b51e202d1d09d2c14559196220efe1ef4325f3e3d132aebc6e39ca","reason":"missing-key-id"}
+   [D1a/base] differs:   true
+
+== D2 key id value verbatim, not trimmed: SURVIVES all 8 graded sets
+   base/sample=same base/h1=same base/h2=same base/h3=same hard/sample=same hard/h1=same hard/h2=same hard/h3=same
+   [D2-spaces/base] request:   {"method":"POST","target":"/k/t?b=2&a=1","headers":[["X-GW-Key-Id"," gw-prod-01 "],["Host","k.example"]],"body":"{}"}
+   [D2-spaces/base] expected:  {"seq":1,"key_id":"gw-prod-01","method":"POST","path":"/k/t","outcome":"signed","signature":"50663fa85c793ad5bc0abcd532fb78c8f7e6ff30f8246e9f0b4b6bf7c3486579","canonical_sha256":"bdcd9ef139e8bde86e4bf1673baf233b283f5494b18559039e8e32f62ff5afd6"}
+   [D2-spaces/base] departure: {"seq":1,"key_id":" gw-prod-01 ","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"bdcd9ef139e8bde86e4bf1673baf233b283f5494b18559039e8e32f62ff5afd6","reason":"unknown-key-id"}
+   [D2-spaces/base] differs:   true
+   [D2-spaces/hard] request:   {"method":"POST","target":"/k/t?b=2&a=1","headers":[["X-GW-Key-Id"," gw-prod-01 "],["Host","k.example"]],"body":"{}"}
+   [D2-spaces/hard] expected:  {"seq":1,"key_id":"gw-prod-01","method":"POST","path":"/k/t","outcome":"signed","signature":"50663fa85c793ad5bc0abcd532fb78c8f7e6ff30f8246e9f0b4b6bf7c3486579","canonical_sha256":"bdcd9ef139e8bde86e4bf1673baf233b283f5494b18559039e8e32f62ff5afd6"}
+   [D2-spaces/hard] departure: {"seq":1,"key_id":" gw-prod-01 ","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"bdcd9ef139e8bde86e4bf1673baf233b283f5494b18559039e8e32f62ff5afd6","reason":"unknown-key-id"}
+   [D2-spaces/hard] differs:   true
+   [D2-tab-newline/base] request:   {"method":"POST","target":"/k/t?b=2&a=1","headers":[["X-GW-Key-Id","gw-prod-01\t\n"],["Host","k.example"]],"body":"{}"}
+   [D2-tab-newline/base] expected:  {"seq":1,"key_id":"gw-prod-01","method":"POST","path":"/k/t","outcome":"signed","signature":"50663fa85c793ad5bc0abcd532fb78c8f7e6ff30f8246e9f0b4b6bf7c3486579","canonical_sha256":"bdcd9ef139e8bde86e4bf1673baf233b283f5494b18559039e8e32f62ff5afd6"}
+   [D2-tab-newline/base] departure: {"seq":1,"key_id":"gw-prod-01\t\n","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"bdcd9ef139e8bde86e4bf1673baf233b283f5494b18559039e8e32f62ff5afd6","reason":"unknown-key-id"}
+   [D2-tab-newline/base] differs:   true
+   [D2-verify/base] request:   {"method":"POST","target":"/k/t?b=2&a=1","headers":[["X-GW-Key-Id"," gw-prod-01"],["Host","k.example"],["Authorization","GW-HMAC-SHA256 keyId= gw-prod-01, signature=x"]],"body":"{}"}
+   [D2-verify/base] expected:  {"seq":1,"key_id":"gw-prod-01","method":"POST","path":"/k/t","outcome":"rejected","signature":"50663fa85c793ad5bc0abcd532fb78c8f7e6ff30f8246e9f0b4b6bf7c3486579","canonical_sha256":"bdcd9ef139e8bde86e4bf1673baf233b283f5494b18559039e8e32f62ff5afd6","reason":"malformed-authorization"}
+   [D2-verify/base] departure: {"seq":1,"key_id":" gw-prod-01","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"bdcd9ef139e8bde86e4bf1673baf233b283f5494b18559039e8e32f62ff5afd6","reason":"unknown-key-id"}
+   [D2-verify/base] differs:   true
+
+== D3 duplicate x-gw-key-id: last wins: SURVIVES all 8 graded sets
+   base/sample=same base/h1=same base/h2=same base/h3=same hard/sample=same hard/h1=same hard/h2=same hard/h3=same
+   [D3/base] request:   {"method":"POST","target":"/k/dup","headers":[["X-GW-Key-Id","gw-prod-01"],["Host","k.example"],["x-gw-key-id","gw-prod-02"]],"body":"{}"}
+   [D3/base] expected:  {"seq":1,"key_id":"gw-prod-01","method":"POST","path":"/k/dup","outcome":"signed","signature":"01b6377ea7ac349379243f7e8436a465482fd11840df0ae1f8342b6e02732219","canonical_sha256":"933ab2d4a37678b4b516ea2ec974c0a1e42dc54f1f9f95f8ffecc5d8c6c07ae6"}
+   [D3/base] departure: {"seq":1,"key_id":"gw-prod-02","method":"POST","path":"/k/dup","outcome":"signed","signature":"c3da3206160f56aa0263ffd8e58c363aa18afb92310415acee5fc8e736b3e344","canonical_sha256":"933ab2d4a37678b4b516ea2ec974c0a1e42dc54f1f9f95f8ffecc5d8c6c07ae6"}
+   [D3/base] differs:   true
+   [D3/hard] request:   {"method":"POST","target":"/k/dup","headers":[["X-GW-Key-Id","gw-prod-01"],["Host","k.example"],["x-gw-key-id","gw-prod-02"]],"body":"{}"}
+   [D3/hard] expected:  {"seq":1,"key_id":"gw-prod-01","method":"POST","path":"/k/dup","outcome":"signed","signature":"01b6377ea7ac349379243f7e8436a465482fd11840df0ae1f8342b6e02732219","canonical_sha256":"933ab2d4a37678b4b516ea2ec974c0a1e42dc54f1f9f95f8ffecc5d8c6c07ae6"}
+   [D3/hard] departure: {"seq":1,"key_id":"gw-prod-02","method":"POST","path":"/k/dup","outcome":"signed","signature":"c3da3206160f56aa0263ffd8e58c363aa18afb92310415acee5fc8e736b3e344","canonical_sha256":"933ab2d4a37678b4b516ea2ec974c0a1e42dc54f1f9f95f8ffecc5d8c6c07ae6"}
+   [D3/hard] differs:   true
+   [D3-unknown-then-roster/base] request:   {"method":"POST","target":"/k/dup","headers":[["X-GW-Key-Id","gw-nope-00"],["X-GW-Key-Id","gw-prod-01"]],"body":"{}"}
+   [D3-unknown-then-roster/base] expected:  {"seq":1,"key_id":"gw-nope-00","method":"POST","path":"/k/dup","outcome":"rejected","signature":"","canonical_sha256":"193fa3518972a131d853ba7a1109ee890013999a2480048ec6e81ce220a1b809","reason":"unknown-key-id"}
+   [D3-unknown-then-roster/base] departure: {"seq":1,"key_id":"gw-prod-01","method":"POST","path":"/k/dup","outcome":"signed","signature":"f7df311f15b529b849c2a3042e975c4bbfea5c48cd2660e84189d139e3875338","canonical_sha256":"193fa3518972a131d853ba7a1109ee890013999a2480048ec6e81ce220a1b809"}
+   [D3-unknown-then-roster/base] differs:   true
+
+== D4 empty x-gw-key-id value counts as present (unknown-key-id): SURVIVES all 8 graded sets
+   base/sample=same base/h1=same base/h2=same base/h3=same hard/sample=same hard/h1=same hard/h2=same hard/h3=same
+   [D4-empty/base] request:   {"method":"POST","target":"/k/t?b=2&a=1","headers":[["X-GW-Key-Id",""],["Host","k.example"]],"body":"{}"}
+   [D4-empty/base] expected:  {"seq":1,"key_id":"","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"33f028e82f1aa4814ea0c8b331936db94e3fc5991be1dccf9356c1da11b9d101","reason":"missing-key-id"}
+   [D4-empty/base] departure: {"seq":1,"key_id":"","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"33f028e82f1aa4814ea0c8b331936db94e3fc5991be1dccf9356c1da11b9d101","reason":"unknown-key-id"}
+   [D4-empty/base] differs:   true
+   [D4-empty/hard] request:   {"method":"POST","target":"/k/t?b=2&a=1","headers":[["X-GW-Key-Id",""],["Host","k.example"]],"body":"{}"}
+   [D4-empty/hard] expected:  {"seq":1,"key_id":"","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"33f028e82f1aa4814ea0c8b331936db94e3fc5991be1dccf9356c1da11b9d101","reason":"missing-key-id"}
+   [D4-empty/hard] departure: {"seq":1,"key_id":"","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"33f028e82f1aa4814ea0c8b331936db94e3fc5991be1dccf9356c1da11b9d101","reason":"unknown-key-id"}
+   [D4-empty/hard] differs:   true
+   [D4-spaces/base] request:   {"method":"POST","target":"/k/t?b=2&a=1","headers":[["X-GW-Key-Id","   "],["Host","k.example"]],"body":"{}"}
+   [D4-spaces/base] expected:  {"seq":1,"key_id":"","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"33f028e82f1aa4814ea0c8b331936db94e3fc5991be1dccf9356c1da11b9d101","reason":"missing-key-id"}
+   [D4-spaces/base] departure: {"seq":1,"key_id":"","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"33f028e82f1aa4814ea0c8b331936db94e3fc5991be1dccf9356c1da11b9d101","reason":"unknown-key-id"}
+   [D4-spaces/base] differs:   true
+   [D4-spaces-verbatim/base] request:   {"method":"POST","target":"/k/t?b=2&a=1","headers":[["X-GW-Key-Id","   "],["Host","k.example"]],"body":"{}"}
+   [D4-spaces-verbatim/base] expected:  {"seq":1,"key_id":"","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"33f028e82f1aa4814ea0c8b331936db94e3fc5991be1dccf9356c1da11b9d101","reason":"missing-key-id"}
+   [D4-spaces-verbatim/base] departure: {"seq":1,"key_id":"   ","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"33f028e82f1aa4814ea0c8b331936db94e3fc5991be1dccf9356c1da11b9d101","reason":"unknown-key-id"}
+   [D4-spaces-verbatim/base] differs:   true
+
+== D5 resolve /app/keys/<id>.key then check basename against roster: SURVIVES all 8 graded sets
+   base/sample=same base/h1=same base/h2=same base/h3=same hard/sample=same hard/h1=same hard/h2=same hard/h3=same
+   [D5-dotdot/base] request:   {"method":"POST","target":"/k/t?b=2&a=1","headers":[["X-GW-Key-Id","../keys/gw-prod-01"],["Host","k.example"]],"body":"{}"}
+   [D5-dotdot/base] expected:  {"seq":1,"key_id":"../keys/gw-prod-01","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"1fd716f1967466a3f0cd4a8693c9a40f2e2a05b2553c7e6472d9ab7ba3671e8a","reason":"unknown-key-id"}
+   [D5-dotdot/base] departure: {"seq":1,"key_id":"../keys/gw-prod-01","method":"POST","path":"/k/t","outcome":"signed","signature":"87bb4034c93f881ed3f493aa8c7b9f3d1183ead7165cde6a3493db50f309f0d6","canonical_sha256":"1fd716f1967466a3f0cd4a8693c9a40f2e2a05b2553c7e6472d9ab7ba3671e8a"}
+   [D5-dotdot/base] differs:   true
+   [D5-dotdot/hard] request:   {"method":"POST","target":"/k/t?b=2&a=1","headers":[["X-GW-Key-Id","../keys/gw-prod-01"],["Host","k.example"]],"body":"{}"}
+   [D5-dotdot/hard] expected:  {"seq":1,"key_id":"../keys/gw-prod-01","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"1fd716f1967466a3f0cd4a8693c9a40f2e2a05b2553c7e6472d9ab7ba3671e8a","reason":"unknown-key-id"}
+   [D5-dotdot/hard] departure: {"seq":1,"key_id":"../keys/gw-prod-01","method":"POST","path":"/k/t","outcome":"signed","signature":"87bb4034c93f881ed3f493aa8c7b9f3d1183ead7165cde6a3493db50f309f0d6","canonical_sha256":"1fd716f1967466a3f0cd4a8693c9a40f2e2a05b2553c7e6472d9ab7ba3671e8a"}
+   [D5-dotdot/hard] differs:   true
+   [D5-dot/base] request:   {"method":"POST","target":"/k/t?b=2&a=1","headers":[["X-GW-Key-Id","./gw-prod-02"],["Host","k.example"]],"body":"{}"}
+   [D5-dot/base] expected:  {"seq":1,"key_id":"./gw-prod-02","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"83e0e82c8ddf7bcb44e8ecba6d9bcfb360da5200873ef8bd8e199eec0ccb21d7","reason":"unknown-key-id"}
+   [D5-dot/base] departure: {"seq":1,"key_id":"./gw-prod-02","method":"POST","path":"/k/t","outcome":"signed","signature":"387720363421331265db9733a05b06522fb407387fc22b1db04981e2e5815b8b","canonical_sha256":"83e0e82c8ddf7bcb44e8ecba6d9bcfb360da5200873ef8bd8e199eec0ccb21d7"}
+   [D5-dot/base] differs:   true
+   [D5-abs/base] request:   {"method":"POST","target":"/k/t?b=2&a=1","headers":[["X-GW-Key-Id","/app/keys/gw-prod-01"],["Host","k.example"]],"body":"{}"}
+   [D5-abs/base] expected:  {"seq":1,"key_id":"/app/keys/gw-prod-01","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"8ee2c3c1e734f1eb36beba09cd4280beea4402bfcef4c51b1eee59475483cd22","reason":"unknown-key-id"}
+   [D5-abs/base] departure: {"seq":1,"key_id":"/app/keys/gw-prod-01","method":"POST","path":"/k/t","outcome":"signed","signature":"3f64637a6cfa55297b200e10ea0a841c456fa7a503c258b0824517a3c05b1d34","canonical_sha256":"8ee2c3c1e734f1eb36beba09cd4280beea4402bfcef4c51b1eee59475483cd22"}
+   [D5-abs/base] differs:   true
+
+== D6 key id matched in any case (lowercased): caught
+   base/sample=same base/h1=same base/h2=same base/h3=same hard/sample=same hard/h1=DIFF hard/h2=same hard/h3=same
+   [D6/base] request:   {"method":"POST","target":"/k/t?b=2&a=1","headers":[["X-GW-Key-Id","GW-PROD-01"],["Host","k.example"]],"body":"{}"}
+   [D6/base] expected:  {"seq":1,"key_id":"GW-PROD-01","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"2bc729fb46b3ebbcac3b1025a296ddf1c0c6f86e75ef969af2486bb4b7a6bdea","reason":"unknown-key-id"}
+   [D6/base] departure: {"seq":1,"key_id":"GW-PROD-01","method":"POST","path":"/k/t","outcome":"signed","signature":"66c0fdc72350ae2eb19829a01804a2cc0c9993e66839239abaa9dd2ff8249582","canonical_sha256":"2bc729fb46b3ebbcac3b1025a296ddf1c0c6f86e75ef969af2486bb4b7a6bdea"}
+   [D6/base] differs:   true
+   [D6/hard] request:   {"method":"POST","target":"/k/t?b=2&a=1","headers":[["X-GW-Key-Id","GW-PROD-01"],["Host","k.example"]],"body":"{}"}
+   [D6/hard] expected:  {"seq":1,"key_id":"GW-PROD-01","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"2bc729fb46b3ebbcac3b1025a296ddf1c0c6f86e75ef969af2486bb4b7a6bdea","reason":"unknown-key-id"}
+   [D6/hard] departure: {"seq":1,"key_id":"GW-PROD-01","method":"POST","path":"/k/t","outcome":"signed","signature":"66c0fdc72350ae2eb19829a01804a2cc0c9993e66839239abaa9dd2ff8249582","canonical_sha256":"2bc729fb46b3ebbcac3b1025a296ddf1c0c6f86e75ef969af2486bb4b7a6bdea"}
+   [D6/hard] differs:   true
+
+== D7 key bytes: strip-one-lf: SURVIVES all 8 graded sets
+   base/sample=same base/h1=same base/h2=same base/h3=same hard/sample=same hard/h1=same hard/h2=same hard/h3=same
+
+== D7 key bytes: trimEnd: SURVIVES all 8 graded sets
+   base/sample=same base/h1=same base/h2=same base/h3=same hard/sample=same hard/h1=same hard/h2=same hard/h3=same
+
+== D7 key bytes: trim: SURVIVES all 8 graded sets
+   base/sample=same base/h1=same base/h2=same base/h3=same hard/sample=same hard/h1=same hard/h2=same hard/h3=same
+
+== D7 key bytes: verbatim: caught
+   base/sample=DIFF base/h1=DIFF base/h2=DIFF base/h3=DIFF hard/sample=DIFF hard/h1=DIFF hard/h2=DIFF hard/h3=DIFF
+
+   [D7] key bytes each reader yields on synthetic key file contents (hex):
+   [D7] file LF                strip-all-trailing-crlf=32B strip-one-lf=32B trimEnd=32B trim=32B verbatim=33B
+   [D7] file CRLF              strip-all-trailing-crlf=32B strip-one-lf=33B trimEnd=32B trim=32B verbatim=34B
+   [D7] file none              strip-all-trailing-crlf=32B strip-one-lf=32B trimEnd=32B trim=32B verbatim=32B
+   [D7] file LFLF              strip-all-trailing-crlf=32B strip-one-lf=33B trimEnd=32B trim=32B verbatim=34B
+   [D7] file leading-space+LF  strip-all-trailing-crlf=33B strip-one-lf=33B trimEnd=33B trim=32B verbatim=34B
+
+== D8 missing roster key file throws: SURVIVES all 8 graded sets
+   base/sample=same base/h1=same base/h2=same base/h3=same hard/sample=same hard/h1=same hard/h2=same hard/h3=same
+   [D8] gw-prod-02.key present:            {"seq":1,"key_id":"gw-prod-02","method":"POST","path":"/k/t","outcome":"signed","signature":"e15023566e084568733fb18f6ffe2b8fa0571648915388f4e5412daba2af3686","canonical_sha256":"48dbeba0f445f0698e9f243768052f1b0a52fe3877e04ba6d92c747940cde671"}
+   [D8] gw-prod-02.key missing, reference: {"seq":1,"key_id":"gw-prod-02","method":"POST","path":"/k/t","outcome":"rejected","signature":"","canonical_sha256":"48dbeba0f445f0698e9f243768052f1b0a52fe3877e04ba6d92c747940cde671","reason":"unknown-key-id"}
+   [D8] gw-prod-02.key missing, departure: THROWS ENOENT /app/keys/gw-prod-02.key
+
+== D9 Authorization keyId compared to record key id in any case: SURVIVES all 8 graded sets
+   base/sample=same base/h1=same base/h2=same base/h3=same hard/sample=same hard/h1=same hard/h2=same hard/h3=same
+   [D9/base] request:   {"method":"POST","target":"/k/t?b=2&a=1","headers":[["X-GW-Key-Id","gw-prod-01"],["Host","k.example"],["Authorization","GW-HMAC-SHA256 keyId=GW-PROD-01, signature=50663fa85c793ad5bc0abcd532fb78c8f7e6ff30f8246e9f0b4b6bf7c3486579"]],"body":"{}"}
+   [D9/base] expected:  {"seq":1,"key_id":"gw-prod-01","method":"POST","path":"/k/t","outcome":"rejected","signature":"50663fa85c793ad5bc0abcd532fb78c8f7e6ff30f8246e9f0b4b6bf7c3486579","canonical_sha256":"bdcd9ef139e8bde86e4bf1673baf233b283f5494b18559039e8e32f62ff5afd6","reason":"malformed-authorization"}
+   [D9/base] departure: {"seq":1,"key_id":"gw-prod-01","method":"POST","path":"/k/t","outcome":"verified","signature":"50663fa85c793ad5bc0abcd532fb78c8f7e6ff30f8246e9f0b4b6bf7c3486579","canonical_sha256":"bdcd9ef139e8bde86e4bf1673baf233b283f5494b18559039e8e32f62ff5afd6"}
+   [D9/base] differs:   true
+
+== D10 header name trimmed before matching: SURVIVES all 8 graded sets
+   base/sample=same base/h1=same base/h2=same base/h3=same hard/sample=same hard/h1=same hard/h2=same hard/h3=same
+   [D10/base] request:   {"method":"POST","target":"/k/n","headers":[[" X-GW-Key-Id ","gw-prod-01"],["Host","k.example"]],"body":"{}"}
+   [D10/base] expected:  {"seq":1,"key_id":"","method":"POST","path":"/k/n","outcome":"rejected","signature":"","canonical_sha256":"6404ad12e16bf9da0d6a5382091cf46887b0937ed74f048057e485059008d918","reason":"missing-key-id"}
+   [D10/base] departure: {"seq":1,"key_id":"gw-prod-01","method":"POST","path":"/k/n","outcome":"signed","signature":"6eaf354c16315975b19c0e365ee1fce746419f228c964e128442c76a0dfd5763","canonical_sha256":"f6744df18e79a956efb0e3e17c32d6a7ad2549721e08ef4650175761f2901103"}
+   [D10/base] differs:   true
+
+== summary
+   sanity                 SURVIVES 
+   D1a                    caught   base/sample,base/h1,hard/sample,hard/h1
+   D1b                    caught   base/sample,base/h1,base/h2,base/h3,hard/sample,hard/h1,hard/h2,hard/h3
+   D2                     SURVIVES 
+   D3                     SURVIVES 
+   D4                     SURVIVES 
+   D5                     SURVIVES 
+   D6                     caught   hard/h1
+   D7-strip-one-lf        SURVIVES 
+   D7-trimEnd             SURVIVES 
+   D7-trim                SURVIVES 
+   D7-verbatim            caught   base/sample,base/h1,base/h2,base/h3,hard/sample,hard/h1,hard/h2,hard/h3
+   D8                     SURVIVES 
+   D9                     SURVIVES 
+   D10                    SURVIVES 

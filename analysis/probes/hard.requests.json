@@ -1,0 +1,511 @@
+[
+  {
+    "method": "POST",
+    "target": "/p/globals?x=1",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/base",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-02"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/base",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "  a \t b  "
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/q?q=z&q=%7e&q=a&b=1",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/q?q=b&q=B&q=a",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/base",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "Host",
+        "h.example"
+      ],
+      [
+        "Content-Type",
+        "text/plain"
+      ],
+      [
+        "Via",
+        "1.1 x"
+      ],
+      [
+        "X-Forwarded-For",
+        "203.0.113.5"
+      ],
+      [
+        "Accept",
+        "*/*"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/h",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "Host",
+        "h.example"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-01, signature=d823cddfd45b95b0dd7ff7ace32a4bc207b7a49ceda1f056b24416c5c31eee0d"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/base",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ]
+    ]
+  },
+  {
+    "method": "POST",
+    "target": "/p/base",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ]
+    ],
+    "body": ""
+  },
+  {
+    "method": "POST",
+    "target": "/p/a%2fb?x=%7e",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/v?flag",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/./a/../b",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/base",
+    "headers": [
+      [
+        "X-GW-Trace",
+        "t"
+      ],
+      [
+        "x-gw-key-id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Alpha",
+        "1"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/base",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ]
+    ],
+    "body": "héllo ✓"
+  },
+  {
+    "method": "post",
+    "target": "/p/base",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/base",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-03"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/base",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "GW-PROD-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/verify",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-01, signature=922e034dc3a55d1b916b4558216cd5dd7b89c1e56966b4049a7c1453fb044668"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/verify",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-01, signature=  922e034dc3a55d1b916b4558216cd5dd7b89c1e56966b4049a7c1453fb044668  "
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/verify",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-01, signature=0000000000000000000000000000000000000000000000000000000000000000"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/verify",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-01, signature=deadbeef"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/verify",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-01, signature=not-a-signature"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/verify",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-01, signature=922E034DC3A55D1B916B4558216CD5DD7B89C1E56966B4049A7C1453FB044668"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/verify",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ],
+      [
+        "Authorization",
+        "Bearer abc"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/verify",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-02, signature=922e034dc3a55d1b916b4558216cd5dd7b89c1e56966b4049a7c1453fb044668"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/verify",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-prod-01"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-01,signature=922e034dc3a55d1b916b4558216cd5dd7b89c1e56966b4049a7c1453fb044668"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/base",
+    "headers": [
+      [
+        "X-GW-Trace",
+        "t1"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-prod-01, signature=0000000000000000000000000000000000000000000000000000000000000000"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/base",
+    "headers": [
+      [
+        "X-GW-Trace",
+        "t1"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/base",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-nope-00"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ]
+    ],
+    "body": "b"
+  },
+  {
+    "method": "POST",
+    "target": "/p/base",
+    "headers": [
+      [
+        "X-GW-Key-Id",
+        "gw-nope-00"
+      ],
+      [
+        "X-GW-Trace",
+        "t1"
+      ],
+      [
+        "Authorization",
+        "GW-HMAC-SHA256 keyId=gw-nope-00, signature=0000000000000000000000000000000000000000000000000000000000000000"
+      ]
+    ],
+    "body": "b"
+  }
+]
