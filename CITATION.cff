@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this task, its verifier or the analysis tooling, please cite the paper."
+title: "Migrate Legacy API Signing to a TypeScript Evidence Pipeline"
+authors:
+  - family-names: Rogel
+    given-names: Tatiana
+    affiliation: LaunchPeak Studio AI
+repository-code: "https://github.com/tatianajrogel/migrate-legacy-api-signing-to-a-typescript-evidence-pipeline"
+license: MIT
+preferred-citation:
+  type: article
+  title: "Validate the Benchmark Before Trusting the Score: Spec Gaps, Verifier Gaps and Presentation Hardening in an Evidence-Driven API Migration Task"
+  authors:
+    - family-names: Rogel
+      given-names: Tatiana
+      affiliation: LaunchPeak Studio AI
+  year: 2026
+  month: 10
+  doi: 10.5281/zenodo.23075022
+  url: "https://doi.org/10.5281/zenodo.23075022"
+  publisher:
+    name: Zenodo

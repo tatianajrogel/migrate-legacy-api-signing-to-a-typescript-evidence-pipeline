@@ -1,6 +1,7 @@
 # Migrate Legacy API Signing to a TypeScript Evidence Pipeline
 
 [![validate](https://github.com/tatianajrogel/migrate-legacy-api-signing-to-a-typescript-evidence-pipeline/actions/workflows/validate.yml/badge.svg)](https://github.com/tatianajrogel/migrate-legacy-api-signing-to-a-typescript-evidence-pipeline/actions/workflows/validate.yml)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23075021.svg)](https://doi.org/10.5281/zenodo.23075021)
 
 A Terminal-Bench style task for AI coding agents, in Harbor's task format with
 a separate verifier container. I designed and built all of it: the scenario, the
@@ -304,6 +305,28 @@ For a real attempt, swap `-a oracle` for an agent and a model, for example
 - `analysis/`: tools for reading agent attempts: probe requests that reveal which form of each rule an attempt implemented, a check of what its trajectory showed it, a re-grader, and the run matrix
 - `paper/`: the write-up (`paper.md`, `paper.pdf`), its figures generated from `runs/` by `figures/build_figures.mjs`, and `build_paper.py` which builds the HTML and PDF
 - `runs/`: every stored attempt (sources, trajectory, probe outputs, re-grade), the per-attempt diagnosis and the summary tables, and the red-team scripts and notes
+
+## Cite
+
+The write-up is [`paper/paper.pdf`](paper/paper.pdf), archived on Zenodo with
+the code and every stored attempt.
+
+> Rogel, T. (2026). *Validate the Benchmark Before Trusting the Score: Spec
+> Gaps, Verifier Gaps and Presentation Hardening in an Evidence-Driven API
+> Migration Task.* Zenodo. https://doi.org/10.5281/zenodo.23075022
+
+```bibtex
+@misc{rogel2026validate,
+  author    = {Rogel, Tatiana},
+  title     = {Validate the Benchmark Before Trusting the Score: Spec Gaps,
+               Verifier Gaps and Presentation Hardening in an Evidence-Driven
+               API Migration Task},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.23075022},
+  url       = {https://doi.org/10.5281/zenodo.23075022}
+}
+```
 
 ## License
 
