@@ -1,0 +1,3 @@
+# macOS metadata that tar leaves behind when files are copied off a Mac
+._*
+.DS_Store
